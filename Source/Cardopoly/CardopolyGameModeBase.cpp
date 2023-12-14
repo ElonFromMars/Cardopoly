@@ -1,5 +1,5 @@
 #include "CardopolyGameModeBase.h"
-#include "ABuildingActor.h"
+#include "ABuilding.h"
 #include "ARTSCamera.h"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/GameStateBase.h"

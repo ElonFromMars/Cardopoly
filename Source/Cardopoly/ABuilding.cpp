@@ -1,7 +1,7 @@
-﻿#include "ABuildingActor.h"
+﻿#include "ABuilding.h"
 #include "Components/SphereComponent.h"
 
-ABuildingActor::ABuildingActor()
+ABuilding::ABuilding()
 {
 	// Set this actor to call Tick() every frame
 	PrimaryActorTick.bCanEverTick = true;
@@ -18,12 +18,12 @@ ABuildingActor::ABuildingActor()
 	}
 }
 
-void ABuildingActor::BeginPlay()
+void ABuilding::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-void ABuildingActor::Tick(float DeltaTime)
+void ABuilding::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }

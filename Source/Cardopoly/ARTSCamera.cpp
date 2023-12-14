@@ -2,7 +2,7 @@
 
 #include "ARTSCamera.h"
 
-#include "ABuildingActor.h"
+#include "ABuilding.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 
@@ -113,5 +113,5 @@ void ARTSCamera::SpawnBuilding(const FVector& SpawnLocation)
 	FRotator SpawnRotation = FRotator::ZeroRotator; // Set the spawn rotation
 
 	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<ABuildingActor>(ABuildingActor::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+	GetWorld()->SpawnActor<ABuilding>(ABuilding::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 }

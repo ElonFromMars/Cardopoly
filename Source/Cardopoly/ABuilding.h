@@ -1,15 +1,16 @@
 ﻿#pragma once
-#include "ABuildingActor.generated.h"
+#include "Grid/IOccupyGrid.h"
+#include "ABuilding.generated.h"
 
 UCLASS()
-class ABuildingActor : public AActor
+class ABuilding : public AActor, public IOccupyGrid
 {
 	GENERATED_BODY()
 
 public:
 	UStaticMeshComponent *SphereMesh;
 	// Sets default values for this actor's properties
-	ABuildingActor();
+	ABuilding();
 
 protected:
 	// Called when the game starts or when spawned
