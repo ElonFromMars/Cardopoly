@@ -26,6 +26,9 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
 	void EnhancedMove(const FInputActionValue& Value);
+	
+	void EnhancedMouseClick(const FInputActionValue& Value);
+	void SpawnBuilding(const FVector& SpawnLocation);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
@@ -33,6 +36,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	UInputAction* MoveInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	UInputAction* MouseClickInputAction;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
 	UInputMappingContext* CameraMappingContext;

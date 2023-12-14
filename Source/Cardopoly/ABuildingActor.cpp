@@ -11,7 +11,7 @@ ABuildingActor::ABuildingActor()
 	RootComponent = SphereMesh;
 
 	// Set the sphere mesh
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshAsset(TEXT("/Game/StarterContent/Shapes/Shape_Sphere.Shape_Sphere"));
+	static ConstructorHelpers::FObjectFinder<UStaticMesh> SphereMeshAsset(TEXT("/Game/StarterContent/Shapes/Shape_Cube.Shape_Cube"));
 	if (SphereMeshAsset.Succeeded())
 	{
 		SphereMesh->SetStaticMesh(SphereMeshAsset.Object);
