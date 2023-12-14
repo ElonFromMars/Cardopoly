@@ -9,5 +9,8 @@ class CARDOPOLY_API ACardopolyGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
+public:
+	ACardopolyGameModeBase();
+
 	virtual void BeginPlay() override;
 };
