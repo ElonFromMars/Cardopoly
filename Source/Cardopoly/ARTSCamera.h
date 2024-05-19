@@ -28,7 +28,6 @@ public:
 	void EnhancedMove(const FInputActionValue& Value);
 	
 	void EnhancedMouseClick(const FInputActionValue& Value);
-	void SpawnBuilding(const FVector& SpawnLocation);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))

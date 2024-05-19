@@ -1,6 +1,6 @@
 #include "CardopolyGameModeBase.h"
-#include "ABuilding.h"
 #include "ARTSCamera.h"
+#include "City/Generator/CityGenerator.h"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/HUD.h"
@@ -28,5 +28,13 @@ void ACardopolyGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	CreateCity();
+}
+
+void ACardopolyGameModeBase::CreateCity()
+{
+	UWorld* world = GetWorld();
+	auto cityGenerator = CityGenerator(cityGeneratorConfig, world);
+
+	cityGenerator.Generate();
 }

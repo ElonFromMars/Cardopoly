@@ -2,7 +2,7 @@
 #include "Grid/IOccupyGrid.h"
 #include "ABuilding.generated.h"
 
-UCLASS()
+UCLASS(BlueprintType)
 class ABuilding : public AActor, public IOccupyGrid
 {
 	GENERATED_BODY()

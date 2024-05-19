@@ -5,6 +5,7 @@
 #include "ABuilding.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Grid/UBuildingSubsystem.h"
 
 
 // Sets default values
@@ -62,40 +63,20 @@ void ARTSCamera::EnhancedMouseClick(const FInputActionValue& Value)
 	APlayerController* PlayerController = Cast<APlayerController>(GetController());
 	if(Camera && PlayerController)
 	{
-		/*float mouseX;
-		float mouseY;
-		PlayerController->GetMousePosition(mouseX, mouseY);
-
-		FVector2D MouseScreenPos = FVector2D(mouseX, mouseY);
-
-		int32 ViewportSizeX, ViewportSizeY;
-		PlayerController->GetViewportSize(ViewportSizeX, ViewportSizeY);
-
-		FVector2D ViewportSize = FVector2D(ViewportSizeX, ViewportSizeY);
-
-		FVector2D NormalizedCoords = MouseScreenPos / ViewportSize * 2.0f - FVector2D(1.0f, 1.0f);
-		NormalizedCoords.Y *= -1.0f;
-		FVector RayStart = Camera->GetComponentLocation();
-		FVector RayDirection = Camera->GetForwardVector() + NormalizedCoords.X * Camera->GetRightVector() + NormalizedCoords.Y * Camera->GetUpVector();
-		*/
 		FVector RayStart;
 		FVector RayDirection;
-		
 		PlayerController->DeprojectMousePositionToWorld(RayStart, RayDirection); 
-		
-		// Create ray origin and direction
-		
 		RayDirection.Normalize();
-		
 		FVector RayEnd = RayStart + RayDirection * 10000.0f; 
 
 		FHitResult HitResult;
 		FCollisionQueryParams CollisionParams;
 
-		// Cast the ray and check for hits
-		if (GetWorld()->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_Visibility, CollisionParams))
+		UWorld* World = GetWorld();
+		if (World->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_Visibility, CollisionParams))
 		{
-			// An object was hit, you can perform actions based on the hit result
+			DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Green, false, 3, 0, 0.2);
+			
 			AActor* HitActor = HitResult.GetActor();
 			if (HitActor)
 			{
@@ -103,15 +84,9 @@ void ARTSCamera::EnhancedMouseClick(const FInputActionValue& Value)
 			}
 			UE_LOG(LogTemp, Warning, TEXT("%s"), *HitResult.Location.ToString());
 
-			SpawnBuilding(HitResult.Location);
+
+			UBuildingSubsystem* buildingSubsystem = World->GetSubsystem<UBuildingSubsystem>();
+			buildingSubsystem->CreateBuilding(HitResult.Location);
 		}
 	}
-}
-
-void ARTSCamera::SpawnBuilding(const FVector& SpawnLocation)
-{
-	FRotator SpawnRotation = FRotator::ZeroRotator; // Set the spawn rotation
-
-	FActorSpawnParameters SpawnParams;
-	GetWorld()->SpawnActor<ABuilding>(ABuilding::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
 }
