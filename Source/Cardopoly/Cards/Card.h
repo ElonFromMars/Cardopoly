@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "CardActor.generated.h"
+#include "Card.generated.h"
 
 UCLASS()
 class CARDOPOLY_API ACard : public AActor

@@ -1,5 +1,7 @@
 #include "CardopolyGameModeBase.h"
 #include "ARTSCamera.h"
+#include "Cards/CardFactory.h"
+#include "Cards/Hand/Hand.h"
 #include "City/Generator/CityGenerator.h"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/GameStateBase.h"
@@ -29,12 +31,29 @@ void ACardopolyGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	CreateCity();
+
+	CreateHand();
 }
 
-void ACardopolyGameModeBase::CreateCity()
+void ACardopolyGameModeBase::CreateCity() const
 {
-	UWorld* world = GetWorld();
-	auto cityGenerator = CityGenerator(cityGeneratorConfig, world);
+	UWorld* World = GetWorld();
+	CityGenerator cityGenerator = CityGenerator(CityGeneratorConfig, World);
 
 	cityGenerator.Generate();
+}
+
+void ACardopolyGameModeBase::CreateHand() const
+{
+	UWorld* World = GetWorld();
+	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
+	
+	AHand* Hand = World->SpawnActor<AHand>(AHand::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+	Hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+
+	UCardFactory* CardFactory = NewObject<UCardFactory>();
+	CardFactory->Init(GameplayAssetData, World);
+	
+	Hand->Init(CardFactory);
+	Hand->DrawCard();
 }

@@ -9,7 +9,7 @@ void CityGenerator::Generate()
 {
 	FActorSpawnParameters spawnParams;
 	world->SpawnActor<ACity>(ACity::StaticClass());
-	UGridSubsystem* GridSubsystem = world->GetSubsystem<UGridSubsystem>();
+	const UGridSubsystem* GridSubsystem = world->GetSubsystem<UGridSubsystem>();
 	
 	for (int x = 0; x < cityGeneratorConfig->GridSizeY; ++x)
 	{

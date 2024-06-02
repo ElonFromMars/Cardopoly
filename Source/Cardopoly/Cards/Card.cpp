@@ -1,7 +1,7 @@
 ﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "CardActor.h"
+#include "Card.h"
 
 
 // Sets default values

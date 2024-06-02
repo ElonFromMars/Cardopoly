@@ -5,6 +5,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "CardopolyGameModeBase.generated.h"
 
+class UGameplayAssetData;
+
 UCLASS()
 class CARDOPOLY_API ACardopolyGameModeBase : public AGameModeBase
 {
@@ -12,11 +14,15 @@ class CARDOPOLY_API ACardopolyGameModeBase : public AGameModeBase
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configs")
-	UCityGeneratorConfig* cityGeneratorConfig;
+	UCityGeneratorConfig* CityGeneratorConfig;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configs")
+	UGameplayAssetData* GameplayAssetData;
 	
 	ACardopolyGameModeBase();
 
 	virtual void BeginPlay() override;
 
-	void CreateCity();
+	void CreateCity() const;
+	void CreateHand() const;
 };
