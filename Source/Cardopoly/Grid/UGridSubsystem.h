@@ -27,6 +27,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	FVector GetCellCenterWorldPosition(const FIntVector GridPosition) const;
+	FVector GetCellCenterWorldPosition(int X, int Y) const;
 
 	UFUNCTION(BlueprintCallable)
 	FVector GetClosestCellCenterWorldPosition(const FVector WorldPosition) const;

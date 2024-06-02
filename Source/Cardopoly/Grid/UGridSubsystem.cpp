@@ -25,8 +25,13 @@ FIntVector UGridSubsystem::WorldPositionToGrid(const FVector WorldPosition) cons
 
 FVector UGridSubsystem::GetCellCenterWorldPosition(const FIntVector GridPosition) const
 {
-	const double WorldX = GridPosition.X * CellSize + HalfCellSize;
-	const double WorldY = GridPosition.Y * CellSize + HalfCellSize;
+	return GetCellCenterWorldPosition(GridPosition.X, GridPosition.Y);
+}
+
+FVector UGridSubsystem::GetCellCenterWorldPosition(const int X, const int Y) const
+{
+	const double WorldX = X * CellSize + HalfCellSize;
+	const double WorldY = Y * CellSize + HalfCellSize;
 	return FVector(WorldX, WorldY, 0);
 }
 

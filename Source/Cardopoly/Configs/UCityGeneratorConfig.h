@@ -16,9 +16,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid")
 	uint8 GridSizeY;
-
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Grid")
-	float CellSize;
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Generator")
 	float HouseProbability;
