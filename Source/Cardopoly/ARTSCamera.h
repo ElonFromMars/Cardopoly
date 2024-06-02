@@ -27,23 +27,37 @@ public:
 	
 	void EnhancedMove(const FInputActionValue& Value);
 	
+	void Zoom(float Delta);
+
 	void EnhancedMouseClick(const FInputActionValue& Value);
+
+private:
+	void OnZoomInputTriggered(const FInputActionValue& Value);
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* RTSCameraComponent;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	UInputAction* MoveInputAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	UInputAction* MouseClickInputAction;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Camera")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
+	UInputAction* ZoomInputAction;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
 	UInputMappingContext* CameraMappingContext;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
 	float CameraSpeedMultiplier = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float CameraZoomSpeedMultiplier = 10.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	float MinZPosition = 1000.0f;
 	
 	virtual void BeginPlay() override;
 };

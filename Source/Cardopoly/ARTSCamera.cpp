@@ -47,6 +47,8 @@ void ARTSCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 	enhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &ARTSCamera::EnhancedMove);
 	
 	enhancedInputComponent->BindAction(MouseClickInputAction, ETriggerEvent::Started, this, &ARTSCamera::EnhancedMouseClick);
+
+	enhancedInputComponent->BindAction(ZoomInputAction, ETriggerEvent::Triggered, this,  &ARTSCamera::OnZoomInputTriggered);
 }
 
 void ARTSCamera::EnhancedMove(const FInputActionValue& Value)
@@ -55,6 +57,31 @@ void ARTSCamera::EnhancedMove(const FInputActionValue& Value)
 	const FVector moveVector3d = FVector(moveVector.X, moveVector.Y, 0.0f);
 	
 	AddActorWorldOffset(moveVector3d * CameraSpeedMultiplier);
+}
+
+void ARTSCamera::OnZoomInputTriggered(const FInputActionValue& Value)//TODO move to separate input controller
+{
+	float ZoomValue = Value.Get<float>();
+	Zoom(ZoomValue);
+}
+
+void ARTSCamera::Zoom(float Delta)
+{
+	FVector Location = GetActorLocation();
+	FVector ForwardDirection = GetActorForwardVector();
+
+	FVector NewLocation = Location + ForwardDirection * Delta * CameraZoomSpeedMultiplier;
+	FVector ClampedLocation;
+	if(NewLocation.Z < MinZPosition)
+	{
+		ClampedLocation = FMath::LinePlaneIntersection(Location, NewLocation, FVector(0, 0, MinZPosition), FVector::UpVector);	
+	}
+	else
+	{
+		ClampedLocation = NewLocation;
+	}
+	
+	SetActorLocation(ClampedLocation);
 }
 
 void ARTSCamera::EnhancedMouseClick(const FInputActionValue& Value)
@@ -75,7 +102,6 @@ void ARTSCamera::EnhancedMouseClick(const FInputActionValue& Value)
 		UWorld* World = GetWorld();
 		if (World->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_Visibility, CollisionParams))
 		{
-			DrawDebugLine(GetWorld(), RayStart, RayEnd, FColor::Green, false, 3, 0, 0.2);
 			
 			AActor* HitActor = HitResult.GetActor();
 			if (HitActor)
