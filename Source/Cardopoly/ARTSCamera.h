@@ -29,8 +29,6 @@ public:
 	
 	void Zoom(float Delta);
 
-	void EnhancedMouseClick(const FInputActionValue& Value);
-
 private:
 	void OnZoomInputTriggered(const FInputActionValue& Value);
 

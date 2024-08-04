@@ -17,6 +17,7 @@ class CARDOPOLY_API UBuildingSubsystem : public UWorldSubsystem
 public:
 	
 	virtual void PostInitialize() override;
+	void CreateBuildingUnderMouse();
 	UFUNCTION(BlueprintCallable)
 	void CreateBuilding(const FVector Position) const;
 

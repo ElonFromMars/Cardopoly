@@ -3,6 +3,8 @@
 
 #include "Card.h"
 
+#include "Cardopoly/Grid/UBuildingSubsystem.h"
+
 
 // Sets default values
 ACard::ACard()
@@ -21,5 +23,13 @@ void ACard::BeginPlay()
 void ACard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void ACard::Apply()
+{
+	UBuildingSubsystem* buildingSubsystem = GetWorld()->GetSubsystem<UBuildingSubsystem>();
+	buildingSubsystem->CreateBuildingUnderMouse();
+	
+	OnCardAppliedDelegate.Broadcast(this);
 }
 

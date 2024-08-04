@@ -23,10 +23,11 @@ void UTouchInputDispatcherComponent::Construct(UInputLocalConfig* inputLocalConf
 	UE_LOG(LogTemp, Warning, TEXT("%hs"), "InputLocalConfig initialization");
 
 	UEnhancedInputComponent* EnhancedInputComponent = Cast<UEnhancedInputComponent>(InputComponent);
-	EnhancedInputComponent->BindAction(InputLocalConfig->BeginTouchInputAction, ETriggerEvent::Started, this, &UTouchInputDispatcherComponent::BeginTouch);
+	EnhancedInputComponent->BindAction(InputLocalConfig->BeginTouchInputAction, ETriggerEvent::Started, this, &UTouchInputDispatcherComponent::OnTouchStarted);
 
-	EnhancedInputComponent->BindAction(InputLocalConfig->BeginTouchInputAction, ETriggerEvent::Triggered, this, &UTouchInputDispatcherComponent::TouchTriggered);
-	EnhancedInputComponent->BindAction(InputLocalConfig->BeginTouchInputAction, ETriggerEvent::Completed, this, &UTouchInputDispatcherComponent::EndTouch);
+	EnhancedInputComponent->BindAction(InputLocalConfig->BeginTouchInputAction, ETriggerEvent::Triggered, this, &UTouchInputDispatcherComponent::OnTouchTriggered);
+	EnhancedInputComponent->BindAction(InputLocalConfig->BeginTouchInputAction, ETriggerEvent::Canceled, this, &UTouchInputDispatcherComponent::OnTouchEnded);
+	EnhancedInputComponent->BindAction(InputLocalConfig->BeginTouchInputAction, ETriggerEvent::Completed, this, &UTouchInputDispatcherComponent::OnTouchEnded);
 }
 
 void UTouchInputDispatcherComponent::SetupInputComponent(UInputComponent* inputComponent)
@@ -34,59 +35,81 @@ void UTouchInputDispatcherComponent::SetupInputComponent(UInputComponent* inputC
 	InputComponent = inputComponent;
 }
 
-void UTouchInputDispatcherComponent::BeginTouch()
+void UTouchInputDispatcherComponent::OnTouchStarted(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%hs"), "Begin Touch");
+	AActor* HitActor = nullptr;
+	FVector HitPosition;
+	if(TryGetObjectUnderMouse(HitActor, HitPosition))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *(HitActor->GetHumanReadableName()));
+		
+		FVector2D ScreenPosition = GetScreenPosition();
+		OnObjectTouchStartedDelegate.Broadcast(HitActor, HitPosition, ScreenPosition);
+	}
 }
 
-void UTouchInputDispatcherComponent::TouchTriggered()
+void UTouchInputDispatcherComponent::OnTouchTriggered(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%hs"), "Touch Triggered");
+	FVector2D ScreenPosition = GetScreenPosition();
+	AActor* HitActor = nullptr;
+	FVector HitPosition = FVector::Zero();
+
+	TryGetObjectUnderMouse(HitActor, HitPosition);
+	
+	OnOnTouchTriggeredDelegate.Broadcast(HitPosition, ScreenPosition);
 }
 
-void UTouchInputDispatcherComponent::EndTouch()
+void UTouchInputDispatcherComponent::OnTouchEnded(const FInputActionValue& Value)
 {
-	UE_LOG(LogTemp, Warning, TEXT("%hs"), "End Touch");
+	FVector2D ScreenPosition = GetScreenPosition();
+	AActor* HitActor = nullptr;
+	FVector HitPosition = FVector::Zero();
+
+	TryGetObjectUnderMouse(HitActor, HitPosition);
+	
+	OnOnTouchEndedDelegate.Broadcast(HitPosition, ScreenPosition);
 }
 
-// Called every frame
 void UTouchInputDispatcherComponent::TickComponent(float DeltaTime, ELevelTick TickType,
-                                              FActorComponentTickFunction* ThisTickFunction)
+                                                   FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// ...
 }
 
-bool UTouchInputDispatcherComponent::TryGetObjectUnderMouse(UObject* result, )
+bool UTouchInputDispatcherComponent::TryGetObjectUnderMouse(AActor*& HitActor, FVector& HitPosition) const
 {
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if(PlayerController)
+	bool IsFound = false;
+	if(APlayerController* PlayerController = GetWorld()->GetFirstPlayerController())
 	{
 		FVector RayStart;
 		FVector RayDirection;
 		PlayerController->DeprojectMousePositionToWorld(RayStart, RayDirection); 
 		RayDirection.Normalize();
-		FVector RayEnd = RayStart + RayDirection * 10000.0f; 
+		FVector RayEnd = RayStart + RayDirection * 10000.0f;//TODO add constant
 
 		FHitResult HitResult;
 		FCollisionQueryParams CollisionParams;
 
 		UWorld* World = GetWorld();
-		if (World->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_Visibility, CollisionParams))
+		if (World->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_Visibility, CollisionParams)
+			&&  HitResult.GetActor())
 		{
+			HitActor = HitResult.GetActor();
+			HitPosition = HitResult.Location;
 			
-			AActor* HitActor = HitResult.GetActor();
-			if (HitActor)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActor->GetHumanReadableName());
-			}
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *HitResult.Location.ToString());
-
-
-			UBuildingSubsystem* buildingSubsystem = World->GetSubsystem<UBuildingSubsystem>();
-			buildingSubsystem->CreateBuilding(HitResult.Location);
+			IsFound = true;
 		}
 	}
+	return IsFound;
+}
+
+FVector2D UTouchInputDispatcherComponent::GetScreenPosition() const
+{
+	float MouseX;
+	float MouseY;
+	GetWorld()->GetFirstPlayerController()->GetMousePosition(MouseX, MouseY);
+	return FVector2D(MouseX, MouseY);
 }
 

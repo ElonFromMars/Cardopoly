@@ -17,8 +17,6 @@ class CARDOPOLY_API AHand : public AActor
 {
 	GENERATED_BODY()
 
-
-
 private:
 	UPROPERTY()
 	UCardFactory* CardFactory;
@@ -44,5 +42,7 @@ private:
 
 	UPROPERTY(BlueprintGetter=GetCards, VisibleInstanceOnly)
 	TArray<ACard*> Cards;
-	
+
+	UFUNCTION()
+	void OnCardApplied(ACard* Card);
 };

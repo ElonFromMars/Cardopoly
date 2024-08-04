@@ -45,7 +45,7 @@ void ARTSCamera::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent
 
 	enhancedInputComponent->BindAction(MoveInputAction, ETriggerEvent::Triggered, this, &ARTSCamera::EnhancedMove);
 	
-	enhancedInputComponent->BindAction(MouseClickInputAction, ETriggerEvent::Started, this, &ARTSCamera::EnhancedMouseClick);
+	//enhancedInputComponent->BindAction(MouseClickInputAction, ETriggerEvent::Started, this, &ARTSCamera::EnhancedMouseClick);
 
 	enhancedInputComponent->BindAction(ZoomInputAction, ETriggerEvent::Triggered, this,  &ARTSCamera::OnZoomInputTriggered);
 }
@@ -83,35 +83,4 @@ void ARTSCamera::Zoom(float Delta)
 	SetActorLocation(ClampedLocation);
 }
 
-void ARTSCamera::EnhancedMouseClick(const FInputActionValue& Value)
-{
-	UCameraComponent* Camera = FindComponentByClass<UCameraComponent>();
-	APlayerController* PlayerController = Cast<APlayerController>(GetController());
-	if(Camera && PlayerController)
-	{
-		FVector RayStart;
-		FVector RayDirection;
-		PlayerController->DeprojectMousePositionToWorld(RayStart, RayDirection); 
-		RayDirection.Normalize();
-		FVector RayEnd = RayStart + RayDirection * 10000.0f; 
 
-		FHitResult HitResult;
-		FCollisionQueryParams CollisionParams;
-
-		UWorld* World = GetWorld();
-		if (World->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_Visibility, CollisionParams))
-		{
-			
-			AActor* HitActor = HitResult.GetActor();
-			if (HitActor)
-			{
-				UE_LOG(LogTemp, Warning, TEXT("%s"), *HitActor->GetHumanReadableName());
-			}
-			UE_LOG(LogTemp, Warning, TEXT("%s"), *HitResult.Location.ToString());
-
-
-			UBuildingSubsystem* buildingSubsystem = World->GetSubsystem<UBuildingSubsystem>();
-			buildingSubsystem->CreateBuilding(HitResult.Location);
-		}
-	}
-}

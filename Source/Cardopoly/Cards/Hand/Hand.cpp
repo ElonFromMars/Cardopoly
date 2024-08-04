@@ -26,6 +26,7 @@ void AHand::DrawCard()
 
 	ACard* Card = CardFactory->CreateCard();
 	Cards.Add(Card);
+	Card->OnCardAppliedDelegate.AddUniqueDynamic(this, &ThisClass::OnCardApplied);
 	
 	OnDrawCardDelegate.Broadcast(Card);
 }
@@ -33,4 +34,10 @@ void AHand::DrawCard()
 TArray<ACard*> AHand::GetCards() const
 {
 	return Cards;
+}
+
+void AHand::OnCardApplied(ACard* Card)
+{
+	Cards.Remove(Card);
+	Card->Destroy();
 }
