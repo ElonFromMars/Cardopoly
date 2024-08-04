@@ -4,23 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
-#include "GameplayAssetData.generated.h"
+#include "LocalConfigHolder.generated.h"
 
-class ATurnController;
-class AHand;
-class UCardsHolder;
+class UInputLocalConfig;
+class UHandLocalConfig;
 /**
  * 
  */
 UCLASS()
-class CARDOPOLY_API UGameplayAssetData : public UDataAsset
+class CARDOPOLY_API ULocalConfigHolder : public UDataAsset
 {
 	GENERATED_BODY()
-
+	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UCardsHolder* CardsHolder;
-
+	UHandLocalConfig* HandLocalConfig;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TSubclassOf<AHand> Hand;
+	UInputLocalConfig* InputLocalConfig;
 };

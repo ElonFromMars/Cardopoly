@@ -1,6 +1,6 @@
 ﻿#include "CityGenerator.h"
 
-#include "Cardopoly/ABuilding.h"
+#include "Cardopoly/Buildings/ABuilding.h"
 #include "Cardopoly/City/ACity.h"
 #include "Cardopoly/Configs/UCityGeneratorConfig.h"
 #include "Cardopoly/Grid/UGridSubsystem.h"

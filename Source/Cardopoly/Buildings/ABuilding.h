@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Grid/IOccupyGrid.h"
+#include "Cardopoly/Grid/IOccupyGrid.h"
 #include "ABuilding.generated.h"
 
 UCLASS(BlueprintType)

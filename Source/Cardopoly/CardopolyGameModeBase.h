@@ -5,6 +5,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "CardopolyGameModeBase.generated.h"
 
+class ULocalConfigHolder;
+class AHand;
 class UGameplayAssetData;
 
 UCLASS()
@@ -17,6 +19,9 @@ public:
 	UCityGeneratorConfig* CityGeneratorConfig;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configs")
+	ULocalConfigHolder* LocalConfigHolder;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AssetData")
 	UGameplayAssetData* GameplayAssetData;
 	
 	ACardopolyGameModeBase();
@@ -25,4 +30,5 @@ public:
 
 	void CreateCity() const;
 	void CreateHand() const;
+	void CreateInput() const;
 };

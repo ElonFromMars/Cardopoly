@@ -2,7 +2,7 @@
 #include "UBuildingSubsystem.h"
 
 #include "UGridSubsystem.h"
-#include "Cardopoly/ABuilding.h"
+#include "Cardopoly/Buildings/ABuilding.h"
 
 void UBuildingSubsystem::PostInitialize()
 {

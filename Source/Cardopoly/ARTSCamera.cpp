@@ -2,7 +2,6 @@
 
 #include "ARTSCamera.h"
 
-#include "ABuilding.h"
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Grid/UBuildingSubsystem.h"

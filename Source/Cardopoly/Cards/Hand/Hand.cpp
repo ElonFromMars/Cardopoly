@@ -23,33 +23,14 @@ void AHand::BeginPlay()
 void AHand::DrawCard()
 {
 	CardSlots.Add(FVector());
-	UpdateSlotPositions();
 
 	ACard* Card = CardFactory->CreateCard();
-	Card->AttachToActor(this, FAttachmentTransformRules::KeepRelativeTransform);
-	Card->SetActorRelativeLocation(CardSlots[0]);
+	Cards.Add(Card);
+	
+	OnDrawCardDelegate.Broadcast(Card);
 }
 
-void AHand::UpdateSlotPositions()
+TArray<ACard*> AHand::GetCards() const
 {
-	float leftX;
-	if (CardSlots.Num() > 1)
-	{
-		leftX = -((CardSlots.Num() - 1) / 2.0) * DistanceBetweenCards;
-	}
-	else
-	{
-		leftX = 0;
-	}
-
-	const FVector LeftPosition = FVector(BottomCenterPosition.X + leftX, BottomCenterPosition.Y, BottomCenterPosition.Z);
-	FVector cardPosition = LeftPosition;
-	for (int i = 0; i < CardSlots.Num(); ++i)
-	{
-		FVector& CardSlotsIt = CardSlots[i];
-
-		CardSlotsIt = cardPosition;
-            
-		cardPosition += FVector(DistanceBetweenCards, 0, 0);
-	}
+	return Cards;
 }

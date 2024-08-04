@@ -1,13 +1,17 @@
 #include "CardopolyGameModeBase.h"
 #include "ARTSCamera.h"
+#include "AssetHolders/GameplayAssetData.h"
 #include "Cards/CardFactory.h"
 #include "Cards/Hand/Hand.h"
 #include "City/Generator/CityGenerator.h"
+#include "Configs/LocalConfigHolder.h"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/GameStateBase.h"
 #include "GameFramework/HUD.h"
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/SpectatorPawn.h"
+#include "GameplayFlow/TurnController.h"
+#include "Player/CardopolyPlayerController.h"
 
 ACardopolyGameModeBase::ACardopolyGameModeBase()
 {
@@ -31,7 +35,7 @@ void ACardopolyGameModeBase::BeginPlay()
 	Super::BeginPlay();
 
 	CreateCity();
-
+	CreateInput();
 	CreateHand();
 }
 
@@ -48,7 +52,7 @@ void ACardopolyGameModeBase::CreateHand() const
 	UWorld* World = GetWorld();
 	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
 	
-	AHand* Hand = World->SpawnActor<AHand>(AHand::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+	AHand* Hand = World->SpawnActor<AHand>(GameplayAssetData->Hand, FVector::ZeroVector, FRotator::ZeroRotator);
 	Hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 	UCardFactory* CardFactory = NewObject<UCardFactory>();
@@ -56,4 +60,15 @@ void ACardopolyGameModeBase::CreateHand() const
 	
 	Hand->Init(CardFactory);
 	Hand->DrawCard();
+
+	ATurnController* TurnController = World->SpawnActor<ATurnController>(ATurnController::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+	TurnController->Construct(Hand, LocalConfigHolder->HandLocalConfig);
+	TurnController->StartSession();
+}
+
+void ACardopolyGameModeBase::CreateInput() const
+{
+	UWorld* World = GetWorld();
+	ACardopolyPlayerController* CardopolyPlayerController = Cast<ACardopolyPlayerController>(World->GetFirstPlayerController());
+	CardopolyPlayerController->Construct(LocalConfigHolder->InputLocalConfig);
 }
