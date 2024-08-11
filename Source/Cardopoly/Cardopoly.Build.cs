@@ -8,10 +8,12 @@ public class Cardopoly : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 		OptimizeCode = CodeOptimization.Never;
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "EnhancedInput" });
-
+		
+		AddEngineModules();
+		AddExternalModules();
+		
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
-
+		
 		// Uncomment if you are using Slate UI
 		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
 		
@@ -19,5 +21,25 @@ public class Cardopoly : ModuleRules
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
 		// To include OnlineSubsystemSteam, add it to the plugins section in your uproject file with the Enabled attribute set to true
+	}
+
+	private void AddEngineModules()
+	{
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"Core", 
+			"CoreUObject", 
+			"Engine", 
+			"InputCore", 
+			"EnhancedInput",
+		});
+	}
+
+	private void AddExternalModules()
+	{
+		PublicDependencyModuleNames.AddRange(new string[]
+		{
+			"FCTween",
+		});
 	}
 }
