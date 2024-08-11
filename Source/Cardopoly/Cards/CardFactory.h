@@ -6,19 +6,24 @@
 
 class UGameplayAssetData;
 class ACard;
+class ABuildingsController;
 
 UCLASS()
 class CARDOPOLY_API UCardFactory : public UObject
 {
 	GENERATED_BODY()
 
-public:
-	virtual void Init(UGameplayAssetData* gameplayAssetData, UWorld* world);
-	virtual ACard* CreateCard();
-
 private:
 	UPROPERTY()
 	UGameplayAssetData* GameplayAssetData;
 	UPROPERTY()
 	UWorld* World;
+	UPROPERTY()
+	ABuildingsController* BuildingsController;
+	
+public:
+	virtual void Construct(UWorld* world, UGameplayAssetData* gameplayAssetData, ABuildingsController* buildingsController);
+	virtual ACard* CreateCard();
+
+
 };

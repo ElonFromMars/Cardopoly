@@ -4,7 +4,6 @@
 
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
-#include "Grid/UBuildingSubsystem.h"
 
 
 // Sets default values

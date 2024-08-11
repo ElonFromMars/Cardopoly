@@ -1,6 +1,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Buildings/BuildingsController.h"
+#include "City/CityGrid.h"
 #include "Configs/UCityGeneratorConfig.h"
 #include "GameFramework/GameModeBase.h"
 #include "CardopolyGameModeBase.generated.h"
@@ -28,7 +30,9 @@ public:
 
 	virtual void BeginPlay() override;
 
-	void CreateCity() const;
-	void CreateHand() const;
+	void CreateCity(ABuildingsController* BuildingsController) const;
+	void CreateHand(ABuildingsController* BuildingsController) const;
 	void CreateInput() const;
+	ABuildingsController* CreateBuildingController(UCityGrid* CityGrid) const;
+	UCityGrid* CreateCityGrid() const;
 };

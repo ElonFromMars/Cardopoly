@@ -7,6 +7,7 @@
 #include "Card.generated.h"
 
 class ACard;
+class ABuildingsController;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCardAppliedSignature, ACard*, card);
 
@@ -19,19 +20,24 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnCardAppliedSignature OnCardAppliedDelegate;
 	
-public:
-	// Sets default values for this actor's properties
-	ACard();
+private:
+	UPROPERTY()
+	ABuildingsController* BuildingsController;
 	
+public:
+	ACard();
+
+	void Construct(ABuildingsController* BuildingsController);
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void Apply();
+	bool CanApply(FVector2D ScreenPosition);
+
+	UFUNCTION(BlueprintCallable)
+	void Apply(FVector2D ScreenPosition);
 };

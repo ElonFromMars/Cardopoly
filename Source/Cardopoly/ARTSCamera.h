@@ -19,6 +19,7 @@ class CARDOPOLY_API ARTSCamera : public APawn
 
 public:
 	ARTSCamera();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

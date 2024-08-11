@@ -26,7 +26,7 @@ public:
 	FOnDrawCardSignature OnDrawCardDelegate;
 	
 	AHand();
-	void Init(UCardFactory* cardFactory);
+	void Construct(UCardFactory* cardFactory);
 	void DrawCard();
 
 	UFUNCTION(BlueprintCallable)

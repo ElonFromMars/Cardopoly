@@ -4,10 +4,14 @@
 #include "Cardopoly/AssetHolders/CardsHolder.h"
 #include "Cardopoly/Configs/ViewAssetIdConfig.h"
 
-void UCardFactory::Init(UGameplayAssetData* gameplayAssetData, UWorld* world)
+void UCardFactory::Construct(
+	UWorld* world,
+	UGameplayAssetData* gameplayAssetData,
+	ABuildingsController* buildingsController)
 {
-	this->GameplayAssetData = gameplayAssetData;
-	this->World = world;
+	World = world;
+	GameplayAssetData = gameplayAssetData;
+	BuildingsController = buildingsController;
 }
 
 ACard* UCardFactory::CreateCard()
@@ -19,6 +23,7 @@ ACard* UCardFactory::CreateCard()
 	check(CardAsset);
 	
 	ACard* Card = World->SpawnActor<ACard>(CardAsset, FVector(), FRotator());
+	Card->Construct(BuildingsController);
 	
 	return Card;
 }

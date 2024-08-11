@@ -1,27 +1,17 @@
 ﻿#include "CityGenerator.h"
-
-#include "Cardopoly/Buildings/ABuilding.h"
-#include "Cardopoly/City/ACity.h"
+#include "Cardopoly/Buildings/BuildingsController.h"
 #include "Cardopoly/Configs/UCityGeneratorConfig.h"
-#include "Cardopoly/Grid/UGridSubsystem.h"
 
 void CityGenerator::Generate()
 {
-	FActorSpawnParameters spawnParams;
-	world->SpawnActor<ACity>(ACity::StaticClass());
-	const UGridSubsystem* GridSubsystem = world->GetSubsystem<UGridSubsystem>();
-	
-	for (int x = 0; x < cityGeneratorConfig->GridSizeY; ++x)
+	for (int x = 0; x < CityGeneratorConfig->GridSizeY; ++x)
 	{
-		for (int y = 0; y < cityGeneratorConfig->GridSizeX; ++y)
+		for (int y = 0; y < CityGeneratorConfig->GridSizeX; ++y)
 		{
-			if(FMath::FRand() > cityGeneratorConfig->HouseProbability) continue;
+			if(FMath::FRand() > CityGeneratorConfig->HouseProbability) continue;
 			
-			FRotator SpawnRotation(FRotator::ZeroRotator);
-			FVector SpawnLocation = GridSubsystem->GetCellCenterWorldPosition(x, y);; 
-			
-			FActorSpawnParameters SpawnParams;
-			world->SpawnActor<ABuilding>(ABuilding::StaticClass(), SpawnLocation, SpawnRotation, SpawnParams);
+			FIntVector SpawnLocation = FIntVector(x, y, 0);
+			BuildingsController->CreateBuilding(SpawnLocation);
 		}	
 	}
 }

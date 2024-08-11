@@ -1,8 +1,10 @@
 #include "CardopolyGameModeBase.h"
 #include "ARTSCamera.h"
 #include "AssetHolders/GameplayAssetData.h"
+#include "Buildings/BuildingsController.h"
 #include "Cards/CardFactory.h"
 #include "Cards/Hand/Hand.h"
+#include "City/CityGrid.h"
 #include "City/Generator/CityGenerator.h"
 #include "Configs/LocalConfigHolder.h"
 #include "GameFramework/GameSession.h"
@@ -34,20 +36,24 @@ void ACardopolyGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	CreateCity();
+	UCityGrid* CityGrid = CreateCityGrid();
+	
+	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
+	CreateCity(BuildingsController);
+
 	CreateInput();
-	CreateHand();
+	CreateHand(BuildingsController);
 }
 
-void ACardopolyGameModeBase::CreateCity() const
+void ACardopolyGameModeBase::CreateCity(ABuildingsController* BuildingsController) const
 {
 	UWorld* World = GetWorld();
-	CityGenerator cityGenerator = CityGenerator(CityGeneratorConfig, World);
+	CityGenerator cityGenerator = CityGenerator(CityGeneratorConfig, World, BuildingsController);
 
 	cityGenerator.Generate();
 }
 
-void ACardopolyGameModeBase::CreateHand() const
+void ACardopolyGameModeBase::CreateHand(ABuildingsController* BuildingsController) const
 {
 	UWorld* World = GetWorld();
 	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
@@ -56,12 +62,12 @@ void ACardopolyGameModeBase::CreateHand() const
 	Hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 	UCardFactory* CardFactory = NewObject<UCardFactory>();
-	CardFactory->Init(GameplayAssetData, World);
+	CardFactory->Construct(World, GameplayAssetData, BuildingsController);
 	
-	Hand->Init(CardFactory);
+	Hand->Construct(CardFactory);
 	Hand->DrawCard();
 
-	ATurnController* TurnController = World->SpawnActor<ATurnController>(ATurnController::StaticClass(), FVector::ZeroVector, FRotator::ZeroRotator);
+	ATurnController* TurnController = World->SpawnActor<ATurnController>(FVector::ZeroVector, FRotator::ZeroRotator);
 	TurnController->Construct(Hand, LocalConfigHolder->HandLocalConfig);
 	TurnController->StartSession();
 }
@@ -71,4 +77,19 @@ void ACardopolyGameModeBase::CreateInput() const
 	UWorld* World = GetWorld();
 	ACardopolyPlayerController* CardopolyPlayerController = Cast<ACardopolyPlayerController>(World->GetFirstPlayerController());
 	CardopolyPlayerController->Construct(LocalConfigHolder->InputLocalConfig);
+}
+
+ABuildingsController* ACardopolyGameModeBase::CreateBuildingController(UCityGrid* CityGrid) const
+{
+	UWorld* World = GetWorld();
+	ABuildingsController* BuildingsController = World->SpawnActor<ABuildingsController>(FVector::ZeroVector, FRotator::ZeroRotator);
+	BuildingsController->Construct(CityGrid);
+	
+	return BuildingsController;
+}
+
+UCityGrid* ACardopolyGameModeBase::CreateCityGrid() const
+{
+	UCityGrid* CityGrid = NewObject<UCityGrid>();
+	return CityGrid;
 }

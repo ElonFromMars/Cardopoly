@@ -1,34 +1,37 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
+﻿#include "Card.h"
+
+#include "Cardopoly/Buildings/BuildingsController.h"
 
 
-#include "Card.h"
-
-#include "Cardopoly/Grid/UBuildingSubsystem.h"
-
-
-// Sets default values
 ACard::ACard()
 {
-	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-// Called when the game starts or when spawned
+void ACard::Construct(ABuildingsController* buildingsController)
+{
+	BuildingsController = buildingsController;
+}
+
 void ACard::BeginPlay()
 {
 	Super::BeginPlay();
 }
 
-// Called every frame
 void ACard::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
 
-void ACard::Apply()
+bool ACard::CanApply(FVector2D ScreenPosition)
 {
-	UBuildingSubsystem* buildingSubsystem = GetWorld()->GetSubsystem<UBuildingSubsystem>();
-	buildingSubsystem->CreateBuildingUnderMouse();
+	return BuildingsController->CanCreateBuildingUnderScreenPosition(ScreenPosition);
+}
+
+void ACard::Apply(FVector2D ScreenPosition)
+{
+	ABuilding* Building;
+	BuildingsController->CreateBuildingUnderScreenPosition(ScreenPosition, Building);
 	
 	OnCardAppliedDelegate.Broadcast(this);
 }

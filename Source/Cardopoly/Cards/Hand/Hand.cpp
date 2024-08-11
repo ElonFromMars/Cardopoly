@@ -10,7 +10,7 @@ AHand::AHand()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AHand::Init(UCardFactory* cardFactory)
+void AHand::Construct(UCardFactory* cardFactory)
 {
 	this->CardFactory = cardFactory;
 }
