@@ -7,6 +7,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "CardopolyGameModeBase.generated.h"
 
+class ATurnController;
 class ULocalConfigHolder;
 class AHand;
 class UGameplayAssetData;
@@ -26,13 +27,20 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AssetData")
 	UGameplayAssetData* GameplayAssetData;
 	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Controllers")
+	ATurnController* TurnController;
+	
 	ACardopolyGameModeBase();
 
 	virtual void BeginPlay() override;
 
 	void CreateCity(ABuildingsController* BuildingsController) const;
-	void CreateHand(ABuildingsController* BuildingsController) const;
+	AHand* CreateHand(ABuildingsController* BuildingsController) const;
+	ATurnController* CreateTurnController(AHand* Hand) const;
 	void CreateInput() const;
 	ABuildingsController* CreateBuildingController(UCityGrid* CityGrid) const;
 	UCityGrid* CreateCityGrid() const;
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateUI();
 };

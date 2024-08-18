@@ -32,3 +32,10 @@ void ATurnController::StartSession()
 	}
 }
 
+void ATurnController::EndTurn(int PlayerIndex)
+{
+	Hand->DrawCard();
+}
+
+
+

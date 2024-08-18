@@ -27,4 +27,7 @@ public:
 
 	void Construct(AHand* PlayerHand, UHandLocalConfig* PlayerHandLocalConfig);
 	void StartSession();
+
+	UFUNCTION(BlueprintCallable)
+	void EndTurn(int PlayerIndex);
 };

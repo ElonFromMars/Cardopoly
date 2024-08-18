@@ -42,7 +42,10 @@ void ACardopolyGameModeBase::BeginPlay()
 	CreateCity(BuildingsController);
 
 	CreateInput();
-	CreateHand(BuildingsController);
+	AHand* Hand = CreateHand(BuildingsController);
+	TurnController = CreateTurnController(Hand);
+
+	CreateUI();
 }
 
 void ACardopolyGameModeBase::CreateCity(ABuildingsController* BuildingsController) const
@@ -53,7 +56,7 @@ void ACardopolyGameModeBase::CreateCity(ABuildingsController* BuildingsControlle
 	cityGenerator.Generate();
 }
 
-void ACardopolyGameModeBase::CreateHand(ABuildingsController* BuildingsController) const
+AHand* ACardopolyGameModeBase::CreateHand(ABuildingsController* BuildingsController) const
 {
 	UWorld* World = GetWorld();
 	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
@@ -66,10 +69,18 @@ void ACardopolyGameModeBase::CreateHand(ABuildingsController* BuildingsControlle
 	
 	Hand->Construct(CardFactory);
 	Hand->DrawCard();
+	
+	return Hand;
+}
 
-	ATurnController* TurnController = World->SpawnActor<ATurnController>(FVector::ZeroVector, FRotator::ZeroRotator);
-	TurnController->Construct(Hand, LocalConfigHolder->HandLocalConfig);
-	TurnController->StartSession();
+ATurnController* ACardopolyGameModeBase::CreateTurnController(AHand* Hand) const
+{
+	UWorld* World = GetWorld();
+	ATurnController* turnController = World->SpawnActor<ATurnController>(FVector::ZeroVector, FRotator::ZeroRotator);
+	turnController->Construct(Hand, LocalConfigHolder->HandLocalConfig);
+	turnController->StartSession();
+
+	return turnController;
 }
 
 void ACardopolyGameModeBase::CreateInput() const
