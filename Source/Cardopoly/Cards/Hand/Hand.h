@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Cardopoly/Cards/Card.h"
+#include "Cardopoly/EventBus/EventBus.hpp"
 #include "GameFramework/Actor.h"
 #include "Hand.generated.h"
 
@@ -21,12 +22,14 @@ private:
 	UPROPERTY()
 	UCardFactory* CardFactory;
 	
+	EventBus* _eventBus;
+
 public:
 	UPROPERTY(BlueprintAssignable)
 	FOnDrawCardSignature OnDrawCardDelegate;
 	
 	AHand();
-	void Construct(UCardFactory* cardFactory);
+	void Construct(UCardFactory* cardFactory, EventBus* eventBus);
 	void DrawCard();
 
 	UFUNCTION(BlueprintCallable)

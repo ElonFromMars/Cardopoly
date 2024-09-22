@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "FCEasing.h"
+#include "UCardWidget.h"
 #include "GameFramework/Actor.h"
 #include "Card.generated.h"
 
@@ -20,6 +21,9 @@ class CARDOPOLY_API ACard : public AActor
 
 private:
 	FCTweenInstance* Tween = nullptr;
+
+	UPROPERTY()
+	UCardWidget* CardWidget;
 
 public:
 	UPROPERTY(BlueprintAssignable)
@@ -55,4 +59,10 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void MoveToLocalPosition(FVector LocalPosition, float Duration, EFCEase EaseType = EFCEase::Linear);
+
+	UFUNCTION(BlueprintCallable)
+	UCardWidget* GetCardWidget()
+	{
+		return CardWidget;
+	}
 };

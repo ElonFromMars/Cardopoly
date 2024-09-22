@@ -12,11 +12,6 @@ public class Cardopoly : ModuleRules
 		AddEngineModules();
 		AddExternalModules();
 		
-		PrivateDependencyModuleNames.AddRange(new string[] {  });
-		
-		// Uncomment if you are using Slate UI
-		// PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
-		
 		// Uncomment if you are using online features
 		// PrivateDependencyModuleNames.Add("OnlineSubsystem");
 
@@ -25,6 +20,8 @@ public class Cardopoly : ModuleRules
 
 	private void AddEngineModules()
 	{
+		PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
+		
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"Core", 
@@ -32,6 +29,7 @@ public class Cardopoly : ModuleRules
 			"Engine", 
 			"InputCore", 
 			"EnhancedInput",
+			"UMG",
 		});
 	}
 

@@ -4,6 +4,10 @@
 
 #include "EnhancedInput/Public/EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Components/SceneCaptureComponent2D.h"
+#include "EventBus/EventBus.hpp"
+#include "EventBus/Events/CreateCardEvent.h"
+#include "EventBus/Events/DestroyCardEvent.h"
 
 
 // Sets default values
@@ -12,6 +16,12 @@ ARTSCamera::ARTSCamera()
 	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 	RTSCameraComponent = CreateDefaultSubobject<UCameraComponent>(TEXT("RTSCamera"));
+}
+
+void ARTSCamera::Construct(EventBus* eventBus)
+{
+	_eventBus = eventBus;
+	_eventBus->Subscribe<CreateCardEvent>(this, &ARTSCamera::CreateCardHandler);
 }
 
 // Called when the game starts or when spawned
@@ -27,6 +37,12 @@ void ARTSCamera::BeginPlay()
 			Subsystem->AddMappingContext(CameraMappingContext, 0);
 		}
 	}
+}
+
+void ARTSCamera::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	_eventBus->Unsubscribe<CreateCardEvent>(this);
+	Super::EndPlay(EndPlayReason);
 }
 
 // Called every frame
@@ -82,4 +98,14 @@ void ARTSCamera::Zoom(float Delta)
 	SetActorLocation(ClampedLocation);
 }
 
+void ARTSCamera::CreateCardHandler(CreateCardEvent createCardEvent) const
+{
+	auto sceneCapture2D = GetComponentByClass<USceneCaptureComponent2D>();
+	sceneCapture2D->ShowOnlyActors.Add(reinterpret_cast<AActor*>(createCardEvent.Card));
+}
 
+void ARTSCamera::DestroyCardHandler(DestroyCardEvent destroyCardEvent) const
+{
+	auto sceneCapture2D = GetComponentByClass<USceneCaptureComponent2D>();
+	sceneCapture2D->ShowOnlyActors.Remove(reinterpret_cast<AActor*>(destroyCardEvent.Card));
+}

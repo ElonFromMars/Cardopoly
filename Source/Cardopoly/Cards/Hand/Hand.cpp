@@ -2,6 +2,10 @@
 
 #include "Cardopoly/Cards/Card.h"
 #include "Cardopoly/Cards/CardFactory.h"
+#include "Cardopoly/EventBus/Events/CreateCardEvent.h"
+#include "Cardopoly/EventBus/Events/DestroyCardEvent.h"
+
+class EventBus;
 
 AHand::AHand()
 {
@@ -10,9 +14,10 @@ AHand::AHand()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void AHand::Construct(UCardFactory* cardFactory)
+void AHand::Construct(UCardFactory* cardFactory, EventBus* eventBus)
 {
 	this->CardFactory = cardFactory;
+	_eventBus = eventBus;
 }
 
 void AHand::BeginPlay()
@@ -29,6 +34,7 @@ void AHand::DrawCard()
 	Card->OnCardAppliedDelegate.AddUniqueDynamic(this, &ThisClass::OnCardApplied);
 	
 	OnDrawCardDelegate.Broadcast(Card);
+	_eventBus->FireEvent(CreateCardEvent(Card));
 }
 
 TArray<ACard*> AHand::GetCards() const
@@ -39,5 +45,6 @@ TArray<ACard*> AHand::GetCards() const
 void AHand::OnCardApplied(ACard* Card)
 {
 	Cards.Remove(Card);
+	_eventBus->FireEvent(DestroyCardEvent(Card));
 	Card->Destroy();
 }

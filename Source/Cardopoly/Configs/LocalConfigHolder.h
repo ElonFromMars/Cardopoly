@@ -19,6 +19,10 @@ class CARDOPOLY_API ULocalConfigHolder : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UHandLocalConfig* HandLocalConfig;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputLocalConfig* InputLocalConfig;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UDataTable* BuildingCardsConfig;
 };

@@ -7,8 +7,11 @@
 #include "GameFramework/Pawn.h"
 #include "Camera/CameraComponent.h"
 #include "Components/InputComponent.h"
+#include "EventBus/Events/CreateCardEvent.h"
+#include "EventBus/Events/DestroyCardEvent.h"
 #include "ARTSCamera.generated.h"
 
+class EventBus;
 class UInputMappingContext;
 class UInputAction;
 
@@ -17,24 +20,8 @@ class CARDOPOLY_API ARTSCamera : public APawn
 {
 	GENERATED_BODY()
 
-public:
-	ARTSCamera();
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
-	void EnhancedMove(const FInputActionValue& Value);
-	
-	void Zoom(float Delta);
-
-private:
-	void OnZoomInputTriggered(const FInputActionValue& Value);
-
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera", meta = (AllowPrivateAccess = "true"))
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Camera")
 	UCameraComponent* RTSCameraComponent;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Camera")
@@ -57,6 +44,28 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Camera")
 	float MinZPosition = 1000.0f;
+
+private:
+	EventBus* _eventBus;
 	
+public:
+	ARTSCamera();
+
+	void Construct(EventBus* eventBus);
+	
+	virtual void Tick(float DeltaTime) override;
+	
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	void EnhancedMove(const FInputActionValue& Value);
+
+	void Zoom(float Delta);
+	void CreateCardHandler(CreateCardEvent createCardEvent) const;
+	void DestroyCardHandler(DestroyCardEvent destroyCardEvent) const;
+
+private:
+	void OnZoomInputTriggered(const FInputActionValue& Value);
+
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 };

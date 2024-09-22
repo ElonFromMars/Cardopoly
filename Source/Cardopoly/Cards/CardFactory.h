@@ -4,6 +4,7 @@
 #include "UObject/Object.h"
 #include "CardFactory.generated.h"
 
+class ULocalConfigHolder;
 class UGameplayAssetData;
 class ACard;
 class ABuildingsController;
@@ -17,12 +18,19 @@ private:
 	UPROPERTY()
 	UGameplayAssetData* GameplayAssetData;
 	UPROPERTY()
+	UDataTable* BuildingCardsConfig;
+	UPROPERTY()
 	UWorld* World;
 	UPROPERTY()
 	ABuildingsController* BuildingsController;
 	
 public:
-	virtual void Construct(UWorld* world, UGameplayAssetData* gameplayAssetData, ABuildingsController* buildingsController);
+	virtual void Construct(
+		UWorld* world,
+		UGameplayAssetData* gameplayAssetData,
+		ABuildingsController* buildingsController,
+		ULocalConfigHolder* localConfigHolder);
+	
 	virtual ACard* CreateCard();
 
 

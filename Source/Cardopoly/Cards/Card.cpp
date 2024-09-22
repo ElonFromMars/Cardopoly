@@ -3,6 +3,7 @@
 #include "FCTween.h"
 #include "FCTweenInstance.h"
 #include "Cardopoly/Buildings/BuildingsController.h"
+#include "Components/WidgetComponent.h"
 
 
 ACard::ACard()
@@ -13,6 +14,9 @@ ACard::ACard()
 void ACard::Construct(ABuildingsController* buildingsController)
 {
 	BuildingsController = buildingsController;
+	const auto WidgetComponent = this->GetComponentByClass<UWidgetComponent>();
+	CardWidget = StaticCast<UCardWidget*>(WidgetComponent->GetUserWidgetObject());
+	WidgetComponent->RequestRenderUpdate();
 }
 
 void ACard::BeginPlay()
