@@ -38,6 +38,7 @@ public class Cardopoly : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"FCTween",
+			"FlecsLibrary",
 		});
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "flecs.h"
 #include "CoreMinimal.h"
 #include "Buildings/BuildingsController.h"
 #include "City/CityGrid.h"
@@ -33,6 +34,7 @@ public:
 
 private:
 	EventBus* _eventBus;
+	flecs::world* _world;
 
 public:
 	ACardopolyGameMode();
@@ -41,6 +43,10 @@ public:
 
 	virtual void BeginPlay() override;
 
+	virtual void Tick(float DeltaTime) override;
+
+	void StartECS();
+	
 	EventBus* CreateEventBus();
 	
 	void CreateCity(ABuildingsController* BuildingsController) const;

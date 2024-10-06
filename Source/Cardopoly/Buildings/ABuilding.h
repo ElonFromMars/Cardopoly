@@ -1,9 +1,9 @@
 ﻿#pragma once
-#include "Cardopoly/Grid/IOccupyGrid.h"
+//#include "Cardopoly/Grid/IOccupyGrid.h"
 #include "ABuilding.generated.h"
 
 UCLASS(BlueprintType)
-class ABuilding : public AActor, public IOccupyGrid
+class ABuilding : public AActor//, public IOccupyGrid
 {
 	GENERATED_BODY()
 

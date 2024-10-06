@@ -1,4 +1,5 @@
 #include "CardopolyGameMode.h"
+#include "ECS/FPositionComponent.h"
 #include "ARTSCamera.h"
 #include "AssetHolders/GameplayAssetData.h"
 #include "Buildings/BuildingsController.h"
@@ -21,6 +22,7 @@ ACardopolyGameMode::ACardopolyGameMode()
 	bNetLoadOnClient = false;
 	bPauseable = true;
 	bStartPlayersAsSpectators = false;
+	PrimaryActorTick.bCanEverTick = true;
 
 	DefaultPawnClass = ARTSCamera::StaticClass();
 	PlayerControllerClass = APlayerController::StaticClass();
@@ -36,12 +38,13 @@ ACardopolyGameMode::ACardopolyGameMode()
 ACardopolyGameMode::~ACardopolyGameMode()
 {
 	delete _eventBus;
+	delete _world;
 }
 
 void ACardopolyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
+	StartECS();
 	EventBus* eventBus = CreateEventBus();
 	UCityGrid* CityGrid = CreateCityGrid();
 	
@@ -55,6 +58,38 @@ void ACardopolyGameMode::BeginPlay()
 	TurnController = CreateTurnController(Hand);
 
 	CreateUI();
+}
+
+void ACardopolyGameMode::Tick(float DeltaTime)
+{
+	_world->progress(DeltaTime);
+	Super::Tick(DeltaTime);
+}
+
+void ACardopolyGameMode::StartECS()
+{
+	_world = new flecs::world();
+	
+	for (int i = 0; i < 100; ++i) {
+		_world->entity()
+			.set<FPositionComponent>({
+				FMath::RandRange(-100.0f, 100.0f),
+				FMath::RandRange(-100.0f, 100.0f),
+				FMath::RandRange(-100.0f, 100.0f)
+			});
+	}
+	
+	_world->system<FPositionComponent>("TestSystem")
+		.each([](FPositionComponent& pos) {
+				pos.X += FMath::RandRange(-1.0f, 1.0f);
+				pos.Y += FMath::RandRange(-1.0f, 1.0f);
+				pos.Z += FMath::RandRange(-1.0f, 1.0f);
+		});
+
+	_world->system<FPositionComponent>("TestSystem2")
+		.each([this](FPositionComponent& pos) {
+			DrawDebugPoint(GetWorld(), FVector(pos.X, pos.Y, pos.Z), 10.0f, FColor::Red, true, 0.1f);
+		});
 }
 
 EventBus* ACardopolyGameMode::CreateEventBus()

@@ -1,0 +1,23 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "0.1",
+	"FriendlyName": "UnrealPureFlecs",
+	"Description": "",
+	"Category": "ECS",
+	"CreatedBy": "ElonFromMars",
+	"CreatedByURL": "",
+	"DocsURL": "",
+	"MarketplaceURL": "",
+	"CanContainContent": true,
+	"IsBetaVersion": true,
+	"IsExperimentalVersion": true,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "FlecsLibrary",
+			"Type": "RuntimeAndProgram",
+			"LoadingPhase": "EarliestPossible"
+		}
+	]
+}
