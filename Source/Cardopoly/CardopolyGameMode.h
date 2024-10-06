@@ -6,8 +6,11 @@
 #include "Configs/UCityGeneratorConfig.h"
 #include "EventBus/EventBus.hpp"
 #include "GameFramework/GameModeBase.h"
+#include "Worlds/FlecsWorld.h"
 #include "CardopolyGameMode.generated.h"
 
+class UFlecsStatsModule;
+class UFlecsRestModule;
 class ATurnController;
 class ULocalConfigHolder;
 class AHand;
@@ -34,6 +37,11 @@ public:
 private:
 	EventBus* _eventBus;
 
+	UPROPERTY()
+    UFlecsRestModule* _restModule;
+    UPROPERTY()
+    UFlecsStatsModule* _statsModule;
+
 public:
 	ACardopolyGameMode();
 
@@ -41,6 +49,8 @@ public:
 
 	virtual void BeginPlay() override;
 
+	void StartFlecs();
+	
 	EventBus* CreateEventBus();
 	
 	void CreateCity(ABuildingsController* BuildingsController) const;

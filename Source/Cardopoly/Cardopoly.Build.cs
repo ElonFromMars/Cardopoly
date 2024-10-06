@@ -30,6 +30,7 @@ public class Cardopoly : ModuleRules
 			"InputCore", 
 			"EnhancedInput",
 			"UMG",
+			"StructUtils",
 		});
 	}
 
@@ -38,6 +39,8 @@ public class Cardopoly : ModuleRules
 		PublicDependencyModuleNames.AddRange(new string[]
 		{
 			"FCTween",
+			"UnrealFlecs",
+			"FlecsLibrary",
 		});
 	}
 }

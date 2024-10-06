@@ -46,7 +46,7 @@ protected:
 	float MinZPosition = 1000.0f;
 
 private:
-	EventBus* _eventBus;
+	EventBus* m_eventBus;
 	
 public:
 	ARTSCamera();

@@ -16,8 +16,8 @@ AHand::AHand()
 
 void AHand::Construct(UCardFactory* cardFactory, EventBus* eventBus)
 {
-	this->CardFactory = cardFactory;
-	_eventBus = eventBus;
+	m_cardFactory = cardFactory;
+	m_eventBus = eventBus;
 }
 
 void AHand::BeginPlay()
@@ -29,12 +29,12 @@ void AHand::DrawCard()
 {
 	CardSlots.Add(FVector());
 
-	ACard* Card = CardFactory->CreateCard();
+	ACard* Card = m_cardFactory->CreateCard();
 	Cards.Add(Card);
 	Card->OnCardAppliedDelegate.AddUniqueDynamic(this, &ThisClass::OnCardApplied);
 	
 	OnDrawCardDelegate.Broadcast(Card);
-	_eventBus->FireEvent(CreateCardEvent(Card));
+	m_eventBus->FireEvent(CreateCardEvent(Card));
 }
 
 TArray<ACard*> AHand::GetCards() const
@@ -45,6 +45,6 @@ TArray<ACard*> AHand::GetCards() const
 void AHand::OnCardApplied(ACard* Card)
 {
 	Cards.Remove(Card);
-	_eventBus->FireEvent(DestroyCardEvent(Card));
+	m_eventBus->FireEvent(DestroyCardEvent(Card));
 	Card->Destroy();
 }

@@ -20,8 +20,8 @@ ARTSCamera::ARTSCamera()
 
 void ARTSCamera::Construct(EventBus* eventBus)
 {
-	_eventBus = eventBus;
-	_eventBus->Subscribe<CreateCardEvent>(this, &ARTSCamera::CreateCardHandler);
+	m_eventBus = eventBus;
+	m_eventBus->Subscribe<CreateCardEvent>(this, &ARTSCamera::CreateCardHandler);
 }
 
 // Called when the game starts or when spawned
@@ -41,7 +41,7 @@ void ARTSCamera::BeginPlay()
 
 void ARTSCamera::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	_eventBus->Unsubscribe<CreateCardEvent>(this);
+	m_eventBus->Unsubscribe<CreateCardEvent>(this);
 	Super::EndPlay(EndPlayReason);
 }
 

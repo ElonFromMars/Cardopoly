@@ -20,9 +20,9 @@ class CARDOPOLY_API AHand : public AActor
 
 private:
 	UPROPERTY()
-	UCardFactory* CardFactory;
+	UCardFactory* m_cardFactory;
 	
-	EventBus* _eventBus;
+	EventBus* m_eventBus;
 
 public:
 	UPROPERTY(BlueprintAssignable)

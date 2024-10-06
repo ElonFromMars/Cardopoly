@@ -1,20 +1,20 @@
 ﻿#include "CityGrid.h"
 
-bool UCityGrid::ContainsBuildingAtPosition(FIntVector Position) const
+bool UCityGrid::ContainsBuildingAtPosition(FIntVector position) const
 {
-	return BuildingByCellPosition.Contains(Position);
+	return m_buildingByCellPosition.Contains(position);
 }
 
-void UCityGrid::PutBuildingAtPosition(FIntVector Position, ABuilding* Building)
+void UCityGrid::PutBuildingAtPosition(FIntVector position, ABuilding* building)
 {
-	BuildingByCellPosition.Add(Position, Building);
+	m_buildingByCellPosition.Add(position, building);
 }
 
-bool UCityGrid::GetBuildingAtPosition(FIntVector Position, ABuilding*& Building)
+bool UCityGrid::TryGetBuildingAtPosition(FIntVector position, ABuilding*& outBuilding)
 {
-	if (ContainsBuildingAtPosition(Position))
+	if (ContainsBuildingAtPosition(position))
 	{
-		Building = BuildingByCellPosition[Position];
+		outBuilding = m_buildingByCellPosition[position];
 		return true;
 	}
 	return false;

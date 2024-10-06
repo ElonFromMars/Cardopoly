@@ -1,5 +1,6 @@
 #include "CardopolyGameMode.h"
 #include "ARTSCamera.h"
+#include "CardopolyGameState.h"
 #include "AssetHolders/GameplayAssetData.h"
 #include "Buildings/BuildingsController.h"
 #include "Cards/CardFactory.h"
@@ -16,6 +17,7 @@
 #include "GameplayFlow/TurnController.h"
 #include "Player/CardopolyPlayerController.h"
 
+
 ACardopolyGameMode::ACardopolyGameMode()
 {
 	bNetLoadOnClient = false;
@@ -25,7 +27,7 @@ ACardopolyGameMode::ACardopolyGameMode()
 	DefaultPawnClass = ARTSCamera::StaticClass();
 	PlayerControllerClass = APlayerController::StaticClass();
 	PlayerStateClass = APlayerState::StaticClass();
-	GameStateClass = AGameStateBase::StaticClass();
+	GameStateClass = ACardopolyGameState::StaticClass();
 	HUDClass = AHUD::StaticClass();
 	GameSessionClass = AGameSession::StaticClass();
 	SpectatorClass = ASpectatorPawn::StaticClass();
@@ -42,6 +44,8 @@ void ACardopolyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	StartFlecs();
+	
 	EventBus* eventBus = CreateEventBus();
 	UCityGrid* CityGrid = CreateCityGrid();
 	
@@ -56,6 +60,23 @@ void ACardopolyGameMode::BeginPlay()
 
 	CreateUI();
 }
+
+void ACardopolyGameMode::StartFlecs()
+{
+	//DrawDebugPoint(GetWorld(), FVector(0, 0, 0), 10.0f, FColor::Red, true, 20.0f);
+	/*auto InWorld = GetWorld()->GetSubsystem<UFlecsWorldSubsystem>()->GetDefaultWorld();
+	
+	
+	for (int i = 0; i < 100; ++i) {
+		InWorld->CreateEntity()
+			.Set<FPositionComponent>({
+				FMath::RandRange(-100.0f, 100.0f),
+				FMath::RandRange(-100.0f, 100.0f),
+				FMath::RandRange(-100.0f, 100.0f)
+			});
+	}*/
+}
+
 
 EventBus* ACardopolyGameMode::CreateEventBus()
 {

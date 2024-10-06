@@ -1,0 +1,6 @@
+[submodule "Plugins/Unreal-Flecs"]
+	path = Plugins/Unreal-Flecs
+	url = https://github.com/Reddy-dev/Unreal-Flecs.git
+[submodule "Plugins/Solid-Macros"]
+	path = Plugins/Solid-Macros
+	url = https://github.com/Reddy-dev/Solid-Macros
