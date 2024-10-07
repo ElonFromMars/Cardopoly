@@ -4,7 +4,5 @@
 
 struct FPositionComponent
 {
-	float X;
-	float Y;
-	float Z;
+	FVector Value;
 };

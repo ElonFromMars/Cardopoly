@@ -19,4 +19,6 @@ public:
 	void PutBuildingAtPosition(FIntVector Position, ABuilding* Building);
 
 	bool GetBuildingAtPosition(FIntVector Position, ABuilding*& Building);
+
+	bool IsValidPosition(const FIntVector& Pos);
 };

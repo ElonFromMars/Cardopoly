@@ -1,5 +1,5 @@
 #include "CardopolyGameMode.h"
-#include "ECS/FPositionComponent.h"
+#include "ECS/Movement/Components/FPositionComponent.h"
 #include "ARTSCamera.h"
 #include "AssetHolders/GameplayAssetData.h"
 #include "Buildings/BuildingsController.h"
@@ -8,6 +8,11 @@
 #include "City/CityGrid.h"
 #include "City/Generator/CityGenerator.h"
 #include "Configs/LocalConfigHolder.h"
+#include "ECS/Movement/Components/FCitizenTag.h"
+#include "ECS/Movement/Components/FGridPathComponent.h"
+#include "ECS/Movement/Components/FSearchPathRequest.h"
+#include "ECS/Movement/Components/FGridPositionComponent.h"
+#include "ECS/Movement/Components/FMaxSpeedComponent.h"
 #include "EventBus/EventBus.hpp"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/GameStateBase.h"
@@ -15,6 +20,8 @@
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "GameplayFlow/TurnController.h"
+#include "Grid/UGridSubsystem.h"
+#include "Pathfinding/AStar.h"
 #include "Player/CardopolyPlayerController.h"
 
 ACardopolyGameMode::ACardopolyGameMode()
@@ -38,15 +45,19 @@ ACardopolyGameMode::ACardopolyGameMode()
 ACardopolyGameMode::~ACardopolyGameMode()
 {
 	delete _eventBus;
+	delete _aStar;
 	delete _world;
 }
 
 void ACardopolyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	StartECS();
+	
 	EventBus* eventBus = CreateEventBus();
 	UCityGrid* CityGrid = CreateCityGrid();
+	StartECS(CityGrid);
+	
+	CreatePathfinding(CityGrid);
 	
 	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
 	CreateCity(BuildingsController);
@@ -66,29 +77,99 @@ void ACardopolyGameMode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ACardopolyGameMode::StartECS()
+void ACardopolyGameMode::CreatePathfinding(UCityGrid* CityGrid)
 {
+	_aStar = new Pathfinding::AStar(CityGrid);
+}
+
+void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
+{
+	_gridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();
 	_world = new flecs::world();
+
 	
 	for (int i = 0; i < 100; ++i) {
+		auto gridPosition = FIntVector
+		{
+			FMath::RandRange(-10, 10),
+			FMath::RandRange(-10, 10),
+			0
+		};
+		auto worldPosition = _gridSubsystem->GetCellCenterWorldPosition(gridPosition);
 		_world->entity()
+			.add<FCitizenTag>()
+		    .add<FSearchPathRequest>()
+			.set<FGridPositionComponent>({
+				gridPosition
+			})
 			.set<FPositionComponent>({
-				FMath::RandRange(-100.0f, 100.0f),
-				FMath::RandRange(-100.0f, 100.0f),
-				FMath::RandRange(-100.0f, 100.0f)
+				worldPosition
+			})
+			.set<FMaxSpeedComponent>({
+				FMath::RandRange(50.0f, 300.0f)
 			});
 	}
+
+	_world->system<FGridPositionComponent>("PathfindingSystem")
+		.with<FPositionComponent>()
+		.with<FSearchPathRequest>()
+		.each([this, CityGrid](flecs::entity entity, FGridPositionComponent& gridPos) {
+
+			int xOffset = FMath::RandRange(-5, 5);
+			int yOffset = FMath::RandRange(-5, 5);
+			
+			FIntVector targetGridPos ={
+				gridPos.Value.X + xOffset,
+				gridPos.Value.Y + yOffset,
+				0
+			};
+			if(CityGrid->ContainsBuildingAtPosition(targetGridPos))
+			{
+				return;
+			}
+			std::vector<FIntVector> path = _aStar->FindPath(gridPos.Value, targetGridPos,
+			                                                Pathfinding::Heuristic::Euclidean);
+			if(path.size() > 1)
+			{
+				entity.remove<FSearchPathRequest>();
+				entity.set<FGridPathComponent>({
+					path[0],
+					0,
+					path
+				});
+			}
+		});
 	
-	_world->system<FPositionComponent>("TestSystem")
-		.each([](FPositionComponent& pos) {
-				pos.X += FMath::RandRange(-1.0f, 1.0f);
-				pos.Y += FMath::RandRange(-1.0f, 1.0f);
-				pos.Z += FMath::RandRange(-1.0f, 1.0f);
+	_world->system<FPositionComponent, FGridPositionComponent, FGridPathComponent, FMaxSpeedComponent>("MoveSystem")
+		.each([this](flecs::entity entity, FPositionComponent& pos, FGridPositionComponent& gridPos, FGridPathComponent& gridPath, FMaxSpeedComponent& speed) {
+
+				auto deltaTime = _world->delta_time();
+				FVector targetWorldPos = _gridSubsystem->GetCellCenterWorldPosition(gridPath.CurrentGridTarget);
+			    FVector difference = (targetWorldPos - pos.Value).GetSafeNormal() * speed.Value * deltaTime;
+				FVector newWorldPos = pos.Value + difference;
+			    pos.Value = newWorldPos;
+				auto newGridPos = _gridSubsystem->WorldPositionToGrid(newWorldPos);
+				gridPos.Value = newGridPos;
+
+				auto size = gridPath.Path.size();
+				if((newWorldPos -targetWorldPos).Size() < 20.0f)
+				{
+					if(gridPath.CurrentTargetIndex >= size - 1)
+                    {
+                        entity.remove<FGridPathComponent>();
+                        entity.add<FSearchPathRequest>();
+                    }
+					else
+                    {
+                        gridPath.CurrentTargetIndex++;
+                        gridPath.CurrentGridTarget = gridPath.Path[gridPath.CurrentTargetIndex];
+                    }
+				}
 		});
 
-	_world->system<FPositionComponent>("TestSystem2")
+	_world->system<FPositionComponent>("DrawDebugViewSystem")
 		.each([this](FPositionComponent& pos) {
-			DrawDebugPoint(GetWorld(), FVector(pos.X, pos.Y, pos.Z), 10.0f, FColor::Red, true, 0.1f);
+			DrawDebugPoint(GetWorld(), FVector(pos.Value.X, pos.Value.Y, 10.0f), 10.0f, FColor::Red, false, 0.1f);
 		});
 }
 

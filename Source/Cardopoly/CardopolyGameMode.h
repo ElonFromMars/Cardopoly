@@ -9,6 +9,11 @@
 #include "GameFramework/GameModeBase.h"
 #include "CardopolyGameMode.generated.h"
 
+namespace Pathfinding
+{
+	class AStar;
+}
+
 class ATurnController;
 class ULocalConfigHolder;
 class AHand;
@@ -35,6 +40,8 @@ public:
 private:
 	EventBus* _eventBus;
 	flecs::world* _world;
+	Pathfinding::AStar* _aStar;
+	UGridSubsystem* _gridSubsystem;
 
 public:
 	ACardopolyGameMode();
@@ -44,8 +51,9 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
+	void CreatePathfinding(UCityGrid* CityGrid);
 
-	void StartECS();
+	void StartECS(UCityGrid* CityGrid);
 	
 	EventBus* CreateEventBus();
 	

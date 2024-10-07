@@ -19,3 +19,9 @@ bool UCityGrid::GetBuildingAtPosition(FIntVector Position, ABuilding*& Building)
 	}
 	return false;
 }
+
+//TODO implement
+bool UCityGrid::IsValidPosition(const FIntVector& Pos)
+{
+	return true;
+}
