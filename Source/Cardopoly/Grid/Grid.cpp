@@ -18,8 +18,8 @@ const TArray<IOccupyGrid*>* UGrid::TryGetObjectsInCell(FIntVector position) cons
 	{
 		return &cell->Objects;
 	}
-	
 	return nullptr;
+
 }
 
 void UGrid::RemoveObject(FIntVector position, IOccupyGrid* gridObject)

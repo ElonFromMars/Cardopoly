@@ -1,5 +1,5 @@
 #include "CardopolyGameMode.h"
-#include "ECS/Movement/Components/FPositionComponent.h"
+#include "ECS/Core/Movement/Components/FPositionComponent.h"
 #include "ARTSCamera.h"
 #include "AssetHolders/GameplayAssetData.h"
 #include "Buildings/BuildingsController.h"
@@ -8,11 +8,11 @@
 #include "City/CityGrid.h"
 #include "City/Generator/CityGenerator.h"
 #include "Configs/LocalConfigHolder.h"
-#include "ECS/Movement/Components/FCitizenTag.h"
-#include "ECS/Movement/Components/FGridPathComponent.h"
-#include "ECS/Movement/Components/FSearchPathRequest.h"
-#include "ECS/Movement/Components/FGridPositionComponent.h"
-#include "ECS/Movement/Components/FMaxSpeedComponent.h"
+#include "ECS/Core/Movement/Components/FCitizenTag.h"
+#include "ECS/Core/Movement/Components/FGridPathComponent.h"
+#include "ECS/Core/Movement/Components/FSearchPathRequest.h"
+#include "ECS/Core/Movement/Components/FGridPositionComponent.h"
+#include "ECS/Core/Movement/Components/FMaxSpeedComponent.h"
 #include "EventBus/EventBus.hpp"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/GameStateBase.h"
@@ -138,38 +138,6 @@ void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
 					path
 				});
 			}
-		});
-	
-	_world->system<FPositionComponent, FGridPositionComponent, FGridPathComponent, FMaxSpeedComponent>("MoveSystem")
-		.each([this](flecs::entity entity, FPositionComponent& pos, FGridPositionComponent& gridPos, FGridPathComponent& gridPath, FMaxSpeedComponent& speed) {
-
-				auto deltaTime = _world->delta_time();
-				FVector targetWorldPos = _gridSubsystem->GetCellCenterWorldPosition(gridPath.CurrentGridTarget);
-			    FVector difference = (targetWorldPos - pos.Value).GetSafeNormal() * speed.Value * deltaTime;
-				FVector newWorldPos = pos.Value + difference;
-			    pos.Value = newWorldPos;
-				auto newGridPos = _gridSubsystem->WorldPositionToGrid(newWorldPos);
-				gridPos.Value = newGridPos;
-
-				auto size = gridPath.Path.size();
-				if((newWorldPos -targetWorldPos).Size() < 20.0f)
-				{
-					if(gridPath.CurrentTargetIndex >= size - 1)
-                    {
-                        entity.remove<FGridPathComponent>();
-                        entity.add<FSearchPathRequest>();
-                    }
-					else
-                    {
-                        gridPath.CurrentTargetIndex++;
-                        gridPath.CurrentGridTarget = gridPath.Path[gridPath.CurrentTargetIndex];
-                    }
-				}
-		});
-
-	_world->system<FPositionComponent>("DrawDebugViewSystem")
-		.each([this](FPositionComponent& pos) {
-			DrawDebugPoint(GetWorld(), FVector(pos.Value.X, pos.Value.Y, 10.0f), 10.0f, FColor::Red, false, 0.1f);
 		});
 }
 
