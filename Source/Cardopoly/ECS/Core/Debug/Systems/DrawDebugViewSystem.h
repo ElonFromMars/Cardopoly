@@ -1,16 +1,17 @@
 ﻿#pragma once
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 
-class DrawDebugViewSystem : IGameplaySystem
+class DrawDebugViewSystem : public IGameplaySystem
 {
-UWorld* _UWorld;
-	
-	DrawDebugViewSystem(flecs::world* flecsWorld, UWorld* world) : IGameplaySystem(flecsWorld),
-		_UWorld(world)
+public:
+	DrawDebugViewSystem(flecs::world* flecsWorld, UWorld* viewWorld)
+		: IGameplaySystem(flecsWorld), _viewWorld(viewWorld)
 	{
 		
 	}
-
-public:
+	
 	virtual void Initialize() override;
+
+private:
+	UWorld* _viewWorld;
 };

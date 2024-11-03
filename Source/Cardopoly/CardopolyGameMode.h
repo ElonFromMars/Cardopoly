@@ -1,10 +1,13 @@
 #pragma once
 
+#include <vector>
+
 #include "flecs.h"
 #include "CoreMinimal.h"
 #include "Buildings/BuildingsController.h"
 #include "City/CityGrid.h"
 #include "Configs/UCityGeneratorConfig.h"
+#include "ECS/Infrastructure/Systems/IGameplaySystem.h"
 #include "EventBus/EventBus.hpp"
 #include "GameFramework/GameModeBase.h"
 #include "CardopolyGameMode.generated.h"
@@ -42,6 +45,7 @@ private:
 	flecs::world* _world;
 	Pathfinding::AStar* _aStar;
 	UGridSubsystem* _gridSubsystem;
+	std::vector<IGameplaySystem*> _systems;
 
 public:
 	ACardopolyGameMode();

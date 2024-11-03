@@ -5,33 +5,37 @@
 #include "Cardopoly/ECS/Core/Movement/Components/FPositionComponent.h"
 #include "Cardopoly/ECS/Core/Pathfinding/Components/FGridPathComponent.h"
 #include "Cardopoly/ECS/Core/Pathfinding/Components/FSearchPathRequest.h"
+#include "Cardopoly/Pathfinding/AStar.h"
 
 void PathfindingSystem::Initialize()
 {
-	_world->system<FPositionComponent, FGridPositionComponent, FGridPathComponent, FMaxSpeedComponent>("MoveSystem")
-		.each([this](flecs::entity entity, FPositionComponent& pos, FGridPositionComponent& gridPos, FGridPathComponent& gridPath, FMaxSpeedComponent& speed) {
+	_world->system<FGridPositionComponent>("PathfindingSystem")
+		.with<FPositionComponent>()
+		.with<FSearchPathRequest>()
+		.each([this](flecs::entity entity, FGridPositionComponent& gridPos) {
 
-				auto deltaTime = _world->delta_time();
-				FVector targetWorldPos = _gridSubsystem->GetCellCenterWorldPosition(gridPath.CurrentGridTarget);
-				FVector difference = (targetWorldPos - pos.Value).GetSafeNormal() * speed.Value * deltaTime;
-				FVector newWorldPos = pos.Value + difference;
-				pos.Value = newWorldPos;
-				auto newGridPos = _gridSubsystem->WorldPositionToGrid(newWorldPos);
-				gridPos.Value = newGridPos;
-
-				auto size = gridPath.Path.size();
-				if((newWorldPos -targetWorldPos).Size() < 20.0f)
-				{
-					if(gridPath.CurrentTargetIndex >= size - 1)
-					{
-						entity.remove<FGridPathComponent>();
-						entity.add<FSearchPathRequest>();
-					}
-					else
-					{
-						gridPath.CurrentTargetIndex++;
-						gridPath.CurrentGridTarget = gridPath.Path[gridPath.CurrentTargetIndex];
-					}
-				}
+			int xOffset = FMath::RandRange(-5, 5);
+			int yOffset = FMath::RandRange(-5, 5);
+			
+			FIntVector targetGridPos ={
+				gridPos.Value.X + xOffset,
+				gridPos.Value.Y + yOffset,
+				0
+			};
+			if(_cityGrid->ContainsBuildingAtPosition(targetGridPos))
+			{
+				return;
+			}
+			std::vector<FIntVector> path = _aStar->FindPath(gridPos.Value, targetGridPos,
+															Pathfinding::Heuristic::Euclidean);
+			if(path.size() > 1)
+			{
+				entity.remove<FSearchPathRequest>();
+				entity.set<FGridPathComponent>({
+					path[0],
+					0,
+					path
+				});
+			}
 		});
 }

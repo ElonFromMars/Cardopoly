@@ -6,6 +6,6 @@ void DrawDebugViewSystem::Initialize()
 {
 	_world->system<FPositionComponent>("DrawDebugViewSystem")
 		.each([this](FPositionComponent& pos) {
-			DrawDebugPoint(_UWorld, FVector(pos.Value.X, pos.Value.Y, 10.0f), 10.0f, FColor::Red, false, 0.1f);
+			DrawDebugPoint(_viewWorld, FVector(pos.Value.X, pos.Value.Y, 10.0f), 10.0f, FColor::Red, false, 0.1f);
 		});
 }

@@ -1,5 +1,4 @@
 #include "CardopolyGameMode.h"
-#include "ECS/Core/Movement/Components/FPositionComponent.h"
 #include "ARTSCamera.h"
 #include "AssetHolders/GameplayAssetData.h"
 #include "Buildings/BuildingsController.h"
@@ -8,11 +7,8 @@
 #include "City/CityGrid.h"
 #include "City/Generator/CityGenerator.h"
 #include "Configs/LocalConfigHolder.h"
-#include "ECS/Core/Movement/Components/FCitizenTag.h"
-#include "ECS/Core/Movement/Components/FGridPathComponent.h"
-#include "ECS/Core/Movement/Components/FSearchPathRequest.h"
-#include "ECS/Core/Movement/Components/FGridPositionComponent.h"
-#include "ECS/Core/Movement/Components/FMaxSpeedComponent.h"
+#include "ECS/Factories/CoreGameplaySystemsFactory.h"
+#include "ECS/Features/MainGameplayFeature.h"
 #include "EventBus/EventBus.hpp"
 #include "GameFramework/GameSession.h"
 #include "GameFramework/GameStateBase.h"
@@ -47,6 +43,10 @@ ACardopolyGameMode::~ACardopolyGameMode()
 	delete _eventBus;
 	delete _aStar;
 	delete _world;
+	for (auto system : _systems)
+	{
+		delete system;
+	}
 }
 
 void ACardopolyGameMode::BeginPlay()
@@ -55,10 +55,10 @@ void ACardopolyGameMode::BeginPlay()
 	
 	EventBus* eventBus = CreateEventBus();
 	UCityGrid* CityGrid = CreateCityGrid();
-	StartECS(CityGrid);
-	
+
 	CreatePathfinding(CityGrid);
-	
+	StartECS(CityGrid);
+
 	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
 	CreateCity(BuildingsController);
 
@@ -87,58 +87,21 @@ void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
 	_gridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();
 	_world = new flecs::world();
 
+
+	auto factory = std::make_unique<CoreGameplaySystemsFactory>(
+		_world, _gridSubsystem, CityGrid, _aStar, GetWorld());
+
+	auto mainGameplayFeature = std::make_unique<MainGameplayFeature>(std::move(factory));
+
+	_systems = mainGameplayFeature->GetSystems();
 	
-	for (int i = 0; i < 100; ++i) {
-		auto gridPosition = FIntVector
+	for (auto system : _systems)
+	{
+		if(system)
 		{
-			FMath::RandRange(-10, 10),
-			FMath::RandRange(-10, 10),
-			0
-		};
-		auto worldPosition = _gridSubsystem->GetCellCenterWorldPosition(gridPosition);
-		_world->entity()
-			.add<FCitizenTag>()
-		    .add<FSearchPathRequest>()
-			.set<FGridPositionComponent>({
-				gridPosition
-			})
-			.set<FPositionComponent>({
-				worldPosition
-			})
-			.set<FMaxSpeedComponent>({
-				FMath::RandRange(50.0f, 300.0f)
-			});
+			system->Initialize();	
+		}
 	}
-
-	_world->system<FGridPositionComponent>("PathfindingSystem")
-		.with<FPositionComponent>()
-		.with<FSearchPathRequest>()
-		.each([this, CityGrid](flecs::entity entity, FGridPositionComponent& gridPos) {
-
-			int xOffset = FMath::RandRange(-5, 5);
-			int yOffset = FMath::RandRange(-5, 5);
-			
-			FIntVector targetGridPos ={
-				gridPos.Value.X + xOffset,
-				gridPos.Value.Y + yOffset,
-				0
-			};
-			if(CityGrid->ContainsBuildingAtPosition(targetGridPos))
-			{
-				return;
-			}
-			std::vector<FIntVector> path = _aStar->FindPath(gridPos.Value, targetGridPos,
-			                                                Pathfinding::Heuristic::Euclidean);
-			if(path.size() > 1)
-			{
-				entity.remove<FSearchPathRequest>();
-				entity.set<FGridPathComponent>({
-					path[0],
-					0,
-					path
-				});
-			}
-		});
 }
 
 EventBus* ACardopolyGameMode::CreateEventBus()
