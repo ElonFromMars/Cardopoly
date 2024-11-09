@@ -6,6 +6,10 @@
 #include "Cardopoly/ECS/Core/Pathfinding/Systems/PathfindingSystem.h"
 #include "Cardopoly/ECS/Infrastructure/Features/GameplayFeature.h"
 
+class EconomicsSystem;
+class PlayerInitializeSystem;
+class HUDViewSystem;
+
 class MainGameplayFeature : public GameplayFeature
 {
 public:
@@ -17,8 +21,11 @@ public:
 	virtual void AddSystems() override
 	{
 		AddSystem<CitizensInitializeSystem>();
+		AddSystem<PlayerInitializeSystem>();
 		AddSystem<PathfindingSystem>();
 		AddSystem<MovementSystem>();
 		AddSystem<DrawDebugViewSystem>();
+		AddSystem<EconomicsSystem>();
+		AddSystem<HUDViewSystem>();
 	}
 };

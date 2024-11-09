@@ -12,6 +12,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "CardopolyGameMode.generated.h"
 
+class UHUDWidget;
+
 namespace Pathfinding
 {
 	class AStar;
@@ -39,6 +41,12 @@ public:
 	
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Controllers")
 	ATurnController* TurnController;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HUD")
+	TSubclassOf<UHUDWidget> WB_HUDClass;
+
+	UPROPERTY()
+	UHUDWidget* HUDWidgetInstance;
 
 private:
 	EventBus* _eventBus;
@@ -68,7 +76,5 @@ public:
 	ABuildingsController* CreateBuildingController(UCityGrid* CityGrid) const;
 	UCityGrid* CreateCityGrid() const;
 	void ConfigureCamera() const;
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void CreateUI();
+	void CreateAndAddHUDWidget();
 };

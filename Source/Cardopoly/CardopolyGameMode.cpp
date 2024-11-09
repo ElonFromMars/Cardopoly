@@ -19,6 +19,7 @@
 #include "Grid/UGridSubsystem.h"
 #include "Pathfinding/AStar.h"
 #include "Player/CardopolyPlayerController.h"
+#include "UI/UHUDWidget.h"
 
 ACardopolyGameMode::ACardopolyGameMode()
 {
@@ -55,10 +56,7 @@ void ACardopolyGameMode::BeginPlay()
 	
 	EventBus* eventBus = CreateEventBus();
 	UCityGrid* CityGrid = CreateCityGrid();
-
-	CreatePathfinding(CityGrid);
-	StartECS(CityGrid);
-
+	
 	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
 	CreateCity(BuildingsController);
 
@@ -68,7 +66,9 @@ void ACardopolyGameMode::BeginPlay()
 	AHand* Hand = CreateHand(BuildingsController, eventBus);
 	TurnController = CreateTurnController(Hand);
 
-	CreateUI();
+	CreateAndAddHUDWidget();
+	CreatePathfinding(CityGrid);
+	StartECS(CityGrid);
 }
 
 void ACardopolyGameMode::Tick(float DeltaTime)
@@ -89,7 +89,7 @@ void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
 
 
 	auto factory = std::make_unique<CoreGameplaySystemsFactory>(
-		_world, _gridSubsystem, CityGrid, _aStar, GetWorld());
+		_world, _gridSubsystem, CityGrid, _aStar, GetWorld(), HUDWidgetInstance);
 
 	auto mainGameplayFeature = std::make_unique<MainGameplayFeature>(std::move(factory));
 
@@ -176,4 +176,11 @@ void ACardopolyGameMode::ConfigureCamera() const
 	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
 	auto Camera = StaticCast<ARTSCamera*>(PlayerPawn);
 	Camera->Construct(_eventBus);
+}
+
+void ACardopolyGameMode::CreateAndAddHUDWidget()
+{
+	HUDWidgetInstance = CreateWidget<UHUDWidget>(GetWorld(), WB_HUDClass);
+	HUDWidgetInstance->AddToViewport();
+	HUDWidgetInstance->Construct(TurnController);
 }

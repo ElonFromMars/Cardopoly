@@ -9,6 +9,7 @@
 #include "Cardopoly/ECS/Infrastructure/Factories/ISystemFactory.h"
 #include "Cardopoly/Grid/UGridSubsystem.h"
 #include "Cardopoly/Pathfinding/AStar.h"
+#include "Cardopoly/UI/UHUDWidget.h"
 #include "Cardopoly/Utils/TypeIdUtils.h"
 
 class IGameplaySystem;
@@ -21,13 +22,15 @@ public:
 		UGridSubsystem* gridSubsystem,
 		UCityGrid* cityGrid,
 		Pathfinding::AStar* aStar,
-		UWorld* viewWorld
+		UWorld* viewWorld,
+		UHUDWidget* hudWidget
 	) :
 		_gridSubsystem(gridSubsystem),
 		_cityGrid(cityGrid),
 		_aStar(aStar),
 		_world(world),
-		_viewWorld(viewWorld)
+		_viewWorld(viewWorld),
+		_hudWidget(hudWidget)
 	{
 	}
 
@@ -39,4 +42,5 @@ private:
 	Pathfinding::AStar* _aStar;
 	flecs::world* _world;
 	UWorld* _viewWorld;
+	UHUDWidget* _hudWidget;
 };
