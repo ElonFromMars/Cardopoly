@@ -2,10 +2,10 @@
 
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 
-class EconomicsSystem : public IGameplaySystem
+class EconomySystem : public IGameplaySystem
 {
 public:
-	EconomicsSystem(
+	EconomySystem(
 		flecs::world* flecsWorld
 		)
 		: IGameplaySystem(flecsWorld)

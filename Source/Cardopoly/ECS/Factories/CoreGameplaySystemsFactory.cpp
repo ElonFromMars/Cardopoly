@@ -19,8 +19,8 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 		return new HUDViewSystem(_world, _hudWidget);
 	} else if (typeId == unique_id<PlayerInitializeSystem>::get_ID()) {
 		return new PlayerInitializeSystem(_world);
-	} else if (typeId == unique_id<EconomicsSystem>::get_ID()) {
-		return new EconomicsSystem(_world);
+	} else if (typeId == unique_id<EconomySystem>::get_ID()) {
+		return new EconomySystem(_world);
 	}
 	
 	return nullptr;

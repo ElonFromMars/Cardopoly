@@ -6,7 +6,7 @@
 #include "Cardopoly/ECS/Core/Pathfinding/Systems/PathfindingSystem.h"
 #include "Cardopoly/ECS/Infrastructure/Features/GameplayFeature.h"
 
-class EconomicsSystem;
+class EconomySystem;
 class PlayerInitializeSystem;
 class HUDViewSystem;
 
@@ -25,7 +25,7 @@ public:
 		AddSystem<PathfindingSystem>();
 		AddSystem<MovementSystem>();
 		AddSystem<DrawDebugViewSystem>();
-		AddSystem<EconomicsSystem>();
+		AddSystem<EconomySystem>();
 		AddSystem<HUDViewSystem>();
 	}
 };

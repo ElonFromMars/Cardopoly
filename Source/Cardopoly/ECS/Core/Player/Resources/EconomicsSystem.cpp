@@ -2,7 +2,7 @@
 
 #include "Cardopoly/ECS/Core/Player/Resources/FMoneyComponent.hpp"
 
-void EconomicsSystem::Initialize()
+void EconomySystem::Initialize()
 {
 	_world->system<FMoneyComponent>("EconomicsSystem")
 		.interval(1)
