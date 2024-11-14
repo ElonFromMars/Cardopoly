@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "Cardopoly/City/CityGrid.h"
+#include "Cardopoly/ECS/Core/Buildings/Factories/BuildingEntityFactory.h"
 #include "GameFramework/Actor.h"
 #include "BuildingsController.generated.h"
 
@@ -11,16 +12,10 @@ UCLASS()
 class CARDOPOLY_API ABuildingsController : public AActor
 {
 	GENERATED_BODY()
-
-private:
-	UPROPERTY()
-	UGridSubsystem* GridSubsystem;
-	UPROPERTY()
-	UCityGrid* CityGrid;
-
+	
 public:
 	ABuildingsController();
-	void Construct(UCityGrid* CityGrid);
+	void Construct(UCityGrid* cityGrid, BuildingEntityFactory* buildingEntityFactory);
 
 	bool CreateBuildingUnderScreenPosition(FVector2D ScreenPosition, ABuilding*& Building) const;
 
@@ -32,4 +27,11 @@ public:
 
 private:
 	virtual void BeginPlay() override;
+	
+	UPROPERTY()
+	UGridSubsystem* GridSubsystem;
+	UPROPERTY()
+	UCityGrid* CityGrid;
+
+	BuildingEntityFactory* _buildingEntityFactory;
 };

@@ -1,6 +1,6 @@
 ﻿#include "HUDViewSystem.h"
 
-#include "Cardopoly/ECS/Core/Player/Resources/FMoneyComponent.hpp"
+#include "Cardopoly/ECS/Core/Economy/FMoneyComponent.hpp"
 #include "Cardopoly/UI/UHUDWidget.h"
 
 void HUDViewSystem::Initialize()

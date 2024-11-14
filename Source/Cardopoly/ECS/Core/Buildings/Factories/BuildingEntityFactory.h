@@ -5,5 +5,5 @@
 class BuildingEntityFactory : public EntityFactory
 {
 public:
-	flecs::entity Create();
+	flecs::entity Create() const;
 };

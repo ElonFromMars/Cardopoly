@@ -44,6 +44,7 @@ ACardopolyGameMode::~ACardopolyGameMode()
 	delete _eventBus;
 	delete _aStar;
 	delete _world;
+	delete _buildingEntityFactory;
 	for (auto system : _systems)
 	{
 		delete system;
@@ -57,18 +58,17 @@ void ACardopolyGameMode::BeginPlay()
 	EventBus* eventBus = CreateEventBus();
 	UCityGrid* CityGrid = CreateCityGrid();
 	
-	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
-	CreateCity(BuildingsController);
-
 	CreateInput();
 	ConfigureCamera();
 	
-	AHand* Hand = CreateHand(BuildingsController, eventBus);
-	TurnController = CreateTurnController(Hand);
-
 	CreateAndAddHUDWidget();
 	CreatePathfinding(CityGrid);
 	StartECS(CityGrid);
+	
+	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
+	CreateCity(BuildingsController);
+	AHand* Hand = CreateHand(BuildingsController, eventBus);
+	TurnController = CreateTurnController(Hand);
 }
 
 void ACardopolyGameMode::Tick(float DeltaTime)
@@ -88,6 +88,8 @@ void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
 	_world = new flecs::world();
 
 
+	_buildingEntityFactory = new BuildingEntityFactory(_world);
+	
 	auto factory = std::make_unique<CoreGameplaySystemsFactory>(
 		_world, _gridSubsystem, CityGrid, _aStar, GetWorld(), HUDWidgetInstance);
 
@@ -159,7 +161,7 @@ ABuildingsController* ACardopolyGameMode::CreateBuildingController(UCityGrid* Ci
 {
 	UWorld* World = GetWorld();
 	ABuildingsController* BuildingsController = World->SpawnActor<ABuildingsController>(FVector::ZeroVector, FRotator::ZeroRotator);
-	BuildingsController->Construct(CityGrid);
+	BuildingsController->Construct(CityGrid, _buildingEntityFactory);
 	
 	return BuildingsController;
 }

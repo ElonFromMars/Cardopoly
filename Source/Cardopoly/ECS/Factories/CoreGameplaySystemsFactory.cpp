@@ -1,7 +1,7 @@
 ﻿#include "CoreGameplaySystemsFactory.h"
 
+#include "Cardopoly/ECS/Core/Economy/EconomicsSystem.h"
 #include "Cardopoly/ECS/Core/Player/Core/PlayerInitializeSystem.h"
-#include "Cardopoly/ECS/Core/Player/Resources/EconomicsSystem.h"
 #include "Cardopoly/ECS/Core/UI/HUD/HUDViewSystem.h"
 
 IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)

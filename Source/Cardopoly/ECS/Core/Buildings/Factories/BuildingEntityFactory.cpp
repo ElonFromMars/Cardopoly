@@ -1,11 +1,11 @@
 ﻿#include "BuildingEntityFactory.h"
 
 #include "Cardopoly/ECS/Core/Buildings/FBuildingTag.h"
+#include "Cardopoly/ECS/Core/Economy/FIncomeComponent.hpp"
 
-flecs::entity BuildingEntityFactory::Create()
+flecs::entity BuildingEntityFactory::Create() const
 {
-	
 	return world->entity()
 		.add<FBuildingTag>()
-		.add<PositionComponent>();
+		.set<FIncomeComponent>({10});
 }

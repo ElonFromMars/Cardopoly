@@ -54,6 +54,7 @@ private:
 	Pathfinding::AStar* _aStar;
 	UGridSubsystem* _gridSubsystem;
 	std::vector<IGameplaySystem*> _systems;
+	BuildingEntityFactory* _buildingEntityFactory;
 
 public:
 	ACardopolyGameMode();

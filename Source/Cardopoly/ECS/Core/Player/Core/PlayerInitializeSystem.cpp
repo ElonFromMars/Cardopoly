@@ -1,6 +1,6 @@
 ﻿#include "PlayerInitializeSystem.h"
 
-#include "Cardopoly/ECS/Core/Player/Resources/FMoneyComponent.hpp"
+#include "Cardopoly/ECS/Core/Economy/FMoneyComponent.hpp"
 
 void PlayerInitializeSystem::Initialize()
 {

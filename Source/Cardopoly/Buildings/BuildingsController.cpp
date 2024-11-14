@@ -1,5 +1,6 @@
 ﻿#include "BuildingsController.h"
 #include "Cardopoly/Buildings/ABuilding.h"
+#include "Cardopoly/ECS/Core/Buildings/Factories/BuildingEntityFactory.h"
 #include "Cardopoly/Grid/UGridSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -8,9 +9,10 @@ ABuildingsController::ABuildingsController()
 	
 }
 
-void ABuildingsController::Construct(UCityGrid* cityGrid)
+void ABuildingsController::Construct(UCityGrid* cityGrid, BuildingEntityFactory* buildingEntityFactory)
 {
 	CityGrid = cityGrid;
+	_buildingEntityFactory = buildingEntityFactory;
 }
 
 void ABuildingsController::BeginPlay()
@@ -35,6 +37,7 @@ bool ABuildingsController::CreateBuildingUnderScreenPosition(FVector2D ScreenPos
 
 ABuilding* ABuildingsController::CreateBuilding(const FIntVector CellPosition) const
 {
+	_buildingEntityFactory->Create();
 	const FVector CellWorldPosition = GridSubsystem->GetCellCenterWorldPosition(CellPosition);
 
 	ABuilding* Building = GetWorld()->SpawnActor<ABuilding>(ABuilding::StaticClass(), CellWorldPosition,FRotator::ZeroRotator);
