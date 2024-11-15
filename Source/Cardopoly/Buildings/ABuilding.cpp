@@ -17,13 +17,3 @@ ABuilding::ABuilding()
 		SphereMesh->SetStaticMesh(SphereMeshAsset.Object);
 	}
 }
-
-void ABuilding::BeginPlay()
-{
-	Super::BeginPlay();
-}
-
-void ABuilding::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
