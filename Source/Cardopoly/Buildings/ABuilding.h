@@ -9,8 +9,8 @@ class ABuilding : public AEntityView//, public IOccupyGrid
 	GENERATED_BODY()
 
 public:
-	UStaticMeshComponent *SphereMesh;
-	// Sets default values for this actor's properties
 	ABuilding();
 	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
+	UStaticMeshComponent* MainMesh;
 };
