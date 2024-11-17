@@ -12,6 +12,7 @@
 #include "Cardopoly/UI/UHUDWidget.h"
 #include "Cardopoly/Utils/TypeIdUtils.h"
 
+class UGameplayAssetData;
 class IGameplaySystem;
 
 class CoreGameplaySystemsFactory : public ISystemFactory
@@ -23,14 +24,16 @@ public:
 		UCityGrid* cityGrid,
 		Pathfinding::AStar* aStar,
 		UWorld* viewWorld,
-		UHUDWidget* hudWidget
+		UHUDWidget* hudWidget,
+		UGameplayAssetData* gameplayAssetData
 	) :
 		_gridSubsystem(gridSubsystem),
 		_cityGrid(cityGrid),
 		_aStar(aStar),
 		_world(world),
 		_viewWorld(viewWorld),
-		_hudWidget(hudWidget)
+		_hudWidget(hudWidget),
+		_gameplayAssetData(gameplayAssetData)
 	{
 	}
 
@@ -43,4 +46,5 @@ private:
 	flecs::world* _world;
 	UWorld* _viewWorld;
 	UHUDWidget* _hudWidget;
+	UGameplayAssetData* _gameplayAssetData;
 };

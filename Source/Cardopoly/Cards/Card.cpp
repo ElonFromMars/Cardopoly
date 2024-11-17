@@ -11,8 +11,9 @@ ACard::ACard()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ACard::Construct(ABuildingsController* buildingsController)
+void ACard::Construct(ABuildingsController* buildingsController, uint32 id)
 {
+	_id = id;
 	BuildingsController = buildingsController;
 	const auto WidgetComponent = this->GetComponentByClass<UWidgetComponent>();
 	CardWidget = StaticCast<UCardWidget*>(WidgetComponent->GetUserWidgetObject());
@@ -48,7 +49,7 @@ bool ACard::CanApply(FVector2D ScreenPosition)
 void ACard::Apply(FVector2D ScreenPosition)
 {
 	ABuilding* Building;
-	BuildingsController->CreateBuildingUnderScreenPosition(ScreenPosition, Building);
+	BuildingsController->CreateBuildingUnderScreenPosition(ScreenPosition, _id, Building);
 	
 	OnCardAppliedDelegate.Broadcast(this);
 }

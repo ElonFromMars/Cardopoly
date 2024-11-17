@@ -5,5 +5,7 @@
 class BuildingEntityFactory : public EntityFactory
 {
 public:
-	flecs::entity Create() const;
+	BuildingEntityFactory(flecs::world* world) : EntityFactory(world) {}
+	
+	flecs::entity Create(const FIntVector cellPosition, const uint32 id) const;
 };

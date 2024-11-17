@@ -11,7 +11,7 @@ void CityGenerator::Generate()
 			if(FMath::FRand() > CityGeneratorConfig->HouseProbability) continue;
 			
 			FIntVector SpawnLocation = FIntVector(x, y, 0);
-			BuildingsController->CreateBuilding(SpawnLocation);
+			BuildingsController->CreateBuilding(SpawnLocation, 0);
 		}	
 	}
 }

@@ -4,10 +4,6 @@
 #include "Cardopoly/Grid/UGridSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 
-ABuildingsController::ABuildingsController()
-{
-	
-}
 
 void ABuildingsController::Construct(UCityGrid* cityGrid, BuildingEntityFactory* buildingEntityFactory)
 {
@@ -18,36 +14,39 @@ void ABuildingsController::Construct(UCityGrid* cityGrid, BuildingEntityFactory*
 void ABuildingsController::BeginPlay()
 {
 	Super::BeginPlay();
-	GridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();//TODO remove
+	_gridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();//TODO remove
 }
 
-bool ABuildingsController::CreateBuildingUnderScreenPosition(FVector2D ScreenPosition, ABuilding*& Building) const
+bool ABuildingsController::CreateBuildingUnderScreenPosition(const FVector2D ScreenPosition, const uint32 id, ABuilding*& Building) const
 {
-	FIntVector CellPosition;
+	FIntVector cellPosition;
 
-	if(ScreenPointToGroundPosition(ScreenPosition, CellPosition)
-		&& !IsCellOccupied(CellPosition))
+	if(ScreenPointToGroundPosition(ScreenPosition, cellPosition)
+		&& !IsCellOccupied(cellPosition))
 	{
-		Building = CreateBuilding(CellPosition);
+		Building = CreateBuilding(cellPosition, id);
 		return true;
 	}
 	
 	return false;
 }
 
-ABuilding* ABuildingsController::CreateBuilding(const FIntVector CellPosition) const
+ABuilding* ABuildingsController::CreateBuilding(const FIntVector cellPosition, const uint32 id) const
 {
-	_buildingEntityFactory->Create();
-	const FVector CellWorldPosition = GridSubsystem->GetCellCenterWorldPosition(CellPosition);
+	_buildingEntityFactory->Create(cellPosition, id);
+	const FVector CellWorldPosition = _gridSubsystem->GetCellCenterWorldPosition(cellPosition);
 
-	ABuilding* Building = GetWorld()->SpawnActor<ABuilding>(ABuilding::StaticClass(), CellWorldPosition,FRotator::ZeroRotator);
+	//TODO: rewrite asap
+	/*ABuilding* Building = GetWorld()->SpawnActor<ABuilding>(ABuilding::StaticClass(), CellWorldPosition,FRotator::ZeroRotator);
 
-	CityGrid->PutBuildingAtPosition(CellPosition, Building);
+	CityGrid->PutBuildingAtPosition(cellPosition, Building);
 	
-	return Building;
+	return Building;*/
+
+	return nullptr;
 }
 
-bool ABuildingsController::CanCreateBuildingUnderScreenPosition(FVector2D ScreenPosition) const
+bool ABuildingsController::CanCreateBuildingUnderScreenPosition(const FVector2D ScreenPosition) const
 {
 	FIntVector CellPosition;
 	if (!IsValid(CityGrid))
@@ -82,7 +81,7 @@ bool ABuildingsController::ScreenPointToGroundPosition(const FVector2D ScreenPos
 		UWorld* World = GetWorld();
 		if (World->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_GameTraceChannel1, CollisionParams))
 		{
-			CellPosition = GridSubsystem->WorldPositionToGrid(HitResult.Location);
+			CellPosition = _gridSubsystem->WorldPositionToGrid(HitResult.Location);
 			return true;
 		}
 	}

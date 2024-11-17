@@ -19,24 +19,10 @@ class CARDOPOLY_API ACard : public AActor
 {
 	GENERATED_BODY()
 
-private:
-	FCTweenInstance* Tween = nullptr;
-
-	UPROPERTY()
-	UCardWidget* CardWidget;
-
-public:
-	UPROPERTY(BlueprintAssignable)
-	FOnCardAppliedSignature OnCardAppliedDelegate;
-	
-private:
-	UPROPERTY()
-	ABuildingsController* BuildingsController;
-	
 public:
 	ACard();
 
-	void Construct(ABuildingsController* BuildingsController);
+	void Construct(ABuildingsController* BuildingsController, uint32 id);
 
 protected:
 	virtual void BeginPlay() override;
@@ -65,4 +51,20 @@ public:
 	{
 		return CardWidget;
 	}
+
+private:
+	uint32 _id;
+	
+	FCTweenInstance* Tween = nullptr;
+
+	UPROPERTY()
+	UCardWidget* CardWidget;
+
+public:
+	UPROPERTY(BlueprintAssignable)
+	FOnCardAppliedSignature OnCardAppliedDelegate;
+	
+private:
+	UPROPERTY()
+	ABuildingsController* BuildingsController;
 };

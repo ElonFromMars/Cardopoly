@@ -66,7 +66,7 @@ void ACardopolyGameMode::BeginPlay()
 	StartECS(CityGrid);
 	
 	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
-	CreateCity(BuildingsController);
+	//CreateCity(BuildingsController);
 	AHand* Hand = CreateHand(BuildingsController, eventBus);
 	TurnController = CreateTurnController(Hand);
 }
@@ -91,7 +91,14 @@ void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
 	_buildingEntityFactory = new BuildingEntityFactory(_world);
 	
 	auto factory = std::make_unique<CoreGameplaySystemsFactory>(
-		_world, _gridSubsystem, CityGrid, _aStar, GetWorld(), HUDWidgetInstance);
+		_world,
+		_gridSubsystem,
+		CityGrid,
+		_aStar,
+		GetWorld(),
+		HUDWidgetInstance,
+		GameplayAssetData
+	);
 
 	auto mainGameplayFeature = std::make_unique<MainGameplayFeature>(std::move(factory));
 

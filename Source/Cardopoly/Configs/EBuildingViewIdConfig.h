@@ -5,7 +5,7 @@
 #include "EBuildingViewIdConfig.generated.h"
 
 UENUM()
-enum class EBuildingViewIdConfig : uint16
+enum class EBuildingViewIdConfig : uint32
 {
 	None = 0,
 	House = 1001,
