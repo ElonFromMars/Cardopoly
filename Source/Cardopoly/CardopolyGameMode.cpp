@@ -15,7 +15,6 @@
 #include "GameFramework/HUD.h"
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/SpectatorPawn.h"
-#include "GameplayFlow/TurnController.h"
 #include "Grid/UGridSubsystem.h"
 #include "Pathfinding/AStar.h"
 #include "Player/CardopolyPlayerController.h"
@@ -55,20 +54,21 @@ void ACardopolyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	_world = new flecs::world();
 	EventBus* eventBus = CreateEventBus();
 	UCityGrid* CityGrid = CreateCityGrid();
-	
+
 	CreateInput();
+	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
+
 	ConfigureCamera();
-	
+
 	CreateAndAddHUDWidget();
+	//CreateCity(BuildingsController);
+	Hand = CreateHand(BuildingsController, eventBus);
+	
 	CreatePathfinding(CityGrid);
 	StartECS(CityGrid);
-	
-	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
-	//CreateCity(BuildingsController);
-	AHand* Hand = CreateHand(BuildingsController, eventBus);
-	TurnController = CreateTurnController(Hand);
 }
 
 void ACardopolyGameMode::Tick(float DeltaTime)
@@ -85,10 +85,6 @@ void ACardopolyGameMode::CreatePathfinding(UCityGrid* CityGrid)
 void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
 {
 	_gridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();
-	_world = new flecs::world();
-
-
-	_buildingEntityFactory = new BuildingEntityFactory(_world);
 	
 	auto factory = std::make_unique<CoreGameplaySystemsFactory>(
 		_world,
@@ -97,7 +93,9 @@ void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
 		_aStar,
 		GetWorld(),
 		HUDWidgetInstance,
-		GameplayAssetData
+		GameplayAssetData,
+		Hand,
+		LocalConfigHolder->HandLocalConfig
 	);
 
 	auto mainGameplayFeature = std::make_unique<MainGameplayFeature>(std::move(factory));
@@ -133,29 +131,21 @@ AHand* ACardopolyGameMode::CreateHand(ABuildingsController* BuildingsController,
 	UWorld* World = GetWorld();
 	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
 	
-	AHand* Hand = World->SpawnActor<AHand>(GameplayAssetData->Hand, FVector::ZeroVector, FRotator::ZeroRotator);
-	Hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	AHand* hand = World->SpawnActor<AHand>(GameplayAssetData->Hand, FVector::ZeroVector, FRotator::ZeroRotator);
+	hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 	UCardFactory* CardFactory = NewObject<UCardFactory>();
 	CardFactory->Construct(World, GameplayAssetData, BuildingsController, LocalConfigHolder);
 	
-	Hand->Construct(CardFactory, eventBus);
+	hand->Construct(CardFactory, eventBus);
 	
 	
-	Hand->DrawCard();
+	hand->DrawCard();
 	
-	return Hand;
+	return hand;
 }
 
-ATurnController* ACardopolyGameMode::CreateTurnController(AHand* Hand) const
-{
-	UWorld* World = GetWorld();
-	ATurnController* turnController = World->SpawnActor<ATurnController>(FVector::ZeroVector, FRotator::ZeroRotator);
-	turnController->Construct(Hand, LocalConfigHolder->HandLocalConfig);
-	turnController->StartSession();
 
-	return turnController;
-}
 
 void ACardopolyGameMode::CreateInput() const
 {
@@ -164,8 +154,10 @@ void ACardopolyGameMode::CreateInput() const
 	CardopolyPlayerController->Construct(LocalConfigHolder->InputLocalConfig);
 }
 
-ABuildingsController* ACardopolyGameMode::CreateBuildingController(UCityGrid* CityGrid) const
+ABuildingsController* ACardopolyGameMode::CreateBuildingController(UCityGrid* CityGrid)
 {
+	_buildingEntityFactory = new BuildingEntityFactory(_world);
+	
 	UWorld* World = GetWorld();
 	ABuildingsController* BuildingsController = World->SpawnActor<ABuildingsController>(FVector::ZeroVector, FRotator::ZeroRotator);
 	BuildingsController->Construct(CityGrid, _buildingEntityFactory);
@@ -191,5 +183,5 @@ void ACardopolyGameMode::CreateAndAddHUDWidget()
 {
 	HUDWidgetInstance = CreateWidget<UHUDWidget>(GetWorld(), WB_HUDClass);
 	HUDWidgetInstance->AddToViewport();
-	HUDWidgetInstance->Construct(TurnController);
+	HUDWidgetInstance->Construct(_world);
 }

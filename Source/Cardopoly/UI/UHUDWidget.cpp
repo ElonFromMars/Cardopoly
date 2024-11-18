@@ -1,12 +1,14 @@
 ﻿#include "UHUDWidget.h"
 
-#include "Cardopoly/GameplayFlow/TurnController.h"
+#include "flecs.h"
+#include "Cardopoly/ECS/Core/GameplayFlow/FEndTurnRequest.hpp"
 #include "Components/Button.h"
 #include "Components/RichTextBlock.h"
 
-void UHUDWidget::Construct(ATurnController* turnController)
+
+void UHUDWidget::Construct(flecs::world* ecsWorld)
 {
-	TurnController = turnController;
+	_ecsWorld = ecsWorld;
 }
 
 void UHUDWidget::NativeConstruct()
@@ -18,7 +20,7 @@ void UHUDWidget::NativeConstruct()
 
 void UHUDWidget::OnEndTurnButtonClicked()
 {
-	TurnController->EndTurn(0);
+	_ecsWorld->entity().add<FEndTurnRequest>();
 }
 
 void UHUDWidget::SetMoney(int value) const

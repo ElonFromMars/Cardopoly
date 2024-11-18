@@ -19,7 +19,7 @@ namespace Pathfinding
 	class AStar;
 }
 
-class ATurnController;
+
 class ULocalConfigHolder;
 class AHand;
 class UGameplayAssetData;
@@ -39,14 +39,14 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AssetData")
 	UGameplayAssetData* GameplayAssetData;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Controllers")
-	ATurnController* TurnController;
-	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HUD")
 	TSubclassOf<UHUDWidget> WB_HUDClass;
 
 	UPROPERTY()
 	UHUDWidget* HUDWidgetInstance;
+
+	UPROPERTY()
+	AHand* Hand;
 
 private:
 	EventBus* _eventBus;
@@ -72,9 +72,9 @@ public:
 	
 	void CreateCity(ABuildingsController* BuildingsController) const;
 	AHand* CreateHand(ABuildingsController* BuildingsController, EventBus* eventBus) const;
-	ATurnController* CreateTurnController(AHand* Hand) const;
+
 	void CreateInput() const;
-	ABuildingsController* CreateBuildingController(UCityGrid* CityGrid) const;
+	ABuildingsController* CreateBuildingController(UCityGrid* CityGrid);
 	UCityGrid* CreateCityGrid() const;
 	void ConfigureCamera() const;
 	void CreateAndAddHUDWidget();

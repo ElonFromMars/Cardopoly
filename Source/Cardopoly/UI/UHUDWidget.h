@@ -1,9 +1,9 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "flecs.h"
 #include "Blueprint/UserWidget.h"
 #include "UHUDWidget.generated.h"
-
 
 class ATurnController;
 
@@ -13,7 +13,7 @@ class CARDOPOLY_API UHUDWidget : public UUserWidget
 	GENERATED_BODY()
 
 public:
-	void Construct(ATurnController* turnController);
+	void Construct(flecs::world* ecsWorld);
 	
 	virtual void NativeConstruct() override;
 
@@ -29,6 +29,5 @@ private:
 	UPROPERTY(meta = (BindWidget))
 	class UButton* EndTurnButton;
 
-	UPROPERTY()
-	ATurnController* TurnController;
+	flecs::world* _ecsWorld;
 };
