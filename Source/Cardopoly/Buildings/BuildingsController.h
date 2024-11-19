@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Cardopoly/City/CityGrid.h"
+#include "Cardopoly/City/CityGridService.h"
 #include "Cardopoly/ECS/Core/Buildings/Factories/BuildingEntityFactory.h"
 #include "GameFramework/Actor.h"
 #include "BuildingsController.generated.h"

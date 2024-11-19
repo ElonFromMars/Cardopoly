@@ -1,5 +1,5 @@
 ﻿#pragma once
-#include "Cardopoly/City/CityGrid.h"
+#include "Cardopoly/City/CityGridService.h"
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 #include "Cardopoly/Grid/UGridSubsystem.h"
 

@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "flecs.h"
-#include "Cardopoly/City/CityGrid.h"
+#include "Cardopoly/City/CityGridService.h"
 #include "Cardopoly/ECS/Core/Citizens/Systems/CitizensInitializeSystem.h"
 #include "Cardopoly/ECS/Core/Debug/Systems/DrawDebugViewSystem.h"
 #include "Cardopoly/ECS/Core/Movement/Systems/MovementSystem.h"

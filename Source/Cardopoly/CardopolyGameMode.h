@@ -5,7 +5,7 @@
 #include "flecs.h"
 #include "CoreMinimal.h"
 #include "Buildings/BuildingsController.h"
-#include "City/CityGrid.h"
+#include "City/CityGridService.h"
 #include "Configs/UCityGeneratorConfig.h"
 #include "ECS/Infrastructure/Systems/IGameplaySystem.h"
 #include "EventBus/EventBus.hpp"

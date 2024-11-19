@@ -4,7 +4,7 @@
 #include "Buildings/BuildingsController.h"
 #include "Cards/CardFactory.h"
 #include "Cards/Hand/Hand.h"
-#include "City/CityGrid.h"
+#include "City/CityGridService.h"
 #include "City/Generator/CityGenerator.h"
 #include "Configs/LocalConfigHolder.h"
 #include "ECS/Factories/CoreGameplaySystemsFactory.h"

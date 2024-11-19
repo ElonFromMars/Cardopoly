@@ -2,7 +2,7 @@
 #include <fstream>
 #include <algorithm>
 
-#include "Cardopoly/City/CityGrid.h"
+#include "Cardopoly/City/CityGridService.h"
 
 using namespace std::placeholders;
 
