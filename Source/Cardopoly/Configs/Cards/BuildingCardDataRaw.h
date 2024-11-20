@@ -1,7 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Cardopoly/Configs/EBuildingViewIdConfig.h"
+#include "Cardopoly/Configs/Buildings/EBuildingIdConfig.h"
 #include "BuildingCardDataRaw.generated.h"
 
 USTRUCT()
@@ -20,8 +20,5 @@ public:
 	int32 Cost = 0;
 
 	UPROPERTY(EditAnywhere)
-	int32 Income = 0;
-
-	UPROPERTY(EditAnywhere)
-	EBuildingViewIdConfig ViewId;
+	EBuildingIdConfig BuildingId;
 };

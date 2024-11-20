@@ -2,16 +2,17 @@
 
 #include "Cardopoly/Configs/Buildings/EBuildingIdConfig.h"
 #include "Engine/DataAsset.h"
-#include "UBuildingsViewHolder.generated.h"
+#include "UBuildingConfigHolder.generated.h"
 
-class ABuilding;
+class UBuildingConfig;
 
 UCLASS(BlueprintType)
-class UBuildingsViewHolder : public UDataAsset
+class UBuildingConfigHolder : public UDataAsset
 {
 	GENERATED_BODY()
 	
 public:
 	UPROPERTY(EditAnywhere)
-	TMap<EBuildingIdConfig, TSubclassOf<ABuilding>> BuildingsById;
+	TMap<EBuildingIdConfig, UBuildingConfig*> BuildingsById;
 };
+

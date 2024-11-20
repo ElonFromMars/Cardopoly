@@ -9,7 +9,7 @@ TSubclassOf<AEntityView> UGameplayAssetData::GetEntityViewClass(EViewAssetType a
 	{
 		case EViewAssetType::Building:
 		{
-			EBuildingViewIdConfig buildingId = static_cast<EBuildingViewIdConfig>(id);
+			EBuildingIdConfig buildingId = static_cast<EBuildingIdConfig>(id);
 			if (BuildingsViewHolder->BuildingsById.Contains(buildingId))
 			{
 				return BuildingsViewHolder->BuildingsById[buildingId];

@@ -1,11 +1,12 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Cardopoly/City/CityGridService.h"
 #include "Cardopoly/ECS/Core/Buildings/Factories/BuildingEntityFactory.h"
+#include "Cardopoly/ECS/Core/Grid/Services/CityGridService.h"
 #include "GameFramework/Actor.h"
 #include "BuildingsController.generated.h"
 
+class ABuilding;
 class UGridSubsystem;
 
 UCLASS()
@@ -14,7 +15,7 @@ class CARDOPOLY_API ABuildingsController : public AActor
 	GENERATED_BODY()
 	
 public:
-	void Construct(UCityGrid* cityGrid, BuildingEntityFactory* buildingEntityFactory);
+	void Construct(CityGridService* cityGrid, BuildingEntityFactory* buildingEntityFactory);
 
 	bool CreateBuildingUnderScreenPosition(const FVector2D ScreenPosition, const uint32 id, ABuilding*& Building) const;
 
@@ -29,8 +30,7 @@ private:
 	
 	UPROPERTY()
 	UGridSubsystem* _gridSubsystem;
-	UPROPERTY()
-	UCityGrid* CityGrid;
 
+	CityGridService* _cityGrid;
 	BuildingEntityFactory* _buildingEntityFactory;
 };

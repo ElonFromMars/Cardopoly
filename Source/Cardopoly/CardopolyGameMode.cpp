@@ -4,9 +4,10 @@
 #include "Buildings/BuildingsController.h"
 #include "Cards/CardFactory.h"
 #include "Cards/Hand/Hand.h"
-#include "City/CityGridService.h"
 #include "City/Generator/CityGenerator.h"
 #include "Configs/LocalConfigHolder.h"
+#include "Configs/Buildings/GridObjectsDataProvider.h"
+#include "ECS/Core/Grid/Services/CityGridService.h"
 #include "ECS/Factories/CoreGameplaySystemsFactory.h"
 #include "ECS/Features/MainGameplayFeature.h"
 #include "EventBus/EventBus.hpp"
@@ -44,6 +45,9 @@ ACardopolyGameMode::~ACardopolyGameMode()
 	delete _aStar;
 	delete _world;
 	delete _buildingEntityFactory;
+	delete _gridObjectsDataProvider;
+	delete _cityGrid;
+	
 	for (auto system : _systems)
 	{
 		delete system;
@@ -56,7 +60,7 @@ void ACardopolyGameMode::BeginPlay()
 	
 	_world = new flecs::world();
 	EventBus* eventBus = CreateEventBus();
-	UCityGrid* CityGrid = CreateCityGrid();
+	CityGridService* CityGrid = CreateCityGrid();
 
 	CreateInput();
 	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
@@ -77,12 +81,12 @@ void ACardopolyGameMode::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void ACardopolyGameMode::CreatePathfinding(UCityGrid* CityGrid)
+void ACardopolyGameMode::CreatePathfinding(CityGridService* CityGrid)
 {
 	_aStar = new Pathfinding::AStar(CityGrid);
 }
 
-void ACardopolyGameMode::StartECS(UCityGrid* CityGrid)
+void ACardopolyGameMode::StartECS(CityGridService* CityGrid)
 {
 	_gridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();
 	
@@ -154,7 +158,7 @@ void ACardopolyGameMode::CreateInput() const
 	CardopolyPlayerController->Construct(LocalConfigHolder->InputLocalConfig);
 }
 
-ABuildingsController* ACardopolyGameMode::CreateBuildingController(UCityGrid* CityGrid)
+ABuildingsController* ACardopolyGameMode::CreateBuildingController(CityGridService* CityGrid)
 {
 	_buildingEntityFactory = new BuildingEntityFactory(_world);
 	
@@ -165,10 +169,11 @@ ABuildingsController* ACardopolyGameMode::CreateBuildingController(UCityGrid* Ci
 	return BuildingsController;
 }
 
-UCityGrid* ACardopolyGameMode::CreateCityGrid() const
+CityGridService* ACardopolyGameMode::CreateCityGrid()
 {
-	UCityGrid* CityGrid = NewObject<UCityGrid>();
-	return CityGrid;
+	_gridObjectsDataProvider = new GridObjectsDataProvider(LocalConfigHolder->BuildingConfigHolder);
+	_cityGrid = new CityGridService(_gridObjectsDataProvider);
+	return _cityGrid;
 }
 
 void ACardopolyGameMode::ConfigureCamera() const

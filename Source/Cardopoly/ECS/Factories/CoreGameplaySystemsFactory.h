@@ -1,7 +1,6 @@
 ﻿#pragma once
 
 #include "flecs.h"
-#include "Cardopoly/City/CityGridService.h"
 #include "Cardopoly/ECS/Core/Citizens/Systems/CitizensInitializeSystem.h"
 #include "Cardopoly/ECS/Core/Debug/Systems/DrawDebugViewSystem.h"
 #include "Cardopoly/ECS/Core/Movement/Systems/MovementSystem.h"
@@ -23,7 +22,7 @@ public:
 	CoreGameplaySystemsFactory(
 		flecs::world* world,
 		UGridSubsystem* gridSubsystem,
-		UCityGrid* cityGrid,
+		CityGridService* cityGrid,
 		Pathfinding::AStar* aStar,
 		UWorld* viewWorld,
 		UHUDWidget* hudWidget,
@@ -47,7 +46,7 @@ public:
 
 private:
 	UGridSubsystem* _gridSubsystem;
-	UCityGrid* _cityGrid;
+	CityGridService* _cityGrid;
 	Pathfinding::AStar* _aStar;
 	flecs::world* _world;
 	UWorld* _viewWorld;

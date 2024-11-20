@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 
+class CityGridService;
 class UCityGrid;
 
 namespace Pathfinding
@@ -46,7 +47,7 @@ namespace Pathfinding
 	class AStar
 	{
 	public:
-		AStar(UCityGrid* CityGrid);
+		AStar(CityGridService* CityGrid);
 
 		std::vector<FIntVector> FindPath(const FIntVector& startPos, const FIntVector& targetPos,
 		                                 HeuristicFunction heuristicFunc, int weight = 1);
@@ -64,7 +65,7 @@ namespace Pathfinding
 		FIntVector _dimensions;
 		FIntVector _startPos;
 		FIntVector _targetPos;
-		UCityGrid* _cityGrid;
+		CityGridService* _cityGrid;
 		
 		std::priority_queue<Node> _openList;
 		TMap<FIntVector, bool> _closedList;

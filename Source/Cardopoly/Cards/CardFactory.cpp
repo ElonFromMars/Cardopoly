@@ -37,7 +37,7 @@ ACard* UCardFactory::CreateCard()
 	FBuildingCardDataRaw* CardData = BuildingCardsConfig->FindRow<FBuildingCardDataRaw>(RandomRowName, ContextString);
 	
 	ACard* Card = World->SpawnActor<ACard>(CardAsset, FVector(), FRotator());
-	Card->Construct(BuildingsController, static_cast<uint32>(CardData->ViewId));//TODO replace with function call
+	Card->Construct(BuildingsController, static_cast<uint32>(CardData->BuildingId));//TODO replace with function call
 
 	if(auto CardWidget = Card->GetCardWidget())
 	{

@@ -5,9 +5,9 @@
 #include "Kismet/GameplayStatics.h"
 
 
-void ABuildingsController::Construct(UCityGrid* cityGrid, BuildingEntityFactory* buildingEntityFactory)
+void ABuildingsController::Construct(CityGridService* cityGrid, BuildingEntityFactory* buildingEntityFactory)
 {
-	CityGrid = cityGrid;
+	_cityGrid = cityGrid;
 	_buildingEntityFactory = buildingEntityFactory;
 }
 
@@ -49,18 +49,13 @@ ABuilding* ABuildingsController::CreateBuilding(const FIntVector cellPosition, c
 bool ABuildingsController::CanCreateBuildingUnderScreenPosition(const FVector2D ScreenPosition) const
 {
 	FIntVector CellPosition;
-	if (!IsValid(CityGrid))
-	{
-		UE_LOG(LogTemp, Error, TEXT("%hs"), "CityGrid = null");
-		return false;
-	}
 	return ScreenPointToGroundPosition(ScreenPosition, CellPosition)
 		&& !IsCellOccupied(CellPosition);
 }
 
 bool ABuildingsController::IsCellOccupied(FIntVector CellPosition) const
 {
-	return CityGrid->ContainsBuildingAtPosition(CellPosition);
+	return _cityGrid->ContainsBuildingAtPosition(CellPosition);
 }
 
 bool ABuildingsController::ScreenPointToGroundPosition(const FVector2D ScreenPosition, FIntVector& CellPosition) const

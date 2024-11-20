@@ -2,13 +2,14 @@
 #include <fstream>
 #include <algorithm>
 
-#include "Cardopoly/City/CityGridService.h"
+#include "Cardopoly/ECS/Core/Grid/Services/CityGridService.h"
+
 
 using namespace std::placeholders;
 
 namespace Pathfinding
 {
-	AStar::AStar(UCityGrid* CityGrid) :
+	AStar::AStar(CityGridService* CityGrid) :
 		_cityGrid(CityGrid),
 		_weight(1),
 		_dimensions(0, 0, 0),

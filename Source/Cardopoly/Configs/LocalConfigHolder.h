@@ -4,6 +4,7 @@
 #include "Engine/DataAsset.h"
 #include "LocalConfigHolder.generated.h"
 
+class UBuildingConfigHolder;
 class UInputLocalConfig;
 class UHandLocalConfig;
 
@@ -15,6 +16,9 @@ class CARDOPOLY_API ULocalConfigHolder : public UDataAsset
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UHandLocalConfig* HandLocalConfig;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UBuildingConfigHolder* BuildingConfigHolder;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UInputLocalConfig* InputLocalConfig;

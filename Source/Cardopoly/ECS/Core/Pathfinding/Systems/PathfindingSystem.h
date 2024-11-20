@@ -1,7 +1,10 @@
 ﻿#pragma once
-#include "Cardopoly/City/CityGridService.h"
+
+
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 #include "Cardopoly/Grid/UGridSubsystem.h"
+
+class CityGridService;
 
 namespace Pathfinding
 {
@@ -11,14 +14,10 @@ namespace Pathfinding
 class PathfindingSystem : public IGameplaySystem
 {
 public:
-	UGridSubsystem* _gridSubsystem;
-	UCityGrid* _cityGrid;
-	Pathfinding::AStar* _aStar;
-
 	PathfindingSystem(
 		flecs::world* world,
 		UGridSubsystem* gridSubsystem,
-		UCityGrid* cityGrid,
+		CityGridService* cityGrid,
 		Pathfinding::AStar* aStar
 		)
 		: IGameplaySystem(world),
@@ -30,4 +29,9 @@ public:
 	}
 	
 	virtual void Initialize() override;
+
+private:
+	UGridSubsystem* _gridSubsystem;
+	CityGridService* _cityGrid;
+	Pathfinding::AStar* _aStar;
 };

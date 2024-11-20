@@ -1,4 +1,6 @@
-﻿class IGridObjectsDataProvider
+﻿#pragma once
+
+class IGridObjectsDataProvider
 {
 public:
 	virtual TArray<FIntVector> GetLocalPositions(uint32 id) = 0;
