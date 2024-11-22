@@ -8,6 +8,10 @@
 			"Name": "Cardopoly",
 			"Type": "Runtime",
 			"LoadingPhase": "Default"
+		},
+		{
+			"Name": "CardopolyEditor",
+			"Type": "Editor"
 		}
 	],
 	"Plugins": [
