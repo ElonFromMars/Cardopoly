@@ -6,7 +6,7 @@ void CardopolyEditor::StartupModule()
 	UE_LOG(LogTemp, Warning, TEXT("%hs"), "StartupModule");
 	
 	FPropertyEditorModule& PropertyEditorModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-	PropertyEditorModule.RegisterCustomClassLayout("UBuildingGridData", FOnGetDetailCustomizationInstance::CreateStatic(&FBuildingGridDataCustomization::MakeInstance));
+	PropertyEditorModule.RegisterCustomPropertyTypeLayout("BuildingGridData", FOnGetPropertyTypeCustomizationInstance::CreateStatic(&FBuildingGridDataCustomization::MakeInstance));
 
 	PropertyEditorModule.NotifyCustomizationModuleChanged();
 }
@@ -14,7 +14,7 @@ void CardopolyEditor::StartupModule()
 void CardopolyEditor::ShutdownModule()
 {
 	FPropertyEditorModule& PropertyEditorModule = FModuleManager::LoadModuleChecked<FPropertyEditorModule>("PropertyEditor");
-	PropertyEditorModule.UnregisterCustomClassLayout("UBuildingGridData");
+	PropertyEditorModule.UnregisterCustomPropertyTypeLayout("BuildingGridData");
 }
 
 CardopolyEditor& CardopolyEditor::Get()

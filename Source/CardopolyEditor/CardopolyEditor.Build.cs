@@ -20,7 +20,8 @@ public class CardopolyEditor : ModuleRules
 			"Slate",
 			"SlateCore",
 			"UnrealEd",
-			"PropertyEditor"
+			"PropertyEditor",
+			"InputCore",
 		});
 	}
 }

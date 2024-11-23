@@ -1,19 +1,18 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "Editor/PropertyEditor/Public/IDetailCustomization.h"
+#include "IPropertyTypeCustomization.h"
 
 class SWidget;
 
-class FBuildingGridDataCustomization : public IDetailCustomization
+class FBuildingGridDataCustomization : public IPropertyTypeCustomization
 {
 public:
-	
-	static TSharedRef<IDetailCustomization> MakeInstance();
-	
-	virtual void CustomizeDetails(IDetailLayoutBuilder& DetailBuilder) override;
+	static TSharedRef<IPropertyTypeCustomization> MakeInstance();
+
+	virtual void CustomizeHeader(TSharedRef<IPropertyHandle> PropertyHandle, FDetailWidgetRow& HeaderRow, IPropertyTypeCustomizationUtils& CustomizationUtils) override;
+	virtual void CustomizeChildren(TSharedRef<IPropertyHandle> PropertyHandle, IDetailChildrenBuilder& ChildBuilder, IPropertyTypeCustomizationUtils& CustomizationUtils) override;
 
 private:
-	// Helper method to generate grid
 	TSharedRef<SWidget> GenerateGridWidget(TArray<bool>& GridData, int32 Rows, int32 Columns);
 };

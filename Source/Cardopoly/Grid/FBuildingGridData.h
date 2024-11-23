@@ -2,20 +2,19 @@
 
 #include "CoreMinimal.h"
 #include "Runtime/CoreUObject/Public/UObject/ObjectMacros.h"
-#include "UBuildingGridData.generated.h"
+#include "FBuildingGridData.generated.h"
 
-UCLASS(BlueprintType, EditInlineNew)
-class UBuildingGridData : public UObject
+USTRUCT(BlueprintType)
+struct FBuildingGridData
 {
 	GENERATED_BODY()
 
-public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<bool> GridCells;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Rows;
+	int32 Rows = 0;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int32 Columns;
+	int32 Columns = 0;
 };
