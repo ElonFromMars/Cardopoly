@@ -53,62 +53,84 @@ void FBuildingGridDataCustomization::CustomizeChildren(TSharedRef<IPropertyHandl
         }
         
         UE_LOG(LogTemp, Warning, TEXT("Resizing GridCells to %lld elements"), TotalGridSize);
-        
-        ChildBuilder.AddCustomRow(FText::FromString("Rows"))
-        .NameContent()
-        [
-            SNew(STextBlock).Text(FText::FromString("Rows"))
-        ]
-        .ValueContent()
-        [
-            SNew(SNumericEntryBox<int32>)
-            .Value_Lambda([GridData]() { return GridData->Rows; })
-            .OnValueChanged_Lambda([GridData, PropertyHandle](int32 NewValue)
-            {
-                GridData->Rows = FMath::Clamp(NewValue, 1, 100);
-                GridData->GridCells.SetNum(GridData->Rows * GridData->Columns);
-                PropertyHandle->NotifyPostChange(EPropertyChangeType::ValueSet);
-            })
-        ];
 
-        ChildBuilder.AddCustomRow(FText::FromString("Columns"))
-        .NameContent()
-        [
-            SNew(STextBlock).Text(FText::FromString("Columns"))
-        ]
-        .ValueContent()
-        [
-            SNew(SNumericEntryBox<int32>)
-            .Value_Lambda([GridData]() { return GridData->Columns; })
-            .OnValueChanged_Lambda([GridData, PropertyHandle](int32 NewValue)
-            {
-                GridData->Columns = FMath::Clamp(NewValue, 1, 100);
-                GridData->GridCells.SetNum(GridData->Rows * GridData->Columns);
-                PropertyHandle->NotifyPostChange(EPropertyChangeType::ValueSet);
-            })
-        ];
+        TSharedRef<SHorizontalBox> griContainer = SNew(SHorizontalBox);
+
+        auto rebuildGrid = [this, GridData, griContainer]()
+        {
+            griContainer->ClearChildren();
+            griContainer->AddSlot()
+            [
+                GenerateGridWidget(GridData)
+            ];
+        };
         
-        ChildBuilder.AddCustomRow(FText::FromString("Grid Editor"))
-        .ValueContent()
-        .MinDesiredWidth(500)
-        [
-            GenerateGridWidget(GridData->GridCells, GridData->Rows, GridData->Columns)
-        ];
+        FDetailWidgetRow rowsWidget = ChildBuilder
+            .AddCustomRow(FText::FromString("Rows"))
+            .NameContent()
+            [
+                SNew(STextBlock).Text(FText::FromString("Rows"))
+            ]
+            .ValueContent()
+            [
+                SNew(SNumericEntryBox<int32>)
+                .Value_Lambda([GridData]() { return GridData->Rows; })
+                .OnValueChanged_Lambda([GridData, PropertyHandle, rebuildGrid](int32 NewValue)
+                {
+                    GridData->Rows = FMath::Clamp(NewValue, 1, 100);
+                    GridData->GridCells.SetNum(GridData->Rows * GridData->Columns);
+                    PropertyHandle->NotifyPostChange(EPropertyChangeType::ValueSet);
+                    rebuildGrid();
+                })
+            ];
+        
+        FDetailWidgetRow columnsWidget = ChildBuilder
+            .AddCustomRow(FText::FromString("Columns"))
+            .NameContent()
+            [
+                SNew(STextBlock).Text(FText::FromString("Columns"))
+            ]
+            .ValueContent()
+            [
+                SNew(SNumericEntryBox<int32>)
+                .Value_Lambda([GridData]() { return GridData->Columns; })
+                .OnValueChanged_Lambda([GridData, PropertyHandle, rebuildGrid](int32 NewValue)
+                {
+                    GridData->Columns = FMath::Clamp(NewValue, 1, 100);
+                    GridData->GridCells.SetNum(GridData->Rows * GridData->Columns);
+                    PropertyHandle->NotifyPostChange(EPropertyChangeType::ValueSet);
+                    rebuildGrid();
+                })
+            ];
+
+        FDetailWidgetRow gridEditorWidget = ChildBuilder
+            .AddCustomRow(FText::FromString("Grid Editor"))
+            .ValueContent()
+            .MinDesiredWidth(500)
+            [
+                griContainer
+            ];
+        
+        rebuildGrid();
     }
 }
 
-TSharedRef<SWidget> FBuildingGridDataCustomization::GenerateGridWidget(TArray<bool>& GridData, int32 Rows, int32 Columns)
+TSharedRef<SWidget> FBuildingGridDataCustomization::GenerateGridWidget(FBuildingGridData* gridData)
 {
-    UE_LOG(LogTemp, Warning, TEXT("GenerateGridWidget: Rows=%d, Columns=%d, GridDataSize=%d"), Rows, Columns, GridData.Num());
+    TArray<bool>& cells = gridData->GridCells;
+    int32 Rows = gridData->Rows;
+    int32 Columns = gridData->Columns;
+    
+    UE_LOG(LogTemp, Warning, TEXT("GenerateGridWidget: Rows=%d, Columns=%d, GridDataSize=%d"), Rows, Columns, cells.Num());
 
     Rows = FMath::Clamp(Rows, 1, 100);
     Columns = FMath::Clamp(Columns, 1, 100);
 
     int32 TotalSize = Rows * Columns;
-    if (GridData.Num() != TotalSize)
+    if (cells.Num() != TotalSize)
     {
         UE_LOG(LogTemp, Warning, TEXT("Resizing GridData array to %d"), TotalSize);
-        GridData.SetNum(TotalSize);
+        cells.SetNum(TotalSize);
     }
 
     TSharedRef<SGridPanel> GridPanel = SNew(SGridPanel);
@@ -119,26 +141,26 @@ TSharedRef<SWidget> FBuildingGridDataCustomization::GenerateGridWidget(TArray<bo
         {
             int32 Index = Row * Columns + Col;
 
-            if (Index >= GridData.Num())
+            if (Index >= cells.Num())
             {
-                UE_LOG(LogTemp, Error, TEXT("Index %d is out of bounds for GridData of size %d"), Index, GridData.Num());
+                UE_LOG(LogTemp, Error, TEXT("Index %d is out of bounds for GridData of size %d"), Index, cells.Num());
                 continue;
             }
 
             GridPanel->AddSlot(Col, Row)
             [
                 SNew(SButton)
-                .OnClicked_Lambda([Index, &GridData]()
+                .OnClicked_Lambda([Index, &cells]()
                 {
-                    if (Index < GridData.Num())
+                    if (Index < cells.Num())
                     {
-                        GridData[Index] = !GridData[Index];
+                        cells[Index] = !cells[Index];
                     }
                     return FReply::Handled();
                 })
-                .ButtonColorAndOpacity_Lambda([Index, &GridData]()
+                .ButtonColorAndOpacity_Lambda([Index, &cells]()
                 {
-                    return (Index < GridData.Num() && GridData[Index]) ? FLinearColor::Green : FLinearColor::Red;
+                    return (Index < cells.Num() && cells[Index]) ? FLinearColor::Green : FLinearColor::Red;
                 })
                 .Content()
                 [
