@@ -12,7 +12,6 @@ public class CardopolyEditor : ModuleRules
 			"Core",
 			"CoreUObject",
 			"Engine",
-			"Cardopoly"
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[]
@@ -22,6 +21,7 @@ public class CardopolyEditor : ModuleRules
 			"UnrealEd",
 			"PropertyEditor",
 			"InputCore",
+			"Cardopoly"
 		});
 	}
 }
