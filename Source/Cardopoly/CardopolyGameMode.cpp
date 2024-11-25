@@ -7,6 +7,7 @@
 #include "City/Generator/CityGenerator.h"
 #include "Configs/LocalConfigHolder.h"
 #include "Configs/Buildings/GridObjectsDataProvider.h"
+#include "Configs/Buildings/UBuildingConfig.h"
 #include "ECS/Core/Grid/Services/CityGridService.h"
 #include "ECS/Factories/CoreGameplaySystemsFactory.h"
 #include "ECS/Features/MainGameplayFeature.h"
@@ -56,6 +57,15 @@ ACardopolyGameMode::~ACardopolyGameMode()
 
 void ACardopolyGameMode::BeginPlay()
 {
+	for (auto building : LocalConfigHolder->BuildingConfigHolder->BuildingsById)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Building: %d"), building.Key);
+		for (auto cell : building.Value->GridData.GetCellsAsIntVectors())
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Cell: %s"), *cell.ToString());
+		}
+	}
+	
 	Super::BeginPlay();
 	
 	_world = new flecs::world();

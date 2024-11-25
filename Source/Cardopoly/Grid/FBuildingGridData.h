@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "FBoolGridToVectorArrayIterator.h"
 #include "Runtime/CoreUObject/Public/UObject/ObjectMacros.h"
 #include "FBuildingGridData.generated.h"
 
@@ -9,6 +10,11 @@ struct FBuildingGridData
 {
 	GENERATED_BODY()
 
+	FBoolGridToVectorArrayIterator GetCellsAsIntVectors() const
+	{
+		return FBoolGridToVectorArrayIterator(GridCells, Columns);
+	}
+	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<bool> GridCells;
 
