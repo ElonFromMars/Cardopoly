@@ -1,7 +1,7 @@
 #include "CardopolyGameMode.h"
 #include "ARTSCamera.h"
 #include "AssetHolders/GameplayAssetData.h"
-#include "Buildings/BuildingsController.h"
+#include "Buildings/BuildingService.h"
 #include "Cards/CardFactory.h"
 #include "Cards/Hand/Hand.h"
 #include "City/Generator/CityGenerator.h"
@@ -48,6 +48,7 @@ ACardopolyGameMode::~ACardopolyGameMode()
 	delete _buildingEntityFactory;
 	delete _gridObjectsDataProvider;
 	delete _cityGrid;
+	delete _buildingService;
 	
 	for (auto system : _systems)
 	{
@@ -57,32 +58,23 @@ ACardopolyGameMode::~ACardopolyGameMode()
 
 void ACardopolyGameMode::BeginPlay()
 {
-	for (auto building : LocalConfigHolder->BuildingConfigHolder->BuildingsById)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Building: %d"), building.Key);
-		for (auto cell : building.Value->GridData.GetCellsAsIntVectors())
-		{
-			UE_LOG(LogTemp, Warning, TEXT("Cell: %s"), *cell.ToString());
-		}
-	}
-	
 	Super::BeginPlay();
 	
 	_world = new flecs::world();
 	EventBus* eventBus = CreateEventBus();
-	CityGridService* CityGrid = CreateCityGrid();
+	CityGridService* cityGrid = CreateCityGrid();
 
 	CreateInput();
-	ABuildingsController* BuildingsController = CreateBuildingController(CityGrid);
+	CreateBuildingService(cityGrid);
 
 	ConfigureCamera();
 
 	CreateAndAddHUDWidget();
 	//CreateCity(BuildingsController);
-	Hand = CreateHand(BuildingsController, eventBus);
+	Hand = CreateHand(_buildingService, eventBus);
 	
-	CreatePathfinding(CityGrid);
-	StartECS(CityGrid);
+	CreatePathfinding(cityGrid);
+	StartECS(cityGrid);
 }
 
 void ACardopolyGameMode::Tick(float DeltaTime)
@@ -132,7 +124,7 @@ EventBus* ACardopolyGameMode::CreateEventBus()
 	return _eventBus;
 }
 
-void ACardopolyGameMode::CreateCity(ABuildingsController* BuildingsController) const
+void ACardopolyGameMode::CreateCity(BuildingService* BuildingsController) const
 {
 	UWorld* World = GetWorld();
 	CityGenerator cityGenerator = CityGenerator(CityGeneratorConfig, World, BuildingsController);
@@ -140,7 +132,7 @@ void ACardopolyGameMode::CreateCity(ABuildingsController* BuildingsController) c
 	cityGenerator.Generate();
 }
 
-AHand* ACardopolyGameMode::CreateHand(ABuildingsController* BuildingsController, EventBus* eventBus) const
+AHand* ACardopolyGameMode::CreateHand(BuildingService* BuildingsController, EventBus* eventBus) const
 {
 	UWorld* World = GetWorld();
 	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
@@ -168,15 +160,19 @@ void ACardopolyGameMode::CreateInput() const
 	CardopolyPlayerController->Construct(LocalConfigHolder->InputLocalConfig);
 }
 
-ABuildingsController* ACardopolyGameMode::CreateBuildingController(CityGridService* CityGrid)
+BuildingService* ACardopolyGameMode::CreateBuildingService(CityGridService* CityGrid)
 {
 	_buildingEntityFactory = new BuildingEntityFactory(_world);
 	
 	UWorld* World = GetWorld();
-	ABuildingsController* BuildingsController = World->SpawnActor<ABuildingsController>(FVector::ZeroVector, FRotator::ZeroRotator);
-	BuildingsController->Construct(CityGrid, _buildingEntityFactory);
+	_buildingService = new BuildingService(
+		CityGrid,
+		_buildingEntityFactory,
+		_gridSubsystem, World,
+		LocalConfigHolder->BuildingConfigHolder
+	);
 	
-	return BuildingsController;
+	return _buildingService;
 }
 
 CityGridService* ACardopolyGameMode::CreateCityGrid()

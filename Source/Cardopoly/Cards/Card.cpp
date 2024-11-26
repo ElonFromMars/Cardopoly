@@ -2,7 +2,7 @@
 
 #include "FCTween.h"
 #include "FCTweenInstance.h"
-#include "Cardopoly/Buildings/BuildingsController.h"
+#include "Cardopoly/Buildings/BuildingService.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -11,7 +11,7 @@ ACard::ACard()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ACard::Construct(ABuildingsController* buildingsController, uint32 id)
+void ACard::Construct(BuildingService* buildingsController, uint32 id)
 {
 	_id = id;
 	BuildingsController = buildingsController;

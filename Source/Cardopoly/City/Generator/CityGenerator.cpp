@@ -1,5 +1,5 @@
 ﻿#include "CityGenerator.h"
-#include "Cardopoly/Buildings/BuildingsController.h"
+#include "Cardopoly/Buildings/BuildingService.h"
 #include "Cardopoly/Configs/UCityGeneratorConfig.h"
 
 void CityGenerator::Generate()

@@ -7,7 +7,7 @@
 class ULocalConfigHolder;
 class UGameplayAssetData;
 class ACard;
-class ABuildingsController;
+class BuildingService;
 
 UCLASS()
 class CARDOPOLY_API UCardFactory : public UObject
@@ -22,13 +22,13 @@ private:
 	UPROPERTY()
 	UWorld* World;
 	UPROPERTY()
-	ABuildingsController* BuildingsController;
+	BuildingService* BuildingsController;
 	
 public:
 	virtual void Construct(
 		UWorld* world,
 		UGameplayAssetData* gameplayAssetData,
-		ABuildingsController* buildingsController,
+		BuildingService* buildingsService,
 		ULocalConfigHolder* localConfigHolder);
 	
 	virtual ACard* CreateCard();

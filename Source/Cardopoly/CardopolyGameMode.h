@@ -4,7 +4,7 @@
 
 #include "flecs.h"
 #include "CoreMinimal.h"
-#include "Buildings/BuildingsController.h"
+#include "Buildings/BuildingService.h"
 #include "Configs/UCityGeneratorConfig.h"
 #include "ECS/Infrastructure/Systems/IGameplaySystem.h"
 #include "EventBus/EventBus.hpp"
@@ -45,11 +45,11 @@ public:
 	
 	EventBus* CreateEventBus();
 	
-	void CreateCity(ABuildingsController* BuildingsController) const;
-	AHand* CreateHand(ABuildingsController* BuildingsController, EventBus* eventBus) const;
+	void CreateCity(BuildingService* BuildingsController) const;
+	AHand* CreateHand(BuildingService* BuildingsController, EventBus* eventBus) const;
 
 	void CreateInput() const;
-	ABuildingsController* CreateBuildingController(CityGridService* CityGrid);
+	BuildingService* CreateBuildingService(CityGridService* CityGrid);
 	CityGridService* CreateCityGrid();
 	void ConfigureCamera() const;
 	void CreateAndAddHUDWidget();
@@ -80,6 +80,7 @@ private:
 	UGridSubsystem* _gridSubsystem;
 	std::vector<IGameplaySystem*> _systems;
 	BuildingEntityFactory* _buildingEntityFactory;
+	BuildingService* _buildingService;
 	CityGridService* _cityGrid;
 	GridObjectsDataProvider* _gridObjectsDataProvider;
 };

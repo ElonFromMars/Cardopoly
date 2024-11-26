@@ -9,7 +9,7 @@
 #include "Card.generated.h"
 
 class ACard;
-class ABuildingsController;
+class BuildingService;
 class FCTweenInstance;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCardAppliedSignature, ACard*, card);
@@ -22,7 +22,7 @@ class CARDOPOLY_API ACard : public AActor
 public:
 	ACard();
 
-	void Construct(ABuildingsController* BuildingsController, uint32 id);
+	void Construct(BuildingService* BuildingsController, uint32 id);
 
 protected:
 	virtual void BeginPlay() override;
@@ -66,5 +66,5 @@ public:
 	
 private:
 	UPROPERTY()
-	ABuildingsController* BuildingsController;
+	BuildingService* BuildingsController;
 };

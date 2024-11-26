@@ -11,12 +11,12 @@
 void UCardFactory::Construct(
 	UWorld* world,
 	UGameplayAssetData* gameplayAssetData,
-	ABuildingsController* buildingsController,
+	BuildingService* buildingsService,
 	ULocalConfigHolder* localConfigHolder)
 {
 	World = world;
 	GameplayAssetData = gameplayAssetData;
-	BuildingsController = buildingsController;
+	BuildingsController = buildingsService;
 	BuildingCardsConfig = localConfigHolder->BuildingCardsConfig;
 }
 

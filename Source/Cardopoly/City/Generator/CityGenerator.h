@@ -1,6 +1,6 @@
 ﻿#pragma once
 
-class ABuildingsController;
+class BuildingService;
 class UCityGeneratorConfig;
 
 class CityGenerator
@@ -9,13 +9,13 @@ class CityGenerator
 private:
 	UCityGeneratorConfig* CityGeneratorConfig;
 	UWorld* World;
-	ABuildingsController* BuildingsController;
+	BuildingService* BuildingsController;
 	
 public:
 	CityGenerator(
 		UCityGeneratorConfig* cityGeneratorConfig,
 		UWorld* world,
-		ABuildingsController* buildingsController)
+		BuildingService* buildingsController)
 		: CityGeneratorConfig(cityGeneratorConfig),
 		  World(world),
 		  BuildingsController(buildingsController)
