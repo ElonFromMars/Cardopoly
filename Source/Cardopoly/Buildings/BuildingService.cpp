@@ -3,7 +3,7 @@
 #include "Cardopoly/Configs/Buildings/UBuildingConfig.h"
 #include "Cardopoly/Configs/Buildings/UBuildingConfigHolder.h"
 #include "Cardopoly/ECS/Core/Buildings/Factories/BuildingEntityFactory.h"
-#include "Cardopoly/Grid/UGridSubsystem.h"
+#include "Cardopoly/Grid/GridLayout.h"
 #include "Kismet/GameplayStatics.h"
 
 bool BuildingService::CreateBuildingUnderScreenPosition(const FVector2D ScreenPosition, const uint32 id, flecs::entity& building) const
@@ -23,7 +23,7 @@ bool BuildingService::CreateBuildingUnderScreenPosition(const FVector2D ScreenPo
 flecs::entity BuildingService::CreateBuilding(const FIntVector cellPosition, const uint32 id) const
 {
 	flecs::entity buildingEntity = _buildingEntityFactory->Create(cellPosition, id);
-	const FVector CellWorldPosition = _gridSubsystem->GetCellCenterWorldPosition(cellPosition);
+	const FVector CellWorldPosition = _gridLayout->GetCellCenterWorldPosition(cellPosition);
 
 	//TODO rewrite asap
 	/*ABuilding* Building = GetWorld()->SpawnActor<ABuilding>(ABuilding::StaticClass(), CellWorldPosition,FRotator::ZeroRotator);
@@ -32,6 +32,8 @@ flecs::entity BuildingService::CreateBuilding(const FIntVector cellPosition, con
 	
 	return Building;*/
 
+
+	_cityGrid->PutEntityAtPosition(cellPosition, buildingEntity);
 	for (auto building : _buildingConfigHolder->BuildingsById)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Building: %d"), building.Key);
@@ -73,7 +75,7 @@ bool BuildingService::ScreenPointToGroundPosition(const FVector2D screenPosition
 		
 		if (_viewWorld->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_GameTraceChannel1, CollisionParams))
 		{
-			cellPosition = _gridSubsystem->WorldPositionToGrid(HitResult.Location);
+			cellPosition = _gridLayout->WorldPositionToGrid(HitResult.Location);
 			return true;
 		}
 	}

@@ -3,7 +3,7 @@
 #include "flecs.h"
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 
-class UGridSubsystem;
+class GridLayout;
 class UGameplayAssetData;
 
 class InitializeGridPositionSystem : public IGameplaySystem
@@ -11,17 +11,17 @@ class InitializeGridPositionSystem : public IGameplaySystem
 public:
 	InitializeGridPositionSystem(
 		flecs::world* flecsWorld,
-		UGridSubsystem* gridSubsystem,
+		GridLayout* gridLayout,
 		UWorld* viewWorld
 		)
 		: IGameplaySystem(flecsWorld)
 	{
-		_gridSubsystem = gridSubsystem;
+		_gridLayout = gridLayout;
 		_viewWorld = viewWorld;
 	}
 
 	virtual void Initialize() override;
 	
-	UGridSubsystem* _gridSubsystem;
+	GridLayout* _gridLayout;
 	UWorld* _viewWorld;
 };

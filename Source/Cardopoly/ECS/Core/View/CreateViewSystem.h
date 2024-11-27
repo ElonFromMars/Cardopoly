@@ -3,7 +3,6 @@
 #include "flecs.h"
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 
-class UGridSubsystem;
 class UGameplayAssetData;
 
 class CreateViewSystem : public IGameplaySystem

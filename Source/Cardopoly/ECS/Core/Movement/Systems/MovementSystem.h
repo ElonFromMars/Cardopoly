@@ -2,18 +2,18 @@
 
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 
-class UGridSubsystem;
+class GridLayout;
 
 class MovementSystem : public IGameplaySystem
 {
 public:
-	MovementSystem(flecs::world* world, UGridSubsystem* gridSubsystem) : IGameplaySystem(world)
+	MovementSystem(flecs::world* world, GridLayout* gridLayout) : IGameplaySystem(world)
 	{
-		_gridSubsystem = gridSubsystem;
+		_gridLayout = gridLayout;
 	}
 	
 	virtual void Initialize() override;
 
 private:
-	UGridSubsystem* _gridSubsystem;
+	GridLayout* _gridLayout;
 };

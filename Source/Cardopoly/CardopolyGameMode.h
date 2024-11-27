@@ -77,10 +77,10 @@ private:
 	EventBus* _eventBus;
 	flecs::world* _world;
 	Pathfinding::AStar* _aStar;
-	UGridSubsystem* _gridSubsystem;
 	std::vector<IGameplaySystem*> _systems;
 	BuildingEntityFactory* _buildingEntityFactory;
 	BuildingService* _buildingService;
 	CityGridService* _cityGrid;
 	GridObjectsDataProvider* _gridObjectsDataProvider;
+	GridLayout* _gridLayout;
 };

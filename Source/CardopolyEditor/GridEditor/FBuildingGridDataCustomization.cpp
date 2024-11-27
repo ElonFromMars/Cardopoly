@@ -118,15 +118,15 @@ void FBuildingGridDataCustomization::CustomizeChildren(TSharedRef<IPropertyHandl
 TSharedRef<SWidget> FBuildingGridDataCustomization::GenerateGridWidget(FBuildingGridData* gridData)
 {
     TArray<bool>& cells = gridData->GridCells;
-    int32 Rows = gridData->Rows;
-    int32 Columns = gridData->Columns;
+    int32 rows = gridData->Rows;
+    int32 columns = gridData->Columns;
     
-    UE_LOG(LogTemp, Warning, TEXT("GenerateGridWidget: Rows=%d, Columns=%d, GridDataSize=%d"), Rows, Columns, cells.Num());
+    UE_LOG(LogTemp, Warning, TEXT("GenerateGridWidget: Rows=%d, Columns=%d, GridDataSize=%d"), rows, columns, cells.Num());
 
-    Rows = FMath::Clamp(Rows, 1, 100);
-    Columns = FMath::Clamp(Columns, 1, 100);
+    rows = FMath::Clamp(rows, 1, 100);
+    columns = FMath::Clamp(columns, 1, 100);
 
-    int32 TotalSize = Rows * Columns;
+    int32 TotalSize = rows * columns;
     if (cells.Num() != TotalSize)
     {
         UE_LOG(LogTemp, Warning, TEXT("Resizing GridData array to %d"), TotalSize);
@@ -135,32 +135,32 @@ TSharedRef<SWidget> FBuildingGridDataCustomization::GenerateGridWidget(FBuilding
 
     TSharedRef<SGridPanel> GridPanel = SNew(SGridPanel);
 
-    for (int32 Row = 0; Row < Rows; ++Row)
+    for (int32 row = 0; row < rows; ++row)
     {
-        for (int32 Col = 0; Col < Columns; ++Col)
+        for (int32 column = 0; column < columns; ++column)
         {
-            int32 Index = Row * Columns + Col;
+            int32 index = row * columns + column;
 
-            if (Index >= cells.Num())
+            if (index >= cells.Num())
             {
-                UE_LOG(LogTemp, Error, TEXT("Index %d is out of bounds for GridData of size %d"), Index, cells.Num());
+                UE_LOG(LogTemp, Error, TEXT("Index %d is out of bounds for GridData of size %d"), index, cells.Num());
                 continue;
             }
 
-            GridPanel->AddSlot(Col, Row)
+            GridPanel->AddSlot(column, row)
             [
                 SNew(SButton)
-                .OnClicked_Lambda([Index, &cells]()
+                .OnClicked_Lambda([index, &cells]()
                 {
-                    if (Index < cells.Num())
+                    if (index < cells.Num())
                     {
-                        cells[Index] = !cells[Index];
+                        cells[index] = !cells[index];
                     }
                     return FReply::Handled();
                 })
-                .ButtonColorAndOpacity_Lambda([Index, &cells]()
+                .ButtonColorAndOpacity_Lambda([index, &cells]()
                 {
-                    return (Index < cells.Num() && cells[Index]) ? FLinearColor::Green : FLinearColor::Red;
+                    return (index < cells.Num() && cells[index]) ? FLinearColor::Green : FLinearColor::Red;
                 })
                 .Content()
                 [

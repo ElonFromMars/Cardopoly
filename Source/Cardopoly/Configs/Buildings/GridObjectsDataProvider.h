@@ -7,11 +7,15 @@ class GridObjectsDataProvider : public IGridObjectsDataProvider
 {
 public:
 	GridObjectsDataProvider(UBuildingConfigHolder* buildingCardsConfig);
+
+	void Initialize();
 	
-	virtual TArray<FIntVector> GetLocalPositions(uint32 id) override;
+	virtual const TArray<FIntVector>& GetLocalPositions(uint32 id) override;
 	
 	virtual ~GridObjectsDataProvider() override;
 
 private:
 	UBuildingConfigHolder* _buildingCardsConfig;
+
+	TMap<uint32, TArray<FIntVector>> _localBuildingsPositionsById;
 };

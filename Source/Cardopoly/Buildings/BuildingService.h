@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 
 class UBuildingConfigHolder;
-class UGridSubsystem;
+class GridLayout;
 
 class BuildingService
 {
@@ -14,11 +14,11 @@ public:
 	BuildingService(
 		CityGridService* cityGrid,
 		BuildingEntityFactory* buildingEntityFactory,
-		UGridSubsystem* gridSubsystem,
+		GridLayout* gridLayout,
 		UWorld* viewWorld,
 		UBuildingConfigHolder* buildingConfigHolder
 	)
-		: _gridSubsystem(gridSubsystem),
+		: _gridLayout(gridLayout),
 		_cityGrid(cityGrid),
 		_buildingEntityFactory(buildingEntityFactory),
 		_viewWorld(viewWorld),
@@ -36,7 +36,7 @@ public:
 	bool ScreenPointToGroundPosition(FVector2D screenPosition, FIntVector& cellPosition) const;
 
 private:
-	UGridSubsystem* _gridSubsystem;
+	GridLayout* _gridLayout;
 	CityGridService* _cityGrid;
 	BuildingEntityFactory* _buildingEntityFactory;
 	UWorld* _viewWorld;

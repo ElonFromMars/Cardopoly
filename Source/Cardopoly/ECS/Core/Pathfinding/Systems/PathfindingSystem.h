@@ -2,7 +2,7 @@
 
 
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
-#include "Cardopoly/Grid/UGridSubsystem.h"
+#include "Cardopoly/Grid/GridLayout.h"
 
 class CityGridService;
 
@@ -16,12 +16,12 @@ class PathfindingSystem : public IGameplaySystem
 public:
 	PathfindingSystem(
 		flecs::world* world,
-		UGridSubsystem* gridSubsystem,
+		GridLayout* gridLayout,
 		CityGridService* cityGrid,
 		Pathfinding::AStar* aStar
 		)
 		: IGameplaySystem(world),
-		_gridSubsystem(gridSubsystem),
+		_gridLayout(gridLayout),
 		_cityGrid(cityGrid),
 		_aStar(aStar)
 	{
@@ -31,7 +31,7 @@ public:
 	virtual void Initialize() override;
 
 private:
-	UGridSubsystem* _gridSubsystem;
+	GridLayout* _gridLayout;
 	CityGridService* _cityGrid;
 	Pathfinding::AStar* _aStar;
 };

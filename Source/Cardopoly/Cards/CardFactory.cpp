@@ -16,7 +16,7 @@ void UCardFactory::Construct(
 {
 	World = world;
 	GameplayAssetData = gameplayAssetData;
-	BuildingsController = buildingsService;
+	_buildingsController = buildingsService;
 	BuildingCardsConfig = localConfigHolder->BuildingCardsConfig;
 }
 
@@ -37,7 +37,7 @@ ACard* UCardFactory::CreateCard()
 	FBuildingCardDataRaw* CardData = BuildingCardsConfig->FindRow<FBuildingCardDataRaw>(RandomRowName, ContextString);
 	
 	ACard* Card = World->SpawnActor<ACard>(CardAsset, FVector(), FRotator());
-	Card->Construct(BuildingsController, static_cast<uint32>(CardData->BuildingId));//TODO replace with function call
+	Card->Construct(_buildingsController, static_cast<uint32>(CardData->BuildingId));//TODO replace with function call
 
 	if(auto CardWidget = Card->GetCardWidget())
 	{

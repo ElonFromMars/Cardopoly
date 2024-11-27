@@ -9,11 +9,11 @@ class CityGridService
 public:
 	CityGridService(IGridObjectsDataProvider* gridObjectsDataProvider);
 	
-	bool ContainsBuildingAtPosition(FIntVector Position) const;
+	bool ContainsBuildingAtPosition(const FIntVector Position) const;
 
-	void PutEntityAtPosition(FIntVector Position, flecs::entity entity);
+	void PutEntityAtPosition(const FIntVector Position, const flecs::entity entity);
 
-	bool GetBuildingAtPosition(FIntVector Position, flecs::entity& entity);
+	bool GetBuildingAtPosition(const FIntVector Position, flecs::entity& entity);
 
 	bool IsValidPosition(const FIntVector& Pos);
 

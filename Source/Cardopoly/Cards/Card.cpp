@@ -14,7 +14,7 @@ ACard::ACard()
 void ACard::Construct(BuildingService* buildingsController, uint32 id)
 {
 	_id = id;
-	BuildingsController = buildingsController;
+	_buildingsService = buildingsController;
 	const auto WidgetComponent = this->GetComponentByClass<UWidgetComponent>();
 	CardWidget = StaticCast<UCardWidget*>(WidgetComponent->GetUserWidgetObject());
 	WidgetComponent->RequestRenderUpdate();
@@ -43,13 +43,13 @@ void ACard::Tick(float DeltaTime)
 
 bool ACard::CanApply(FVector2D ScreenPosition)
 {
-	return BuildingsController->CanCreateBuildingUnderScreenPosition(ScreenPosition);
+	return _buildingsService->CanCreateBuildingUnderScreenPosition(ScreenPosition);
 }
 
 void ACard::Apply(FVector2D ScreenPosition)
 {
-	ABuilding* Building;
-	BuildingsController->CreateBuildingUnderScreenPosition(ScreenPosition, _id, Building);
+	flecs::entity buildingEntity;
+	_buildingsService->CreateBuildingUnderScreenPosition(ScreenPosition, _id, buildingEntity);
 	
 	OnCardAppliedDelegate.Broadcast(this);
 }

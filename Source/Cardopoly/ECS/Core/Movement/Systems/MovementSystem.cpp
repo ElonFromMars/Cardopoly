@@ -5,7 +5,7 @@
 #include "Cardopoly/ECS/Core/Movement/Components/FPositionComponent.h"
 #include "Cardopoly/ECS/Core/Pathfinding/Components/FGridPathComponent.h"
 #include "Cardopoly/ECS/Core/Pathfinding/Components/FSearchPathRequest.h"
-#include "Cardopoly/Grid/UGridSubsystem.h"
+#include "Cardopoly/Grid/GridLayout.h"
 
 void MovementSystem::Initialize()
 {
@@ -13,11 +13,11 @@ void MovementSystem::Initialize()
 		.each([this](flecs::entity entity, FPositionComponent& pos, FGridPositionComponent& gridPos, FGridPathComponent& gridPath, FMaxSpeedComponent& speed) {
 
 				auto deltaTime = _world->delta_time();
-				FVector targetWorldPos = _gridSubsystem->GetCellCenterWorldPosition(gridPath.CurrentGridTarget);
+				FVector targetWorldPos = _gridLayout->GetCellCenterWorldPosition(gridPath.CurrentGridTarget);
 				FVector difference = (targetWorldPos - pos.Value).GetSafeNormal() * speed.Value * deltaTime;
 				FVector newWorldPos = pos.Value + difference;
 				pos.Value = newWorldPos;
-				auto newGridPos = _gridSubsystem->WorldPositionToGrid(newWorldPos);
+				auto newGridPos = _gridLayout->WorldPositionToGrid(newWorldPos);
 				gridPos.Value = newGridPos;
 
 				auto size = gridPath.Path.size();

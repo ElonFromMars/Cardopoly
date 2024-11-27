@@ -15,7 +15,7 @@ void CitizensInitializeSystem::Initialize()
 			FMath::RandRange(-10, 10),
 			0
 		};
-		auto worldPosition = _gridSubsystem->GetCellCenterWorldPosition(gridPosition);
+		auto worldPosition = _gridLayout->GetCellCenterWorldPosition(gridPosition);
 		_world->entity()
 			.add<FCitizenTag>()
 			.add<FSearchPathRequest>()

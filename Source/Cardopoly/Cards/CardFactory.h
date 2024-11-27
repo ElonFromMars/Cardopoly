@@ -14,16 +14,6 @@ class CARDOPOLY_API UCardFactory : public UObject
 {
 	GENERATED_BODY()
 
-private:
-	UPROPERTY()
-	UGameplayAssetData* GameplayAssetData;
-	UPROPERTY()
-	UDataTable* BuildingCardsConfig;
-	UPROPERTY()
-	UWorld* World;
-	UPROPERTY()
-	BuildingService* BuildingsController;
-	
 public:
 	virtual void Construct(
 		UWorld* world,
@@ -33,5 +23,13 @@ public:
 	
 	virtual ACard* CreateCard();
 
+private:
+	UPROPERTY()
+	UGameplayAssetData* GameplayAssetData;
+	UPROPERTY()
+	UDataTable* BuildingCardsConfig;
+	UPROPERTY()
+	UWorld* World;
 
+	BuildingService* _buildingsController;
 };

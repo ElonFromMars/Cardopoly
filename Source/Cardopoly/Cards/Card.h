@@ -22,7 +22,7 @@ class CARDOPOLY_API ACard : public AActor
 public:
 	ACard();
 
-	void Construct(BuildingService* BuildingsController, uint32 id);
+	void Construct(BuildingService* buildingsService, uint32 id);
 
 protected:
 	virtual void BeginPlay() override;
@@ -65,6 +65,5 @@ public:
 	FOnCardAppliedSignature OnCardAppliedDelegate;
 	
 private:
-	UPROPERTY()
-	BuildingService* BuildingsController;
+	BuildingService* _buildingsService;
 };

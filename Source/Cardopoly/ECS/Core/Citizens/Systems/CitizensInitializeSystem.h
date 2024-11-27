@@ -1,22 +1,22 @@
 ﻿#pragma once
 
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
-#include "Cardopoly/Grid/UGridSubsystem.h"
+#include "Cardopoly/Grid/GridLayout.h"
 
 class CitizensInitializeSystem : public IGameplaySystem
 {
 public:
 	CitizensInitializeSystem(
 		flecs::world* flecsWorld,
-		UGridSubsystem* gridSubsystem
+		GridLayout* gridLayout
 		)
 		: IGameplaySystem(flecsWorld),
-		_gridSubsystem(gridSubsystem)
+		_gridLayout(gridLayout)
 	{
 	}
 
 	virtual void Initialize() override;
 
 private:
-	UGridSubsystem* _gridSubsystem;
+	GridLayout* _gridLayout;
 };

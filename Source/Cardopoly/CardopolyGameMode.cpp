@@ -17,7 +17,7 @@
 #include "GameFramework/HUD.h"
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/SpectatorPawn.h"
-#include "Grid/UGridSubsystem.h"
+#include "Grid/GridLayout.h"
 #include "Pathfinding/AStar.h"
 #include "Player/CardopolyPlayerController.h"
 #include "UI/UHUDWidget.h"
@@ -48,6 +48,7 @@ ACardopolyGameMode::~ACardopolyGameMode()
 	delete _buildingEntityFactory;
 	delete _gridObjectsDataProvider;
 	delete _cityGrid;
+	delete _gridLayout;
 	delete _buildingService;
 	
 	for (auto system : _systems)
@@ -90,11 +91,9 @@ void ACardopolyGameMode::CreatePathfinding(CityGridService* CityGrid)
 
 void ACardopolyGameMode::StartECS(CityGridService* CityGrid)
 {
-	_gridSubsystem = GetWorld()->GetSubsystem<UGridSubsystem>();
-	
 	auto factory = std::make_unique<CoreGameplaySystemsFactory>(
 		_world,
-		_gridSubsystem,
+		_gridLayout,
 		CityGrid,
 		_aStar,
 		GetWorld(),
@@ -168,7 +167,7 @@ BuildingService* ACardopolyGameMode::CreateBuildingService(CityGridService* City
 	_buildingService = new BuildingService(
 		CityGrid,
 		_buildingEntityFactory,
-		_gridSubsystem, World,
+		_gridLayout, World,
 		LocalConfigHolder->BuildingConfigHolder
 	);
 	
@@ -177,6 +176,8 @@ BuildingService* ACardopolyGameMode::CreateBuildingService(CityGridService* City
 
 CityGridService* ACardopolyGameMode::CreateCityGrid()
 {
+	_gridLayout = new GridLayout();
+	_gridLayout->Construct(GetWorld());
 	_gridObjectsDataProvider = new GridObjectsDataProvider(LocalConfigHolder->BuildingConfigHolder);
 	_cityGrid = new CityGridService(_gridObjectsDataProvider);
 	return _cityGrid;

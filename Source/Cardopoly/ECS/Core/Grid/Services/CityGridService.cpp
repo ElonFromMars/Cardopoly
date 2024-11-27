@@ -8,26 +8,26 @@ CityGridService::CityGridService(IGridObjectsDataProvider* gridObjectsDataProvid
 	
 }
 
-bool CityGridService::ContainsBuildingAtPosition(FIntVector Position) const
+bool CityGridService::ContainsBuildingAtPosition(const FIntVector Position) const
 {
 	return _entityByCellPosition.Contains(Position);
 }
 
-void CityGridService::PutEntityAtPosition(FIntVector Position, flecs::entity entity)
+void CityGridService::PutEntityAtPosition(const FIntVector Position, const flecs::entity entity)
 {
 	if (entity.has<FIdComponent>())
 	{
 		uint32 id = entity.get<FIdComponent>()->Value;
-		TArray<FIntVector> localPositions = _gridObjectsDataProvider->GetLocalPositions(id);
-		for (FIntVector localPosition : localPositions)
+		const TArray<FIntVector>& localPositions = _gridObjectsDataProvider->GetLocalPositions(id);
+		for (const FIntVector localPosition : localPositions)
 		{
-			FIntVector absolutePosition = Position + localPosition;
+			const FIntVector absolutePosition = Position + localPosition;
 			_entityByCellPosition.Add(absolutePosition, entity);
 		}
 	}
 }
 
-bool CityGridService::GetBuildingAtPosition(FIntVector Position, flecs::entity& entity)
+bool CityGridService::GetBuildingAtPosition(const FIntVector Position, flecs::entity& entity)
 {
 	if (ContainsBuildingAtPosition(Position))
 	{
