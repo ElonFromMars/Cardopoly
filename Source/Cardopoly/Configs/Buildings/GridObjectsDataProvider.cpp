@@ -16,7 +16,8 @@ void GridObjectsDataProvider::Initialize()
 		{
 			localPositions.Add(localPosition);
 		}
-		_localBuildingsPositionsById[static_cast<uint32>(building.Key)] = localPositions;
+		uint32 key = static_cast<uint32>(building.Key);
+		_localBuildingsPositionsById.Add(key, localPositions);
 	}
 }
 

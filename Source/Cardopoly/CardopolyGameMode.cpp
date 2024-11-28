@@ -179,6 +179,7 @@ CityGridService* ACardopolyGameMode::CreateCityGrid()
 	_gridLayout = new GridLayout();
 	_gridLayout->Construct(GetWorld());
 	_gridObjectsDataProvider = new GridObjectsDataProvider(LocalConfigHolder->BuildingConfigHolder);
+	_gridObjectsDataProvider->Initialize();
 	_cityGrid = new CityGridService(_gridObjectsDataProvider);
 	return _cityGrid;
 }
