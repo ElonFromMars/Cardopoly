@@ -161,14 +161,15 @@ void ACardopolyGameMode::CreateInput() const
 
 BuildingService* ACardopolyGameMode::CreateBuildingService(CityGridService* CityGrid)
 {
-	_buildingEntityFactory = new BuildingEntityFactory(_world);
+	_buildingEntityFactory = new BuildingEntityFactory(_world, _gridObjectsDataProvider);
 	
 	UWorld* World = GetWorld();
 	_buildingService = new BuildingService(
 		CityGrid,
 		_buildingEntityFactory,
 		_gridLayout, World,
-		LocalConfigHolder->BuildingConfigHolder
+		LocalConfigHolder->BuildingConfigHolder,
+		_gridObjectsDataProvider
 	);
 	
 	return _buildingService;

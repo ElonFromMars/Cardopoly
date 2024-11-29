@@ -1,5 +1,6 @@
 ﻿#include "InitializeGridPositionSystem.h"
 
+#include "FLocalOffsetComponent.hpp"
 #include "FViewComponent.hpp"
 #include "Cardopoly/ECS/Core/Movement/Components/FGridPositionComponent.h"
 #include "Cardopoly/Grid/GridLayout.h"
@@ -8,9 +9,14 @@
 void InitializeGridPositionSystem::Initialize()
 {
 	_world->system<FViewComponent, const FGridPositionComponent>("InitializeGridPositionSystem")
-		.each([this](FViewComponent view, const FGridPositionComponent& position)
+		.each([this](flecs::entity entity, FViewComponent view, const FGridPositionComponent& position)
 		{
-			const FVector cellWorldPosition = _gridLayout->GetCellCenterWorldPosition(position.Value);
+			FVector offsetVector;
+			if (entity.has<FLocalOffsetComponent>())
+			{
+				offsetVector = entity.get<FLocalOffsetComponent>()->Value;
+			}
+			const FVector cellWorldPosition = _gridLayout->GetCellCenterWorldPosition(position.Value) + offsetVector;
 			view.Value->SetActorLocation(cellWorldPosition);
 		});
 }

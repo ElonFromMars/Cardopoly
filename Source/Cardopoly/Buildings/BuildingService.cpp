@@ -1,5 +1,6 @@
 ﻿#include "BuildingService.h"
 
+#include "Cardopoly/Configs/Buildings/GridObjectsDataProvider.h"
 #include "Cardopoly/Configs/Buildings/UBuildingConfig.h"
 #include "Cardopoly/Configs/Buildings/UBuildingConfigHolder.h"
 #include "Cardopoly/ECS/Core/Buildings/Factories/BuildingEntityFactory.h"
@@ -11,7 +12,7 @@ bool BuildingService::CreateBuildingUnderScreenPosition(const FVector2D ScreenPo
 	FIntVector cellPosition;
 
 	if(ScreenPointToGroundPosition(ScreenPosition, cellPosition)
-		&& !IsCellOccupied(cellPosition))
+		&& !IsBuildingOverlaps(cellPosition, id))
 	{
 		building = CreateBuilding(cellPosition, id);
 		return true;
@@ -46,15 +47,25 @@ flecs::entity BuildingService::CreateBuilding(const FIntVector cellPosition, con
 	return buildingEntity;
 }
 
-bool BuildingService::CanCreateBuildingUnderScreenPosition(const FVector2D screenPosition) const
+bool BuildingService::CanCreateBuildingUnderScreenPosition(const FVector2D screenPosition, const uint32 id) const
 {
 	FIntVector CellPosition;
 	return ScreenPointToGroundPosition(screenPosition, CellPosition)
-		&& !IsCellOccupied(CellPosition);
+		&& !IsBuildingOverlaps(CellPosition, id);
 }
 
-bool BuildingService::IsCellOccupied(FIntVector cellPosition) const
+bool BuildingService::IsBuildingOverlaps(FIntVector cellPosition, const uint32 id) const
 {
+	const TArray<FIntVector>& positions = _gridObjectsDataProvider->GetGridLocalPositions(id);
+
+	for (auto& pos : positions)
+	{
+		if(_cityGrid->ContainsBuildingAtPosition(cellPosition + pos))
+		{
+			return true;
+		}
+	}
+	
 	return _cityGrid->ContainsBuildingAtPosition(cellPosition);
 }
 

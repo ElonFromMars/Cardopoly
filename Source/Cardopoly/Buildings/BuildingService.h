@@ -5,6 +5,7 @@
 #include "Cardopoly/ECS/Core/Grid/Services/CityGridService.h"
 #include "GameFramework/Actor.h"
 
+class GridObjectsDataProvider;
 class UBuildingConfigHolder;
 class GridLayout;
 
@@ -16,13 +17,15 @@ public:
 		BuildingEntityFactory* buildingEntityFactory,
 		GridLayout* gridLayout,
 		UWorld* viewWorld,
-		UBuildingConfigHolder* buildingConfigHolder
+		UBuildingConfigHolder* buildingConfigHolder,
+		GridObjectsDataProvider* gridObjectsDataProvider
 	)
 		: _gridLayout(gridLayout),
 		_cityGrid(cityGrid),
 		_buildingEntityFactory(buildingEntityFactory),
 		_viewWorld(viewWorld),
-		_buildingConfigHolder(buildingConfigHolder)
+		_buildingConfigHolder(buildingConfigHolder),
+		_gridObjectsDataProvider(gridObjectsDataProvider)
 	{
 		
 	}
@@ -31,8 +34,8 @@ public:
 
 	flecs::entity CreateBuilding(const FIntVector cellPosition, const uint32 id) const;
 
-	bool CanCreateBuildingUnderScreenPosition(const FVector2D screenPosition) const;
-	bool IsCellOccupied(FIntVector cellPosition) const;
+	bool CanCreateBuildingUnderScreenPosition(const FVector2D screenPosition, const uint32 id) const;
+	bool IsBuildingOverlaps(FIntVector cellPosition, const uint32 id) const;
 	bool ScreenPointToGroundPosition(FVector2D screenPosition, FIntVector& cellPosition) const;
 
 private:
@@ -41,4 +44,5 @@ private:
 	BuildingEntityFactory* _buildingEntityFactory;
 	UWorld* _viewWorld;
 	UBuildingConfigHolder* _buildingConfigHolder;
+	GridObjectsDataProvider* _gridObjectsDataProvider;
 };

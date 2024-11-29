@@ -18,7 +18,7 @@ void CityGridService::PutEntityAtPosition(const FIntVector Position, const flecs
 	if (entity.has<FIdComponent>())
 	{
 		uint32 id = entity.get<FIdComponent>()->Value;
-		const TArray<FIntVector>& localPositions = _gridObjectsDataProvider->GetLocalPositions(id);
+		const TArray<FIntVector>& localPositions = _gridObjectsDataProvider->GetGridLocalPositions(id);
 		for (const FIntVector localPosition : localPositions)
 		{
 			const FIntVector absolutePosition = Position + localPosition;

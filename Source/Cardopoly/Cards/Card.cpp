@@ -43,7 +43,7 @@ void ACard::Tick(float DeltaTime)
 
 bool ACard::CanApply(FVector2D ScreenPosition)
 {
-	return _buildingsService->CanCreateBuildingUnderScreenPosition(ScreenPosition);
+	return _buildingsService->CanCreateBuildingUnderScreenPosition(ScreenPosition, _id);
 }
 
 void ACard::Apply(FVector2D ScreenPosition)
