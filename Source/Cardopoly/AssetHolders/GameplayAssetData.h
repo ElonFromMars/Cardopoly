@@ -12,6 +12,7 @@ class AEntityView;
 class ATurnController;
 class AHand;
 class UCardsHolder;
+class UMaterialsHolder;
 /**
  * 
  */
@@ -28,6 +29,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UBuildingsViewHolder* BuildingsViewHolder;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UMaterialsHolder* MaterialsViewHolder;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AHand> Hand;

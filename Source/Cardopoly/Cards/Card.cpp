@@ -54,6 +54,11 @@ void ACard::Apply(FVector2D ScreenPosition)
 	OnCardAppliedDelegate.Broadcast(this);
 }
 
+void ACard::UpdatePrototype(FVector2D ScreenPosition)
+{
+	
+}
+
 void ACard::StopMovement()
 {
 	if(Tween)

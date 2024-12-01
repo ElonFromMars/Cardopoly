@@ -38,6 +38,9 @@ public:
 	void Apply(FVector2D ScreenPosition);
 
 	UFUNCTION(BlueprintCallable)
+	void UpdatePrototype(FVector2D ScreenPosition);
+
+	UFUNCTION(BlueprintCallable)
 	void StopMovement();
 	
 	UFUNCTION(BlueprintCallable)
