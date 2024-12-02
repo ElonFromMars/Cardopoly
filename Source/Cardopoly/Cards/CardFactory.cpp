@@ -3,6 +3,7 @@
 #include "CardViewComponent.h"
 #include "Cardopoly/AssetHolders/GameplayAssetData.h"
 #include "Cardopoly/AssetHolders/CardsHolder.h"
+#include "Cardopoly/Buildings/BuildingPrototypeService.h"
 #include "Cardopoly/Configs/LocalConfigHolder.h"
 #include "Cardopoly/Configs/ViewAssetIdConfig.h"
 #include "Cardopoly/Configs/Cards/BuildingCardDataRaw.h"
@@ -12,11 +13,14 @@ void UCardFactory::Construct(
 	UWorld* world,
 	UGameplayAssetData* gameplayAssetData,
 	BuildingService* buildingsService,
-	ULocalConfigHolder* localConfigHolder)
+	BuildingPrototypeService* buildingPrototypeService,
+	ULocalConfigHolder* localConfigHolder
+	)
 {
 	World = world;
 	GameplayAssetData = gameplayAssetData;
-	_buildingsController = buildingsService;
+	_buildingsService = buildingsService;
+	_buildingPrototypeService = buildingPrototypeService;
 	BuildingCardsConfig = localConfigHolder->BuildingCardsConfig;
 }
 
@@ -37,7 +41,7 @@ ACard* UCardFactory::CreateCard()
 	FBuildingCardDataRaw* CardData = BuildingCardsConfig->FindRow<FBuildingCardDataRaw>(RandomRowName, ContextString);
 	
 	ACard* Card = World->SpawnActor<ACard>(CardAsset, FVector(), FRotator());
-	Card->Construct(_buildingsController, static_cast<uint32>(CardData->BuildingId));//TODO replace with function call
+	Card->Construct(_buildingsService, _buildingPrototypeService, static_cast<uint32>(CardData->BuildingId));//TODO replace with function call
 
 	if(auto CardWidget = Card->GetCardWidget())
 	{

@@ -1,6 +1,7 @@
 #include "CardopolyGameMode.h"
 #include "ARTSCamera.h"
 #include "AssetHolders/GameplayAssetData.h"
+#include "Buildings/BuildingPrototypeService.h"
 #include "Buildings/BuildingService.h"
 #include "Cards/CardFactory.h"
 #include "Cards/Hand/Hand.h"
@@ -18,6 +19,7 @@
 #include "GameFramework/PlayerState.h"
 #include "GameFramework/SpectatorPawn.h"
 #include "Grid/GridLayout.h"
+#include "Grid/PositionConversionService.h"
 #include "Pathfinding/AStar.h"
 #include "Player/CardopolyPlayerController.h"
 #include "UI/UHUDWidget.h"
@@ -50,6 +52,7 @@ ACardopolyGameMode::~ACardopolyGameMode()
 	delete _cityGrid;
 	delete _gridLayout;
 	delete _buildingService;
+	delete _positionConversionService;
 	
 	for (auto system : _systems)
 	{
@@ -64,7 +67,8 @@ void ACardopolyGameMode::BeginPlay()
 	_world = new flecs::world();
 	EventBus* eventBus = CreateEventBus();
 	CityGridService* cityGrid = CreateCityGrid();
-
+	
+	
 	CreateInput();
 	CreateBuildingService(cityGrid);
 
@@ -131,7 +135,7 @@ void ACardopolyGameMode::CreateCity(BuildingService* BuildingsController) const
 	cityGenerator.Generate();
 }
 
-AHand* ACardopolyGameMode::CreateHand(BuildingService* BuildingsController, EventBus* eventBus) const
+AHand* ACardopolyGameMode::CreateHand(BuildingService* buildingService, EventBus* eventBus) const
 {
 	UWorld* World = GetWorld();
 	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
@@ -140,7 +144,7 @@ AHand* ACardopolyGameMode::CreateHand(BuildingService* BuildingsController, Even
 	hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 	UCardFactory* CardFactory = NewObject<UCardFactory>();
-	CardFactory->Construct(World, GameplayAssetData, BuildingsController, LocalConfigHolder);
+	CardFactory->Construct(World, GameplayAssetData, buildingService, _buildingPrototypeService, LocalConfigHolder);
 	
 	hand->Construct(CardFactory, eventBus);
 	
@@ -167,9 +171,19 @@ BuildingService* ACardopolyGameMode::CreateBuildingService(CityGridService* City
 	_buildingService = new BuildingService(
 		CityGrid,
 		_buildingEntityFactory,
-		_gridLayout, World,
+		_gridLayout,
+		World,
 		LocalConfigHolder->BuildingConfigHolder,
-		_gridObjectsDataProvider
+		_gridObjectsDataProvider,
+		_positionConversionService
+	);
+
+	_buildingPrototypeService = new BuildingPrototypeService(
+		World,
+		GameplayAssetData,
+		_positionConversionService,
+		_buildingService,
+		_gridLayout
 	);
 	
 	return _buildingService;
@@ -182,6 +196,9 @@ CityGridService* ACardopolyGameMode::CreateCityGrid()
 	_gridObjectsDataProvider = new GridObjectsDataProvider(LocalConfigHolder->BuildingConfigHolder);
 	_gridObjectsDataProvider->Initialize();
 	_cityGrid = new CityGridService(_gridObjectsDataProvider);
+
+	_positionConversionService = new PositionConversionService(GetWorld(), _gridLayout);
+
 	return _cityGrid;
 }
 

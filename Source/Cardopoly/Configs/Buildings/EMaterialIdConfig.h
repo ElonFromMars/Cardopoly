@@ -7,5 +7,5 @@ UENUM()
 enum class EMaterialIdConfig : uint32
 {
 	None = 0,
-	HousePrototype = 1,
+	BuildingPrototype = 1,
 };

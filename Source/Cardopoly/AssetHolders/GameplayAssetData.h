@@ -31,7 +31,7 @@ public:
 	UBuildingsViewHolder* BuildingsViewHolder;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	UMaterialsHolder* MaterialsViewHolder;
+	UMaterialsHolder* MaterialsHolder;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AHand> Hand;

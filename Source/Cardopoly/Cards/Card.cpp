@@ -2,6 +2,7 @@
 
 #include "FCTween.h"
 #include "FCTweenInstance.h"
+#include "Cardopoly/Buildings/BuildingPrototypeService.h"
 #include "Cardopoly/Buildings/BuildingService.h"
 #include "Components/WidgetComponent.h"
 
@@ -11,10 +12,11 @@ ACard::ACard()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ACard::Construct(BuildingService* buildingsController, uint32 id)
+void ACard::Construct(BuildingService* buildingsController, BuildingPrototypeService* buildingPrototypeService, uint32 id)
 {
 	_id = id;
 	_buildingsService = buildingsController;
+	_buildingPrototypeService = buildingPrototypeService;
 	const auto WidgetComponent = this->GetComponentByClass<UWidgetComponent>();
 	CardWidget = StaticCast<UCardWidget*>(WidgetComponent->GetUserWidgetObject());
 	WidgetComponent->RequestRenderUpdate();
@@ -54,9 +56,19 @@ void ACard::Apply(FVector2D ScreenPosition)
 	OnCardAppliedDelegate.Broadcast(this);
 }
 
+void ACard::ShowPrototype(FVector2D ScreenPosition)
+{
+	_buildingPrototypeService->ShowBuildingPrototype(_id);
+}
+
 void ACard::UpdatePrototype(FVector2D ScreenPosition)
 {
-	
+	_buildingPrototypeService->UpdateBuildingPrototypePosition(ScreenPosition);
+}
+
+void ACard::HidePrototype()
+{
+	_buildingPrototypeService->HideBuildingPrototype();
 }
 
 void ACard::StopMovement()

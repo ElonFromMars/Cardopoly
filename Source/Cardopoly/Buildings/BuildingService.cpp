@@ -5,13 +5,13 @@
 #include "Cardopoly/Configs/Buildings/UBuildingConfigHolder.h"
 #include "Cardopoly/ECS/Core/Buildings/Factories/BuildingEntityFactory.h"
 #include "Cardopoly/Grid/GridLayout.h"
-#include "Kismet/GameplayStatics.h"
+#include "Cardopoly/Grid/PositionConversionService.h"
 
 bool BuildingService::CreateBuildingUnderScreenPosition(const FVector2D ScreenPosition, const uint32 id, flecs::entity& building) const
 {
 	FIntVector cellPosition;
 
-	if(ScreenPointToGroundPosition(ScreenPosition, cellPosition)
+	if(_positionConversionService->ScreenPointToGroundPosition(ScreenPosition, cellPosition)
 		&& !IsBuildingOverlaps(cellPosition, id))
 	{
 		building = CreateBuilding(cellPosition, id);
@@ -50,7 +50,7 @@ flecs::entity BuildingService::CreateBuilding(const FIntVector cellPosition, con
 bool BuildingService::CanCreateBuildingUnderScreenPosition(const FVector2D screenPosition, const uint32 id) const
 {
 	FIntVector CellPosition;
-	return ScreenPointToGroundPosition(screenPosition, CellPosition)
+	return _positionConversionService->ScreenPointToGroundPosition(screenPosition, CellPosition)
 		&& !IsBuildingOverlaps(CellPosition, id);
 }
 
@@ -67,28 +67,4 @@ bool BuildingService::IsBuildingOverlaps(FIntVector cellPosition, const uint32 i
 	}
 	
 	return _cityGrid->ContainsBuildingAtPosition(cellPosition);
-}
-
-bool BuildingService::ScreenPointToGroundPosition(const FVector2D screenPosition, FIntVector& cellPosition) const
-{
-	if(APlayerController* PlayerController = _viewWorld->GetFirstPlayerController())
-	{
-		FVector RayStart;
-		FVector RayDirection;
-
-		UGameplayStatics::DeprojectScreenToWorld(PlayerController, screenPosition, RayStart, RayDirection);
-		
-		RayDirection.Normalize();
-		FVector RayEnd = RayStart + RayDirection * 10000.0f; 
-
-		FHitResult HitResult;
-		FCollisionQueryParams CollisionParams;
-		
-		if (_viewWorld->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_GameTraceChannel1, CollisionParams))
-		{
-			cellPosition = _gridLayout->WorldPositionToGrid(HitResult.Location);
-			return true;
-		}
-	}
-	return false;
 }

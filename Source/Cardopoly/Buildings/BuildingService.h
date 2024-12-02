@@ -5,6 +5,7 @@
 #include "Cardopoly/ECS/Core/Grid/Services/CityGridService.h"
 #include "GameFramework/Actor.h"
 
+class PositionConversionService;
 class GridObjectsDataProvider;
 class UBuildingConfigHolder;
 class GridLayout;
@@ -18,14 +19,16 @@ public:
 		GridLayout* gridLayout,
 		UWorld* viewWorld,
 		UBuildingConfigHolder* buildingConfigHolder,
-		GridObjectsDataProvider* gridObjectsDataProvider
+		GridObjectsDataProvider* gridObjectsDataProvider,
+		PositionConversionService* positionConversionService
 	)
 		: _gridLayout(gridLayout),
 		_cityGrid(cityGrid),
 		_buildingEntityFactory(buildingEntityFactory),
 		_viewWorld(viewWorld),
 		_buildingConfigHolder(buildingConfigHolder),
-		_gridObjectsDataProvider(gridObjectsDataProvider)
+		_gridObjectsDataProvider(gridObjectsDataProvider),
+		_positionConversionService(positionConversionService)
 	{
 		
 	}
@@ -36,7 +39,6 @@ public:
 
 	bool CanCreateBuildingUnderScreenPosition(const FVector2D screenPosition, const uint32 id) const;
 	bool IsBuildingOverlaps(FIntVector cellPosition, const uint32 id) const;
-	bool ScreenPointToGroundPosition(FVector2D screenPosition, FIntVector& cellPosition) const;
 
 private:
 	GridLayout* _gridLayout;
@@ -45,4 +47,5 @@ private:
 	UWorld* _viewWorld;
 	UBuildingConfigHolder* _buildingConfigHolder;
 	GridObjectsDataProvider* _gridObjectsDataProvider;
+	PositionConversionService* _positionConversionService;
 };

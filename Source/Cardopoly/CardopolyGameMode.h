@@ -12,6 +12,7 @@
 #include "Pathfinding/AStar.h"
 #include "CardopolyGameMode.generated.h"
 
+class BuildingPrototypeService;
 class GridObjectsDataProvider;
 class CityGridService;
 class UHUDWidget;
@@ -46,7 +47,7 @@ public:
 	EventBus* CreateEventBus();
 	
 	void CreateCity(BuildingService* BuildingsController) const;
-	AHand* CreateHand(BuildingService* BuildingsController, EventBus* eventBus) const;
+	AHand* CreateHand(BuildingService* buildingService, EventBus* eventBus) const;
 
 	void CreateInput() const;
 	BuildingService* CreateBuildingService(CityGridService* CityGrid);
@@ -80,7 +81,9 @@ private:
 	std::vector<IGameplaySystem*> _systems;
 	BuildingEntityFactory* _buildingEntityFactory;
 	BuildingService* _buildingService;
+	BuildingPrototypeService* _buildingPrototypeService;
 	CityGridService* _cityGrid;
 	GridObjectsDataProvider* _gridObjectsDataProvider;
 	GridLayout* _gridLayout;
+	PositionConversionService* _positionConversionService;
 };

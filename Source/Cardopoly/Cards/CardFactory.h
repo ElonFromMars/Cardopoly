@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
+#include "Cardopoly/CardopolyGameMode.h"
+#include "Cardopoly/Buildings/BuildingPrototypeService.h"
 #include "UObject/Object.h"
 #include "CardFactory.generated.h"
 
@@ -15,11 +17,13 @@ class CARDOPOLY_API UCardFactory : public UObject
 	GENERATED_BODY()
 
 public:
-	virtual void Construct(
+	void Construct(
 		UWorld* world,
 		UGameplayAssetData* gameplayAssetData,
 		BuildingService* buildingsService,
-		ULocalConfigHolder* localConfigHolder);
+		BuildingPrototypeService* buildingPrototypeService,
+		ULocalConfigHolder* localConfigHolder
+	);
 	
 	virtual ACard* CreateCard();
 
@@ -31,5 +35,6 @@ private:
 	UPROPERTY()
 	UWorld* World;
 
-	BuildingService* _buildingsController;
+	BuildingService* _buildingsService;
+	BuildingPrototypeService* _buildingPrototypeService;
 };

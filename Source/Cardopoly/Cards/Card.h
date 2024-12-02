@@ -11,6 +11,7 @@
 class ACard;
 class BuildingService;
 class FCTweenInstance;
+class BuildingPrototypeService;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCardAppliedSignature, ACard*, card);
 
@@ -22,7 +23,7 @@ class CARDOPOLY_API ACard : public AActor
 public:
 	ACard();
 
-	void Construct(BuildingService* buildingsService, uint32 id);
+	void Construct(BuildingService* buildingsService, BuildingPrototypeService* buildingPrototypeService, uint32 id);
 
 protected:
 	virtual void BeginPlay() override;
@@ -38,8 +39,14 @@ public:
 	void Apply(FVector2D ScreenPosition);
 
 	UFUNCTION(BlueprintCallable)
+	void ShowPrototype(FVector2D ScreenPosition);
+	
+	UFUNCTION(BlueprintCallable)
 	void UpdatePrototype(FVector2D ScreenPosition);
 
+	UFUNCTION(BlueprintCallable)
+	void HidePrototype();
+	
 	UFUNCTION(BlueprintCallable)
 	void StopMovement();
 	
@@ -69,4 +76,5 @@ public:
 	
 private:
 	BuildingService* _buildingsService;
+	BuildingPrototypeService* _buildingPrototypeService;
 };

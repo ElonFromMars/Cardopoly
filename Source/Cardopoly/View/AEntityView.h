@@ -11,4 +11,7 @@ class CARDOPOLY_API AEntityView : public AActor
 
 public:
 	AEntityView();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
+	UStaticMeshComponent* MainMesh;
 };
