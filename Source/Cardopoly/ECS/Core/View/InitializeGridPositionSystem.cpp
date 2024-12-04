@@ -8,7 +8,8 @@
 
 void InitializeGridPositionSystem::Initialize()
 {
-	_world->system<FViewComponent, const FGridPositionComponent>("InitializeGridPositionSystem")
+	_world->system<FViewComponent, FGridPositionComponent>("InitializeGridPositionSystem")
+		.immediate()
 		.each([this](flecs::entity entity, FViewComponent view, const FGridPositionComponent& position)
 		{
 			FVector offsetVector;
