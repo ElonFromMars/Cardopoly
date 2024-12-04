@@ -12,6 +12,14 @@ class CARDOPOLY_API AEntityView : public AActor
 public:
 	AEntityView();
 
+	virtual void OnConstruction(const FTransform& Transform) override;
+
+	virtual TArray<UStaticMeshComponent*> GetMeshComponents() const;
+	
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Mesh")
 	UStaticMeshComponent* MainMesh;
+
+protected:
+	UPROPERTY(VisibleInstanceOnly, BlueprintReadWrite, Category = "Mesh")
+	TArray<UStaticMeshComponent*> MeshComponents;
 };

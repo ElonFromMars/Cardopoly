@@ -1,6 +1,7 @@
 ﻿#include "PositionConversionService.h"
 
 #include "GridLayout.h"
+#include "Cardopoly/Collision/CollisionConfig.h"
 #include "Kismet/GameplayStatics.h"
 
 bool PositionConversionService::ScreenPointToGroundPosition(const FVector2D screenPosition, FIntVector& cellPosition) const
@@ -18,7 +19,7 @@ bool PositionConversionService::ScreenPointToGroundPosition(const FVector2D scre
 		FHitResult HitResult;
 		FCollisionQueryParams CollisionParams;
 		
-		if (_viewWorld->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_GameTraceChannel1, CollisionParams))
+		if (_viewWorld->LineTraceSingleByChannel(HitResult, RayStart, RayEnd, ECC_GROUND, CollisionParams))
 		{
 			cellPosition = _gridLayout->WorldPositionToGrid(HitResult.Location);
 			return true;

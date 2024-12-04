@@ -182,6 +182,7 @@ BuildingService* ACardopolyGameMode::CreateBuildingService(CityGridService* City
 		World,
 		GameplayAssetData,
 		_positionConversionService,
+		_gridObjectsDataProvider,
 		_buildingService,
 		_gridLayout
 	);
