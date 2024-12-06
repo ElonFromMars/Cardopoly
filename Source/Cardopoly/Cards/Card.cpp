@@ -43,22 +43,22 @@ void ACard::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-bool ACard::CanApply(FVector2D ScreenPosition)
+bool ACard::CanApply(FVector2D screenPosition)
 {
-	return _buildingsService->CanCreateBuildingUnderScreenPosition(ScreenPosition, _id);
+	return _buildingsService->CanCreateBuildingUnderScreenPosition(screenPosition, _id);
 }
 
-void ACard::Apply(FVector2D ScreenPosition)
+void ACard::Apply(FVector2D screenPosition)
 {
 	flecs::entity buildingEntity;
-	_buildingsService->CreateBuildingUnderScreenPosition(ScreenPosition, _id, buildingEntity);
+	_buildingsService->CreateBuildingUnderScreenPosition(screenPosition, _id, buildingEntity);
 	
 	OnCardAppliedDelegate.Broadcast(this);
 }
 
-void ACard::ShowPrototype(FVector2D ScreenPosition)
+void ACard::ShowPrototype(FVector2D screenPosition)
 {
-	_buildingPrototypeService->ShowBuildingPrototype(_id);
+	_buildingPrototypeService->ShowBuildingPrototype(_id, screenPosition);
 }
 
 void ACard::UpdatePrototype(FVector2D ScreenPosition)

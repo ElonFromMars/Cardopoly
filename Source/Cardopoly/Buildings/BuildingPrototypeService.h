@@ -26,11 +26,13 @@ public:
 		_gridLayout(gridLayout)
 	{}
 
-	void ShowBuildingPrototype(const uint32 id);
+	void ShowBuildingPrototype(const uint32 id, const FVector2D screenPosition);
 
-	void UpdateBuildingPrototypePosition(const FVector2D screenPosition) const;
+	void UpdateBuildingPrototypePosition(const FVector2D screenPosition);
 
 	void HideBuildingPrototype();
+	
+	void UpdatePrototypeMaterials(bool isBlocked) const;
 
 private:
 	UWorld* _viewWorld;
@@ -42,4 +44,5 @@ private:
 	
 	uint32 _prototypeId = 0;
 	AEntityView* _prototypeView = nullptr;
+	bool _isBlocked;
 };

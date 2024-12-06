@@ -8,4 +8,5 @@ enum class EMaterialIdConfig : uint32
 {
 	None = 0,
 	BuildingPrototype = 1,
+	BlockedBuildingPrototype = 2,
 };

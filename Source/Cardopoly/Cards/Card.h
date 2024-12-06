@@ -33,16 +33,16 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	bool CanApply(FVector2D ScreenPosition);
+	bool CanApply(FVector2D screenPosition);
 
 	UFUNCTION(BlueprintCallable)
-	void Apply(FVector2D ScreenPosition);
+	void Apply(FVector2D screenPosition);
 
 	UFUNCTION(BlueprintCallable)
-	void ShowPrototype(FVector2D ScreenPosition);
+	void ShowPrototype(FVector2D screenPosition);
 	
 	UFUNCTION(BlueprintCallable)
-	void UpdatePrototype(FVector2D ScreenPosition);
+	void UpdatePrototype(FVector2D screenPosition);
 
 	UFUNCTION(BlueprintCallable)
 	void HidePrototype();
