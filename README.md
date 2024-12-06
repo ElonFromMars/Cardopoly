@@ -9,7 +9,8 @@ C++
 Unreal Engine
 Flex ECS
 
-![image](https://github.com/user-attachments/assets/762c8cbb-0a74-4392-8205-c5ff3bf266be)
+![image](https://github.com/user-attachments/assets/783194ba-d0aa-4381-b90b-c2e60f3520d5)
+
 
 TODO:
 https://trello.com/b/I75vxqlT/cardopoly
