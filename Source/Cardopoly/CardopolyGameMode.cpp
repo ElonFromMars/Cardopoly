@@ -22,6 +22,7 @@
 #include "Grid/PositionConversionService.h"
 #include "Pathfinding/AStar.h"
 #include "Player/CardopolyPlayerController.h"
+#include "UI/UGameplayOverlayWidget.h"
 #include "UI/UHUDWidget.h"
 
 ACardopolyGameMode::ACardopolyGameMode()
@@ -74,7 +75,7 @@ void ACardopolyGameMode::BeginPlay()
 
 	ConfigureCamera();
 
-	CreateAndAddHUDWidget();
+	CreateUIWidgets();
 	//CreateCity(BuildingsController);
 	Hand = CreateHand(_buildingService, eventBus);
 	
@@ -102,6 +103,7 @@ void ACardopolyGameMode::StartECS(CityGridService* CityGrid)
 		_aStar,
 		GetWorld(),
 		HUDWidgetInstance,
+		GameplayOverlayWidgetInstance,
 		GameplayAssetData,
 		Hand,
 		LocalConfigHolder->HandLocalConfig
@@ -211,8 +213,11 @@ void ACardopolyGameMode::ConfigureCamera() const
 	Camera->Construct(_eventBus);
 }
 
-void ACardopolyGameMode::CreateAndAddHUDWidget()
+void ACardopolyGameMode::CreateUIWidgets()
 {
+	GameplayOverlayWidgetInstance = CreateWidget<UGameplayOverlayWidget>(GetWorld(), WB_GameplayOverlayClass);
+	GameplayOverlayWidgetInstance->AddToViewport();
+	
 	HUDWidgetInstance = CreateWidget<UHUDWidget>(GetWorld(), WB_HUDClass);
 	HUDWidgetInstance->AddToViewport();
 	HUDWidgetInstance->Construct(_world);

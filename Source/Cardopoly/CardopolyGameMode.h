@@ -16,6 +16,7 @@ class BuildingPrototypeService;
 class GridObjectsDataProvider;
 class CityGridService;
 class UHUDWidget;
+class UGameplayOverlayWidget;
 
 namespace Pathfinding
 {
@@ -53,7 +54,7 @@ public:
 	BuildingService* CreateBuildingService(CityGridService* CityGrid);
 	CityGridService* CreateCityGrid();
 	void ConfigureCamera() const;
-	void CreateAndAddHUDWidget();
+	void CreateUIWidgets();
 	
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Configs")
@@ -65,11 +66,17 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "AssetData")
 	UGameplayAssetData* GameplayAssetData;
 	
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="HUD")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI")
 	TSubclassOf<UHUDWidget> WB_HUDClass;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="UI")
+	TSubclassOf<UGameplayOverlayWidget> WB_GameplayOverlayClass;
 
 	UPROPERTY()
 	UHUDWidget* HUDWidgetInstance;
+
+	UPROPERTY()
+	UGameplayOverlayWidget* GameplayOverlayWidgetInstance;
 
 	UPROPERTY()
 	AHand* Hand;

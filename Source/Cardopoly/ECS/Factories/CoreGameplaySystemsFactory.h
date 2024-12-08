@@ -11,6 +11,7 @@
 #include "Cardopoly/UI/UHUDWidget.h"
 #include "Cardopoly/Utils/TypeIdUtils.h"
 
+class UGameplayOverlayWidget;
 class UHandLocalConfig;
 class AHand;
 class UGameplayAssetData;
@@ -26,6 +27,7 @@ public:
 		Pathfinding::AStar* aStar,
 		UWorld* viewWorld,
 		UHUDWidget* hudWidget,
+		UGameplayOverlayWidget* entityOverlayWidget,
 		UGameplayAssetData* gameplayAssetData,
 		AHand* playerHand,
 		UHandLocalConfig* handLocalConfig
@@ -36,6 +38,7 @@ public:
 		_world(world),
 		_viewWorld(viewWorld),
 		_hudWidget(hudWidget),
+		_entityOverlayWidget(entityOverlayWidget),
 		_gameplayAssetData(gameplayAssetData),
 		_playerHand(playerHand),
 		_handLocalConfig(handLocalConfig)
@@ -51,6 +54,7 @@ private:
 	flecs::world* _world;
 	UWorld* _viewWorld;
 	UHUDWidget* _hudWidget;
+	UGameplayOverlayWidget* _entityOverlayWidget;
 	UGameplayAssetData* _gameplayAssetData;
 	AHand* _playerHand;
 	UHandLocalConfig* _handLocalConfig;

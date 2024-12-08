@@ -7,12 +7,12 @@ class UHUDWidget;
 class HUDViewSystem : public IGameplaySystem
 {
 public:
-	HUDViewSystem(flecs::world* flecsWorld, UHUDWidget* hudWidget)
-		: IGameplaySystem(flecsWorld),
+	HUDViewSystem(
+		flecs::world* flecsWorld,
+		UHUDWidget* hudWidget
+		) : IGameplaySystem(flecsWorld),
 		_hudWidget(hudWidget)
-	{
-		
-	}
+	{ }
 	
 	virtual void Initialize() override;
 

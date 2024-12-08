@@ -5,6 +5,8 @@
 #include "Cardopoly/ECS/Core/Player/Core/PlayerInitializeSystem.h"
 #include "Cardopoly/ECS/Core/UI/Cards/HandUISystem.h"
 #include "Cardopoly/ECS/Core/UI/HUD/HUDViewSystem.h"
+#include "Cardopoly/ECS/Core/UI/Overlay/IncomeOverlaySystem.h"
+#include "Cardopoly/ECS/Core/UI/Overlay/OverlayPositionSystem.h"
 #include "Cardopoly/ECS/Core/View/CreateViewSystem.h"
 #include "Cardopoly/ECS/Core/View/InitializeGridPositionSystem.h"
 
@@ -34,7 +36,11 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 	{ unique_id<TurnSystem>::get_ID(), 
 		[this]() { return new TurnSystem(_world); } },
 	{ unique_id<HandUISystem>::get_ID(), 
-		[this]() { return new HandUISystem(_world, _playerHand, _handLocalConfig); } }
+		[this]() { return new HandUISystem(_world, _playerHand, _handLocalConfig); } },
+	{ unique_id<OverlayPositionSystem>::get_ID(),
+		[this]() { return new OverlayPositionSystem(_world, _entityOverlayWidget); } },
+	{ unique_id<IncomeOverlaySystem>::get_ID(),
+		[this]() { return new IncomeOverlaySystem(_world, _entityOverlayWidget); } }
 	};
 
 	auto it = systemConstructors.find(typeId);
