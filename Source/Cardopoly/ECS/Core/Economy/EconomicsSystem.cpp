@@ -15,7 +15,7 @@ void EconomySystem::Initialize()
 		.interval(1)
 		.each([this, q](flecs::entity entity, FIncomeComponent& income)
 		{
-			entity.emit(FIncomeEvent{income.Value});
+			entity.set(FIncomeEvent{income.Value});
 			
 			q.each([income](FMoneyComponent& money)
 			{
