@@ -16,6 +16,11 @@ class CARDOPOLY_API UGameplayOverlayWidget : public UUserWidget
 	
 public:
 	void AddWidgetForEntity(flecs::entity entity, UEntityOverlayWidget* widget);
+
+public:
+	UPROPERTY(meta = (BindWidget))
+	UPanelWidget* Panel;
+	
 private:
 	std::map<flecs::entity, FEntityOverlayContainer> _widgetByEntity;
 };

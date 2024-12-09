@@ -1,6 +1,4 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-#pragma once
+﻿#pragma once
 
 #include "CoreMinimal.h"
 #include "UBuildingsViewHolder.h"
@@ -8,14 +6,13 @@
 #include "Engine/DataAsset.h"
 #include "GameplayAssetData.generated.h"
 
+class UWidgetHolder;
 class AEntityView;
 class ATurnController;
 class AHand;
 class UCardsHolder;
 class UMaterialsHolder;
-/**
- * 
- */
+
 UCLASS()
 class CARDOPOLY_API UGameplayAssetData : public UDataAsset
 {
@@ -32,6 +29,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UMaterialsHolder* MaterialsHolder;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UWidgetHolder* WidgetHolder;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TSubclassOf<AHand> Hand;

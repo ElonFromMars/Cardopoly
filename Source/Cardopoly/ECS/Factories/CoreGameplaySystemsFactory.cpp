@@ -40,7 +40,7 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 	{ unique_id<OverlayPositionSystem>::get_ID(),
 		[this]() { return new OverlayPositionSystem(_world, _entityOverlayWidget); } },
 	{ unique_id<IncomeOverlaySystem>::get_ID(),
-		[this]() { return new IncomeOverlaySystem(_world, _entityOverlayWidget); } }
+		[this]() { return new IncomeOverlaySystem(_world, _gameplayAssetData, _entityOverlayWidget); } }
 	};
 
 	auto it = systemConstructors.find(typeId);

@@ -1,6 +1,7 @@
 ﻿#include "EconomicsSystem.h"
 
 #include "FIncomeComponent.hpp"
+#include "FIncomeEvent.hpp"
 #include "FMoneyComponent.hpp"
 
 void EconomySystem::Initialize()
@@ -12,8 +13,10 @@ void EconomySystem::Initialize()
 	
 	_world->system<FIncomeComponent>("EconomicsSystem")
 		.interval(1)
-		.each([this, q](FIncomeComponent& income)
+		.each([this, q](flecs::entity entity, FIncomeComponent& income)
 		{
+			entity.emit(FIncomeEvent{income.Value});
+			
 			q.each([income](FMoneyComponent& money)
 			{
 				money.Value += income.Value;
