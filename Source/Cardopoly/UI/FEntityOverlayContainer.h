@@ -5,5 +5,5 @@
 
 struct FEntityOverlayContainer
 {
-	std::vector<UEntityOverlayWidget*> Widgets;
+	std::vector<UUserWidget*> Widgets;
 };

@@ -216,6 +216,7 @@ void ACardopolyGameMode::ConfigureCamera() const
 void ACardopolyGameMode::CreateUIWidgets()
 {
 	GameplayOverlayWidgetInstance = CreateWidget<UGameplayOverlayWidget>(GetWorld(), WB_GameplayOverlayClass);
+	GameplayOverlayWidgetInstance->Construct(_positionConversionService);
 	GameplayOverlayWidgetInstance->AddToViewport();
 	
 	HUDWidgetInstance = CreateWidget<UHUDWidget>(GetWorld(), WB_HUDClass);

@@ -27,3 +27,9 @@ bool PositionConversionService::ScreenPointToGroundPosition(const FVector2D scre
 	}
 	return false;
 }
+
+bool PositionConversionService::PositionToScreenPoint(const FVector& worldPosition, FVector2D& screenPosition) const
+{
+	APlayerController* PlayerController = _viewWorld->GetFirstPlayerController();
+	return PlayerController && UGameplayStatics::ProjectWorldToScreen(PlayerController, worldPosition, screenPosition);
+}

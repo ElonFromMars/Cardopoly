@@ -4,11 +4,10 @@
 #include "Cardopoly/AssetHolders/GameplayAssetData.h"
 #include "Cardopoly/AssetHolders/WidgetHolder.h"
 #include "Cardopoly/Configs/UI/EWidgetIdConfig.h"
-#include "Cardopoly/ECS/Core/Economy/FIncomeComponent.hpp"
 #include "Cardopoly/ECS/Core/Economy/FIncomeEvent.hpp"
+#include "Cardopoly/ECS/Core/Movement/Components/FPositionComponent.h"
 #include "Cardopoly/UI/IncomeOverlayEffectWidget.h"
 #include "Cardopoly/UI/UGameplayOverlayWidget.h"
-#include "Components/PanelWidget.h"
 
 class UIncomeOverlayEffectWidget;
 
@@ -18,13 +17,15 @@ void IncomeOverlaySystem::Initialize()
 			.event(flecs::OnSet)
 			.each([this](flecs::entity e, const FIncomeEvent& incomeEvent)
 			{
+				if (!e.has<FPositionComponent>())
+				{
+					return;
+				}
 				TSubclassOf<UUserWidget> incomeWidgetClass = _gameplayAssetData->WidgetHolder->BuildingsById[EWidgetIdConfig::IncomeEffect];
 
 				UIncomeOverlayEffectWidget* incomeOverlay = CreateWidget<UIncomeOverlayEffectWidget>(_entityOverlayWidget->GetWorld(), incomeWidgetClass);
-				if (incomeOverlay)
-				{
-					_entityOverlayWidget->Panel->AddChild(incomeOverlay);
-					incomeOverlay->SetIncomeValue(incomeEvent.Value);
-				}
+				_entityOverlayWidget->AddWidgetForEntity(e, incomeOverlay);
+				
+				incomeOverlay->SetIncomeValue(incomeEvent.Value);
 			});
 }
