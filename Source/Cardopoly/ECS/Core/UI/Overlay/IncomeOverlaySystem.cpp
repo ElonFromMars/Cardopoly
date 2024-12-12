@@ -26,6 +26,6 @@ void IncomeOverlaySystem::Initialize()
 				UIncomeOverlayEffectWidget* incomeOverlay = CreateWidget<UIncomeOverlayEffectWidget>(_entityOverlayWidget->GetWorld(), incomeWidgetClass);
 				_entityOverlayWidget->AddWidgetForEntity(e, incomeOverlay);
 				
-				incomeOverlay->SetIncomeValue(incomeEvent.Value);
+				incomeOverlay->Construct(incomeEvent.Value);
 			});
 }

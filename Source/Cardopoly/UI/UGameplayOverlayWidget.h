@@ -2,6 +2,7 @@
 
 #include <map>
 #include "CoreMinimal.h"
+#include "EntityOverlayWidget.h"
 #include "Blueprint/UserWidget.h"
 #include "Cardopoly/ECS/Infrastructure/Extensions/FEntityWrapper.h"
 #include "UGameplayOverlayWidget.generated.h"
@@ -21,7 +22,7 @@ public:
 		UGameplayAssetData* gameplayAssetData
 		);
 	
-	void AddWidgetForEntity(flecs::entity entity, UUserWidget* widget);
+	void AddWidgetForEntity(flecs::entity entity, UEntityOverlayWidget* widget);
 	void SyncWidgetsPositions();
 	void SyncWidgetWithEntityPosition(flecs::entity, UUserWidget* widget);
 	UEntityOverlayContainerWidget* GetContainerForEntity(flecs::entity);

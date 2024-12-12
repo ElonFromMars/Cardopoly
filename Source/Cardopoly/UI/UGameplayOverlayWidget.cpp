@@ -1,5 +1,6 @@
 ﻿#include "UGameplayOverlayWidget.h"
 
+#include "EntityOverlayWidget.h"
 #include "UEntityOverlayContainerWidget.h"
 #include "Blueprint/WidgetLayoutLibrary.h"
 #include "Cardopoly/AssetHolders/GameplayAssetData.h"
@@ -19,12 +20,13 @@ void UGameplayOverlayWidget::Construct(
 	_gameplayAssetData = gameplayAssetData;
 }
 
-void UGameplayOverlayWidget::AddWidgetForEntity(flecs::entity entity, UUserWidget* widget)
+void UGameplayOverlayWidget::AddWidgetForEntity(flecs::entity entity, UEntityOverlayWidget* widget)
 {
 	UEntityOverlayContainerWidget* container = GetContainerForEntity(entity);
 
 	container->Widgets.Add(widget);
 	container->Panel->AddChild(widget);
+	widget->BeginAnimation();
 }
 
 void UGameplayOverlayWidget::SyncWidgetsPositions()

@@ -5,6 +5,7 @@
 #include "Cardopoly/ECS/Infrastructure/Extensions/FEntityWrapper.h"
 #include "UEntityOverlayContainerWidget.generated.h"
 
+class UEntityOverlayWidget;
 struct FEntityWrapper;
 
 DECLARE_DELEGATE_OneParam(FOnCloseDelegate, FEntityWrapper);
@@ -26,7 +27,7 @@ public:
 	UPanelWidget* Panel;
 	
 	UPROPERTY()
-	TArray<UUserWidget*> Widgets;
+	TArray<UEntityOverlayWidget*> Widgets;
 	
 private:
 	FEntityWrapper _entity;
