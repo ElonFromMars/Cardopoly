@@ -1,17 +1,16 @@
 ﻿#pragma once
 
 #include "CoreMinimal.h"
-#include "flecs.h"
 #include "Blueprint/UserWidget.h"
 #include "Cardopoly/ECS/Infrastructure/Extensions/FEntityWrapper.h"
-#include "UEntityOverlayWidget.generated.h"
+#include "UEntityOverlayContainerWidget.generated.h"
 
 struct FEntityWrapper;
 
 DECLARE_DELEGATE_OneParam(FOnCloseDelegate, FEntityWrapper);
 
 UCLASS()
-class CARDOPOLY_API UEntityOverlayWidget : public UUserWidget
+class CARDOPOLY_API UEntityOverlayContainerWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
@@ -22,6 +21,13 @@ public:
 	
 	void Close() const;
 
+public:
+	UPROPERTY(meta = (BindWidget))
+	UPanelWidget* Panel;
+	
+	UPROPERTY()
+	TArray<UUserWidget*> Widgets;
+	
 private:
 	FEntityWrapper _entity;
 };
