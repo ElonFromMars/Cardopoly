@@ -1,33 +1,49 @@
 ﻿#pragma once
 
 #include <unordered_map>
-#include <Cardopoly/Utils/TypeIdUtils.h>
+#include "Cardopoly/Utils/TypeIdUtils.h"
+#include "IServiceContainer.h"
 
-class ServiceContainer
+class ServiceContainer : public IServiceContainer
 {
 public:
 	template <typename T>
 	std::shared_ptr<T> Get()
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
-
-		auto it = systemByType.find(typeId);
-		if (it != systemByType.end())
+		void* systemPtr = Get(typeId);
+		
+		return std::static_pointer_cast<T>(systemPtr);
+	}
+	
+	virtual void* Get(uintptr_t typeId) override
+	{
+		auto it = _systemByType.find(typeId);
+		if (it != _systemByType.end())
 		{
-			return std::static_pointer_cast<T>(it->second);
+			return it->second;
 		}
 
 		throw std::runtime_error("Type not found");
 	}
 
 	template <typename T>
-	bool TryGet(std::shared_ptr<T>& system)
+	bool TryGet(T*& system)
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
-		auto it = systemByType.find(typeId);
-		if (it != systemByType.end())
+		void* systemPtr;
+		bool isSuccess = TryGet(typeId, systemPtr);
+		system = std::static_pointer_cast<T>(systemPtr);
+		
+		return isSuccess;
+	}
+	
+	virtual bool TryGet(uintptr_t typeId, void*& system) override
+	{
+		auto it = _systemByType.find(typeId);
+		if (it != _systemByType.end())
 		{
-			system = std::static_pointer_cast<T>(it->second);
+			system = it->second;
 			return true;
 		}
 		return false;
@@ -37,16 +53,26 @@ public:
 	void Set(std::shared_ptr<T> system)
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
-		systemByType[typeId] = system;
+		Set(typeId, system);
 	}
 
+	virtual void Set(uintptr_t typeId, void* system) override
+	{
+		_systemByType[typeId] = system;
+	}
+	
 	template <typename T>
 	void RemoveSystem()
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
-		systemByType.erase(typeId);
+		RemoveSystem(typeId);
+	}
+	
+	virtual void RemoveSystem(uintptr_t typeId) override
+	{
+		_systemByType.erase(typeId);
 	}
 	
 private:
-	std::unordered_map<uintptr_t, std::shared_ptr<void>> systemByType;
+	std::unordered_map<uintptr_t, void*> _systemByType;
 };

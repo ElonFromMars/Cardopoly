@@ -20,6 +20,8 @@
 #include "GameFramework/SpectatorPawn.h"
 #include "Grid/GridLayout.h"
 #include "Grid/PositionConversionService.h"
+#include "Infrastructure/Loading/LoadSequenceExecutor.h"
+#include "Loading/Sequences/MainLoadSequence.h"
 #include "Pathfinding/AStar.h"
 #include "Player/CardopolyPlayerController.h"
 #include "UI/UGameplayOverlayWidget.h"
@@ -64,6 +66,11 @@ ACardopolyGameMode::~ACardopolyGameMode()
 void ACardopolyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
+
+
+	std::shared_ptr<LoadSequence> loadSequence = MainLoadSequence::GetLoadingQueue();
+
+	LoadSequencePlayer().Execute(loadSequence);
 	
 	_world = new flecs::world();
 	EventBus* eventBus = CreateEventBus();

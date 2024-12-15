@@ -1,0 +1,3 @@
+[submodule "Plugins/FutureExtensions"]
+	path = Plugins/FutureExtensions
+	url = https://github.com/ElonFromMars/future-extensions
