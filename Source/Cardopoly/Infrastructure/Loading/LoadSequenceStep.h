@@ -1,11 +1,21 @@
 ﻿#pragma once
 
-#include "ExpectedFuture.h"
+#include <FutureExtensions.h>
+
+#include "Cardopoly/Infrastructure/DI/IServiceContainer.h"
 
 class LoadSequenceStep
 {
 public:
-	virtual SD::TExpectedFuture<void> Execute();
+	LoadSequenceStep(IServiceContainer& serviceContainer)
+		: ServiceContainer(serviceContainer)
+	{ }
+	
+	virtual SD::TExpectedFuture<void> Execute() = 0;
 
 	virtual ~LoadSequenceStep() = default;
+	LoadSequenceStep() = default;
+
+protected:
+	IServiceContainer& ServiceContainer;
 };

@@ -7,7 +7,7 @@
 class LoadSequencePlayer
 {
 public:
-	void Execute(std::shared_ptr<LoadSequence> loadSequence);
+	void Execute(const std::shared_ptr<LoadSequence>& loadSequence);
 	void ExecuteStep(int stepIndex);
 	
 private:

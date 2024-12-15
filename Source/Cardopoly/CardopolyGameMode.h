@@ -9,9 +9,11 @@
 #include "ECS/Infrastructure/Systems/IGameplaySystem.h"
 #include "EventBus/EventBus.hpp"
 #include "GameFramework/GameModeBase.h"
+#include "Infrastructure/Loading/LoadSequenceExecutor.h"
 #include "Pathfinding/AStar.h"
 #include "CardopolyGameMode.generated.h"
 
+class IServiceContainer;
 class BuildingPrototypeService;
 class GridObjectsDataProvider;
 class CityGridService;
@@ -93,4 +95,6 @@ private:
 	GridObjectsDataProvider* _gridObjectsDataProvider;
 	GridLayout* _gridLayout;
 	PositionConversionService* _positionConversionService;
+	LoadSequencePlayer* _loadSequencePlayer;
+	IServiceContainer* _serviceContainer;
 };

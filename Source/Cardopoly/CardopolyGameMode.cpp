@@ -20,6 +20,7 @@
 #include "GameFramework/SpectatorPawn.h"
 #include "Grid/GridLayout.h"
 #include "Grid/PositionConversionService.h"
+#include "Infrastructure/DI/ServiceContainer.h"
 #include "Infrastructure/Loading/LoadSequenceExecutor.h"
 #include "Loading/Sequences/MainLoadSequence.h"
 #include "Pathfinding/AStar.h"
@@ -56,6 +57,7 @@ ACardopolyGameMode::~ACardopolyGameMode()
 	delete _gridLayout;
 	delete _buildingService;
 	delete _positionConversionService;
+	delete _loadSequencePlayer;
 	
 	for (auto system : _systems)
 	{
@@ -67,10 +69,7 @@ void ACardopolyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-
-	std::shared_ptr<LoadSequence> loadSequence = MainLoadSequence::GetLoadingQueue();
-
-	LoadSequencePlayer().Execute(loadSequence);
+	
 	
 	_world = new flecs::world();
 	EventBus* eventBus = CreateEventBus();
@@ -88,6 +87,12 @@ void ACardopolyGameMode::BeginPlay()
 	
 	CreatePathfinding(cityGrid);
 	StartECS(cityGrid);
+
+	_serviceContainer = new ServiceContainer();
+	_serviceContainer->Set<ULocalConfigHolder*>(LocalConfigHolder);
+	std::shared_ptr<LoadSequence> loadSequence = MainLoadSequence::CreateMainLoadingQueue(*_serviceContainer);
+	_loadSequencePlayer = new LoadSequencePlayer();
+	_loadSequencePlayer->Execute(loadSequence);
 }
 
 void ACardopolyGameMode::Tick(float DeltaTime)

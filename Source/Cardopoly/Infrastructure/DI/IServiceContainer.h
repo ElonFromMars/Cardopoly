@@ -7,12 +7,12 @@ class IServiceContainer
 {
 public:
 	template <typename T>
-	std::shared_ptr<T> Get()
+	T Get()
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
 		void* systemPtr = Get(typeId);
 		
-		return std::static_pointer_cast<T>(systemPtr);
+		return static_cast<T>(systemPtr);
 	}
 
 	virtual void* Get(uintptr_t typeId) = 0;
@@ -23,7 +23,7 @@ public:
 		uintptr_t typeId = unique_id<T>::get_ID();
 		void* systemPtr;
 		bool isSuccess = TryGet(typeId, systemPtr);
-		system = std::static_pointer_cast<T>(systemPtr);
+		system = static_cast<T>(systemPtr);
 		
 		return isSuccess;
 	}
@@ -31,7 +31,7 @@ public:
 	virtual bool TryGet(uintptr_t typeId, void*& system) = 0;
 
 	template <typename T>
-	void Set(std::shared_ptr<T> system)
+	void Set(T system)
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
 		Set(typeId, system);

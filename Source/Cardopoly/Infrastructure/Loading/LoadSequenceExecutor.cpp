@@ -1,7 +1,8 @@
 ﻿#include "LoadSequenceExecutor.h"
-#include "ExpectedFuture.h"
 
-void LoadSequencePlayer::Execute(std::shared_ptr<LoadSequence> loadSequence)
+#include <FutureExtensions.h>
+
+void LoadSequencePlayer::Execute(const std::shared_ptr<LoadSequence>& loadSequence)
 {
 	_loadSequence = loadSequence;
 
