@@ -5,7 +5,7 @@
 #include "Buildings/BuildingService.h"
 #include "Cards/CardFactory.h"
 #include "Cards/Hand/Hand.h"
-#include "City/Generator/CityGenerator.h"
+#include "ProceduralGeneration/City/CityGeneratorService.h"
 #include "Configs/LocalConfigHolder.h"
 #include "Configs/Buildings/GridObjectsDataProvider.h"
 #include "Configs/Buildings/UBuildingConfig.h"
@@ -144,7 +144,7 @@ EventBus* ACardopolyGameMode::CreateEventBus()
 void ACardopolyGameMode::CreateCity(BuildingService* BuildingsController) const
 {
 	UWorld* World = GetWorld();
-	CityGenerator cityGenerator = CityGenerator(CityGeneratorConfig, World, BuildingsController);
+	CityGeneratorService cityGenerator = CityGeneratorService(CityGeneratorConfig, World, BuildingsController);
 
 	cityGenerator.Generate();
 }

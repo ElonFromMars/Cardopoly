@@ -1,8 +1,8 @@
-﻿#include "CityGenerator.h"
+﻿#include "CityGeneratorService.h"
 #include "Cardopoly/Buildings/BuildingService.h"
 #include "Cardopoly/Configs/UCityGeneratorConfig.h"
 
-void CityGenerator::Generate()
+void CityGeneratorService::Generate()
 {
 	for (int x = 0; x < CityGeneratorConfig->GridSizeY; ++x)
 	{

@@ -3,7 +3,7 @@
 class BuildingService;
 class UCityGeneratorConfig;
 
-class CityGenerator
+class CityGeneratorService
 {
 
 private:
@@ -12,7 +12,7 @@ private:
 	BuildingService* BuildingsController;
 	
 public:
-	CityGenerator(
+	CityGeneratorService(
 		UCityGeneratorConfig* cityGeneratorConfig,
 		UWorld* world,
 		BuildingService* buildingsController)
