@@ -9,6 +9,12 @@ public:
 	{
 		
 	}
+
+	virtual void Initialize();
+
+	virtual void SubStep();
+
+	virtual bool IsFinished() const;
 	
 protected:
 	CityGenerationData& _cityGenerationData;

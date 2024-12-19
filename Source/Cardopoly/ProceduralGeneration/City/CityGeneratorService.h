@@ -1,26 +1,28 @@
 ﻿#pragma once
 
+#include "flecs.h"
+
 class BuildingService;
 class UCityGeneratorConfig;
 
 class CityGeneratorService
 {
-
-private:
-	UCityGeneratorConfig* CityGeneratorConfig;
-	UWorld* World;
-	BuildingService* BuildingsController;
-	
 public:
 	CityGeneratorService(
 		UCityGeneratorConfig* cityGeneratorConfig,
-		UWorld* world,
-		BuildingService* buildingsController)
-		: CityGeneratorConfig(cityGeneratorConfig),
-		  World(world),
-		  BuildingsController(buildingsController)
-	{
-	}
+		flecs::world* world,
+		BuildingService* buildingsController
+	)
+	:
+		_cityGeneratorConfig(cityGeneratorConfig),
+		_world(world),
+		_buildingsController(buildingsController)
+	{}
 
 	void Generate();
+
+private:
+	UCityGeneratorConfig* _cityGeneratorConfig;
+	flecs::world* _world;
+	BuildingService* _buildingsController;
 };

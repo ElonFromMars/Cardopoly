@@ -9,9 +9,9 @@ public:
 		: GenerationStep(cityGenerationData)
 	{ }
 	
-	void Initialize();
+	virtual void Initialize() override;
 
-	void SubStep();
+	virtual void SubStep() override;
 
-	bool IsFinished() const;
+	virtual bool IsFinished() const override;
 };
