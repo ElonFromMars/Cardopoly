@@ -1,6 +1,9 @@
 ﻿#pragma once
 
 #include <memory>
+
+#include "IInstanceWrapper.h"
+#include "InstanceOwnerWrapper.h"
 #include "Cardopoly/Utils/TypeIdUtils.h"
 
 class IServiceContainer
@@ -34,10 +37,10 @@ public:
 	void Set(T system)
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
-		Set(typeId, system);
+		Set(typeId, new InstanceOwnerWrapper<T>(system));
 	}
 
-	virtual void Set(uintptr_t typeId, void* system) = 0;
+	virtual void Set(uintptr_t typeId, IInstanceWrapper* system) = 0;
 
 	template <typename T>
 	void RemoveSystem()

@@ -29,7 +29,7 @@ public:
 		return false;
 	}
 
-	virtual void Set(uintptr_t typeId, void* system) override
+	virtual void Set(uintptr_t typeId, IInstanceWrapper* system) override
 	{
 		_systemByType[typeId] = system;
 	}
@@ -40,5 +40,5 @@ public:
 	}
 	
 private:
-	std::unordered_map<uintptr_t, void*> _systemByType;
+	std::unordered_map<uintptr_t, IInstanceWrapper*> _systemByType;
 };
