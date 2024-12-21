@@ -21,6 +21,14 @@ public:
 	{
 		delete _instance;
 	}
+
+	virtual ~InstanceOwnerWrapper() override
+	{
+		if (IsBindLifetime)
+		{
+			delete _instance;	
+		}
+	}
 	
 private:
 	T _instance;

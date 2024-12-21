@@ -34,13 +34,13 @@ public:
 	virtual bool TryGet(uintptr_t typeId, void*& system) = 0;
 
 	template <typename T>
-	void Set(T system)
+	IInstanceWrapper& Set(T* system)
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
-		Set(typeId, new InstanceOwnerWrapper<T>(system));
+		return Set(typeId, new InstanceOwnerWrapper<T>(system));
 	}
 
-	virtual void Set(uintptr_t typeId, IInstanceWrapper* system) = 0;
+	virtual IInstanceWrapper& Set(uintptr_t typeId, IInstanceWrapper* system) = 0;
 
 	template <typename T>
 	void RemoveSystem()

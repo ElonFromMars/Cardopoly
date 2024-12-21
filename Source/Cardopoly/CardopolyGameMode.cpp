@@ -69,7 +69,11 @@ void ACardopolyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
-	
+	_serviceContainer = new ServiceContainer();
+	_serviceContainer->Set<ULocalConfigHolder>(LocalConfigHolder);
+	std::shared_ptr<LoadSequence> loadSequence = MainLoadSequence::CreateMainLoadingQueue(*_serviceContainer);
+	_loadSequencePlayer = new LoadSequencePlayer();
+	_loadSequencePlayer->Execute(loadSequence);
 	
 	_world = new flecs::world();
 	EventBus* eventBus = CreateEventBus();
@@ -87,12 +91,6 @@ void ACardopolyGameMode::BeginPlay()
 	
 	CreatePathfinding(cityGrid);
 	StartECS(cityGrid);
-
-	_serviceContainer = new ServiceContainer();
-	_serviceContainer->Set<ULocalConfigHolder*>(LocalConfigHolder);
-	std::shared_ptr<LoadSequence> loadSequence = MainLoadSequence::CreateMainLoadingQueue(*_serviceContainer);
-	_loadSequencePlayer = new LoadSequencePlayer();
-	_loadSequencePlayer->Execute(loadSequence);
 }
 
 void ACardopolyGameMode::Tick(float DeltaTime)

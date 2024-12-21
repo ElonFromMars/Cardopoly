@@ -29,14 +29,24 @@ public:
 		return false;
 	}
 
-	virtual void Set(uintptr_t typeId, IInstanceWrapper* system) override
+	virtual IInstanceWrapper& Set(uintptr_t typeId, IInstanceWrapper* system) override
 	{
 		_systemByType[typeId] = system;
+		
+		return *system;
 	}
 	
 	virtual void RemoveSystem(uintptr_t typeId) override
 	{
 		_systemByType.erase(typeId);
+	}
+
+	virtual ~ServiceContainer() override
+	{
+		for (const auto& pair : _systemByType)
+		{
+			delete pair.second;
+		}
 	}
 	
 private:
