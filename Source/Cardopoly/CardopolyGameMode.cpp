@@ -20,6 +20,7 @@
 #include "GameFramework/SpectatorPawn.h"
 #include "Grid/GridLayout.h"
 #include "Grid/PositionConversionService.h"
+#include "Infrastructure/Core/Ticker.h"
 #include "Infrastructure/DI/ServiceContainer.h"
 #include "Infrastructure/Loading/LoadSequenceExecutor.h"
 #include "Loading/Sequences/MainLoadSequence.h"
@@ -49,87 +50,61 @@ ACardopolyGameMode::ACardopolyGameMode()
 ACardopolyGameMode::~ACardopolyGameMode()
 {
 	delete _eventBus;
-	delete _aStar;
-	delete _world;
-	delete _buildingEntityFactory;
+	
 	delete _gridObjectsDataProvider;
 	delete _cityGrid;
 	delete _gridLayout;
 	delete _buildingService;
 	delete _positionConversionService;
+
 	delete _loadSequencePlayer;
-	
-	for (auto system : _systems)
-	{
-		delete system;
-	}
+	delete _serviceContainer;
+	delete _ticker;
 }
 
 void ACardopolyGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	//TODO move to load sequence
+	EventBus* eventBus = CreateEventBus();
+	CreateInput();
+	ConfigureCamera();
+	CreateUIWidgets();
+	Hand = CreateHand(_buildingService, eventBus);
+	
+	_ticker = new Ticker();
+
 	_serviceContainer = new ServiceContainer();
+
 	_serviceContainer->Set<ULocalConfigHolder>(LocalConfigHolder);
+	_serviceContainer->Set<UWorld>(GetWorld());
+	_serviceContainer->Set<AHand>(Hand);
+	_serviceContainer->Set<UGameplayAssetData>(GameplayAssetData);
+	_serviceContainer->Set<UCityGeneratorConfig>(CityGeneratorConfig);
+	_serviceContainer->Set<ULocalConfigHolder>(LocalConfigHolder);
+	_serviceContainer->Set<UGameplayOverlayWidget>(GameplayOverlayWidgetInstance);
+	_serviceContainer->Set<UHUDWidget>(HUDWidgetInstance);
+	_serviceContainer->Set<CityGridService>(_cityGrid);
+	_serviceContainer->Set<Ticker>(_ticker);
+	_serviceContainer->Set<BuildingPrototypeService>(_buildingPrototypeService);
+
+	CityGridService* cityGrid = CreateCityGrid();
+	_serviceContainer->Set<GridLayout>(_gridLayout);
+	_serviceContainer->Set<GridObjectsDataProvider>(_gridObjectsDataProvider);
+	_serviceContainer->Set<CityGridService>(cityGrid);
+	_serviceContainer->Set<PositionConversionService>(_positionConversionService);
+
+	
 	std::shared_ptr<LoadSequence> loadSequence = MainLoadSequence::CreateMainLoadingQueue(*_serviceContainer);
 	_loadSequencePlayer = new LoadSequencePlayer();
 	_loadSequencePlayer->Execute(loadSequence);
-	
-	_world = new flecs::world();
-	EventBus* eventBus = CreateEventBus();
-	CityGridService* cityGrid = CreateCityGrid();
-	
-	
-	CreateInput();
-	CreateBuildingService(cityGrid);
-
-	ConfigureCamera();
-
-	CreateUIWidgets();
-	//CreateCity(BuildingsController);
-	Hand = CreateHand(_buildingService, eventBus);
-	
-	CreatePathfinding(cityGrid);
-	StartECS(cityGrid);
 }
 
 void ACardopolyGameMode::Tick(float DeltaTime)
 {
-	_world->progress(DeltaTime);
+	_ticker->Update(DeltaTime);
 	Super::Tick(DeltaTime);
-}
-
-void ACardopolyGameMode::CreatePathfinding(CityGridService* CityGrid)
-{
-	_aStar = new Pathfinding::AStar(CityGrid);
-}
-
-void ACardopolyGameMode::StartECS(CityGridService* CityGrid)
-{
-	auto factory = std::make_unique<CoreGameplaySystemsFactory>(
-		_world,
-		_gridLayout,
-		CityGrid,
-		_aStar,
-		GetWorld(),
-		HUDWidgetInstance,
-		GameplayOverlayWidgetInstance,
-		GameplayAssetData,
-		Hand,
-		LocalConfigHolder->HandLocalConfig
-	);
-
-	auto mainGameplayFeature = std::make_unique<MainGameplayFeature>(std::move(factory));
-
-	_systems = mainGameplayFeature->GetSystems();
-	
-	for (auto system : _systems)
-	{
-		if(system)
-		{
-			system->Initialize();	
-		}
-	}
 }
 
 EventBus* ACardopolyGameMode::CreateEventBus()
@@ -139,67 +114,30 @@ EventBus* ACardopolyGameMode::CreateEventBus()
 	return _eventBus;
 }
 
-void ACardopolyGameMode::CreateCity(BuildingService* BuildingsController) const
-{
-	UWorld* World = GetWorld();
-	CityGeneratorService cityGenerator = CityGeneratorService(CityGeneratorConfig, World, BuildingsController);
-
-	cityGenerator.Generate();
-}
-
-AHand* ACardopolyGameMode::CreateHand(BuildingService* buildingService, EventBus* eventBus) const
+AHand* ACardopolyGameMode::CreateHand(BuildingService* buildingService, EventBus* eventBus)
 {
 	UWorld* World = GetWorld();
 	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
 	
-	AHand* hand = World->SpawnActor<AHand>(GameplayAssetData->Hand, FVector::ZeroVector, FRotator::ZeroRotator);
-	hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
+	Hand = World->SpawnActor<AHand>(GameplayAssetData->Hand, FVector::ZeroVector, FRotator::ZeroRotator);
+	Hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 	UCardFactory* CardFactory = NewObject<UCardFactory>();
 	CardFactory->Construct(World, GameplayAssetData, buildingService, _buildingPrototypeService, LocalConfigHolder);
 	
-	hand->Construct(CardFactory, eventBus);
+	Hand->Construct(CardFactory, eventBus);
 	
 	
-	hand->DrawCard();
+	Hand->DrawCard();
 	
-	return hand;
+	return Hand;
 }
-
-
 
 void ACardopolyGameMode::CreateInput() const
 {
 	UWorld* World = GetWorld();
 	ACardopolyPlayerController* CardopolyPlayerController = Cast<ACardopolyPlayerController>(World->GetFirstPlayerController());
 	CardopolyPlayerController->Construct(LocalConfigHolder->InputLocalConfig);
-}
-
-BuildingService* ACardopolyGameMode::CreateBuildingService(CityGridService* CityGrid)
-{
-	_buildingEntityFactory = new BuildingEntityFactory(_world, _gridObjectsDataProvider);
-	
-	UWorld* World = GetWorld();
-	_buildingService = new BuildingService(
-		CityGrid,
-		_buildingEntityFactory,
-		_gridLayout,
-		World,
-		LocalConfigHolder->BuildingConfigHolder,
-		_gridObjectsDataProvider,
-		_positionConversionService
-	);
-
-	_buildingPrototypeService = new BuildingPrototypeService(
-		World,
-		GameplayAssetData,
-		_positionConversionService,
-		_gridObjectsDataProvider,
-		_buildingService,
-		_gridLayout
-	);
-	
-	return _buildingService;
 }
 
 CityGridService* ACardopolyGameMode::CreateCityGrid()
@@ -209,7 +147,6 @@ CityGridService* ACardopolyGameMode::CreateCityGrid()
 	_gridObjectsDataProvider = new GridObjectsDataProvider(LocalConfigHolder->BuildingConfigHolder);
 	_gridObjectsDataProvider->Initialize();
 	_cityGrid = new CityGridService(_gridObjectsDataProvider);
-
 	_positionConversionService = new PositionConversionService(GetWorld(), _gridLayout);
 
 	return _cityGrid;
@@ -231,5 +168,4 @@ void ACardopolyGameMode::CreateUIWidgets()
 	
 	HUDWidgetInstance = CreateWidget<UHUDWidget>(GetWorld(), WB_HUDClass);
 	HUDWidgetInstance->AddToViewport();
-	HUDWidgetInstance->Construct(_world);
 }

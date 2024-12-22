@@ -14,8 +14,22 @@ public:
 	{
 		
 	}
+
+	virtual void Initialize()
+	{
+		for (auto system : GetSystems())
+		{
+			system->Initialize();
+		}
+	}
 	
-	virtual ~GameplayFeature() = default;
+	virtual ~GameplayFeature()
+	{
+		for (auto system : _systems)
+		{
+			delete system;
+		}
+	}
 
 	const std::vector<IGameplaySystem*>& GetSystems()
 	{

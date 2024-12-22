@@ -1,11 +1,13 @@
 ﻿#pragma once
 
 #include <memory>
-#include "Cardopoly/Infrastructure/Loading/LoadSequence.h"
-#include "Cardopoly/Loading/Steps/TestStep.h"
 
-class StartGameplayEscStep;
-class ProceduralCityGenerationSequenceStep;
+#include "Cardopoly/ECS/Infrastructure/Loading/Steps/CreateEcsWorldStep.h"
+#include "Cardopoly/ECS/Infrastructure/Loading/Steps/CreateServicesStep.h"
+#include "Cardopoly/ECS/Infrastructure/Loading/Steps/StartGameplayEscStep.h"
+#include "Cardopoly/Infrastructure/Loading/LoadSequence.h"
+#include "Cardopoly/ProceduralGeneration/Infrastructure/Loading/ProceduralCityGenerationSequenceStep.h"
+
 
 class MainLoadSequence
 {
@@ -15,6 +17,8 @@ public:
 		std::shared_ptr<LoadSequence> sequence = std::make_shared<LoadSequence>(serviceContainer);
 
 		sequence->
+			Sequential<CreateEcsWorldStep>().
+			Sequential<CreateServicesStep>().
 			Sequential<ProceduralCityGenerationSequenceStep>().
 			Sequential<StartGameplayEscStep>().
 			End();

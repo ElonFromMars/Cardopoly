@@ -13,6 +13,7 @@
 #include "Pathfinding/AStar.h"
 #include "CardopolyGameMode.generated.h"
 
+class Ticker;
 class IServiceContainer;
 class BuildingPrototypeService;
 class GridObjectsDataProvider;
@@ -43,17 +44,12 @@ public:
 	virtual void BeginPlay() override;
 
 	virtual void Tick(float DeltaTime) override;
-	void CreatePathfinding(CityGridService* CityGrid);
-
-	void StartECS(CityGridService* CityGrid);
 	
 	EventBus* CreateEventBus();
 	
-	void CreateCity(BuildingService* BuildingsController) const;
-	AHand* CreateHand(BuildingService* buildingService, EventBus* eventBus) const;
+	AHand* CreateHand(BuildingService* buildingService, EventBus* eventBus);
 
 	void CreateInput() const;
-	BuildingService* CreateBuildingService(CityGridService* CityGrid);
 	CityGridService* CreateCityGrid();
 	void ConfigureCamera() const;
 	void CreateUIWidgets();
@@ -85,10 +81,7 @@ public:
 
 private:
 	EventBus* _eventBus;
-	flecs::world* _world;
-	Pathfinding::AStar* _aStar;
-	std::vector<IGameplaySystem*> _systems;
-	BuildingEntityFactory* _buildingEntityFactory;
+	
 	BuildingService* _buildingService;
 	BuildingPrototypeService* _buildingPrototypeService;
 	CityGridService* _cityGrid;
@@ -97,4 +90,5 @@ private:
 	PositionConversionService* _positionConversionService;
 	LoadSequencePlayer* _loadSequencePlayer;
 	IServiceContainer* _serviceContainer;
+	Ticker* _ticker;
 };

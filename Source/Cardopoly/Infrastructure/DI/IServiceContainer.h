@@ -10,12 +10,12 @@ class IServiceContainer
 {
 public:
 	template <typename T>
-	T Get()
+	T* Get()
 	{
 		uintptr_t typeId = unique_id<T>::get_ID();
 		void* systemPtr = Get(typeId);
 		
-		return static_cast<T>(systemPtr);
+		return static_cast<T*>(systemPtr);
 	}
 
 	virtual void* Get(uintptr_t typeId) = 0;

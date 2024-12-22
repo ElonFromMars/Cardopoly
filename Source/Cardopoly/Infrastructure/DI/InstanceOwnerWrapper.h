@@ -31,5 +31,5 @@ public:
 	}
 	
 private:
-	T _instance;
+	T* _instance;
 };

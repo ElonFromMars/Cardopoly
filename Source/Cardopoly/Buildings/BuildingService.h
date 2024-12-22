@@ -17,7 +17,6 @@ public:
 		CityGridService* cityGrid,
 		BuildingEntityFactory* buildingEntityFactory,
 		GridLayout* gridLayout,
-		UWorld* viewWorld,
 		UBuildingConfigHolder* buildingConfigHolder,
 		GridObjectsDataProvider* gridObjectsDataProvider,
 		PositionConversionService* positionConversionService
@@ -25,7 +24,6 @@ public:
 		: _gridLayout(gridLayout),
 		_cityGrid(cityGrid),
 		_buildingEntityFactory(buildingEntityFactory),
-		_viewWorld(viewWorld),
 		_buildingConfigHolder(buildingConfigHolder),
 		_gridObjectsDataProvider(gridObjectsDataProvider),
 		_positionConversionService(positionConversionService)
@@ -44,7 +42,6 @@ private:
 	GridLayout* _gridLayout;
 	CityGridService* _cityGrid;
 	BuildingEntityFactory* _buildingEntityFactory;
-	UWorld* _viewWorld;
 	UBuildingConfigHolder* _buildingConfigHolder;
 	GridObjectsDataProvider* _gridObjectsDataProvider;
 	PositionConversionService* _positionConversionService;

@@ -10,5 +10,5 @@ void GenerationStep::SubStep()
 
 bool GenerationStep::IsFinished() const
 {
-	return true;
+	return _isFinished;
 }

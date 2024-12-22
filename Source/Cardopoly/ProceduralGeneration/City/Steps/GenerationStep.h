@@ -9,13 +9,16 @@ public:
 	{
 		
 	}
-
+	
 	virtual void Initialize();
 
 	virtual void SubStep();
 
 	virtual bool IsFinished() const;
 	
+	virtual ~GenerationStep() = default;
+
 protected:
 	CityGenerationData& _cityGenerationData;
+	bool _isFinished = false;
 };
