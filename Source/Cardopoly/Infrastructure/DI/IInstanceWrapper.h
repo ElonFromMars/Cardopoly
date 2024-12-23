@@ -7,7 +7,7 @@ public:
 
 	virtual void* GetInstance() = 0;
 
-	virtual void ReleaseInstance() = 0;
+	virtual void TryReleaseInstance() = 0;
 
 	virtual void BindLifetimeToContainer()
 	{

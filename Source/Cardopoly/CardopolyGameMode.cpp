@@ -70,21 +70,20 @@ void ACardopolyGameMode::BeginPlay()
 	EventBus* eventBus = CreateEventBus();
 	CreateInput();
 	ConfigureCamera();
-	CreateUIWidgets();
-	Hand = CreateHand(_buildingService, eventBus);
+	
 	
 	_ticker = new Ticker();
 
 	_serviceContainer = new ServiceContainer();
 
 	_serviceContainer->Set<ULocalConfigHolder>(LocalConfigHolder);
+	_serviceContainer->Set<EventBus>(eventBus);
 	_serviceContainer->Set<UWorld>(GetWorld());
-	_serviceContainer->Set<AHand>(Hand);
 	_serviceContainer->Set<UGameplayAssetData>(GameplayAssetData);
 	_serviceContainer->Set<UCityGeneratorConfig>(CityGeneratorConfig);
 	_serviceContainer->Set<ULocalConfigHolder>(LocalConfigHolder);
-	_serviceContainer->Set<UGameplayOverlayWidget>(GameplayOverlayWidgetInstance);
-	_serviceContainer->Set<UHUDWidget>(HUDWidgetInstance);
+	
+	
 	_serviceContainer->Set<CityGridService>(_cityGrid);
 	_serviceContainer->Set<Ticker>(_ticker);
 	_serviceContainer->Set<BuildingPrototypeService>(_buildingPrototypeService);
@@ -95,8 +94,12 @@ void ACardopolyGameMode::BeginPlay()
 	_serviceContainer->Set<CityGridService>(cityGrid);
 	_serviceContainer->Set<PositionConversionService>(_positionConversionService);
 
+	CreateUIWidgets();//TODO move to load sequence
+	_serviceContainer->Set<UGameplayOverlayWidget>(GameplayOverlayWidgetInstance);
+	_serviceContainer->Set<UHUDWidget>(HUDWidgetInstance);
+
 	
-	std::shared_ptr<LoadSequence> loadSequence = MainLoadSequence::CreateMainLoadingQueue(*_serviceContainer);
+	std::shared_ptr<LoadSequence> loadSequence = MainLoadSequence::CreateMainLoadingQueue(_serviceContainer);
 	_loadSequencePlayer = new LoadSequencePlayer();
 	_loadSequencePlayer->Execute(loadSequence);
 }
@@ -112,25 +115,6 @@ EventBus* ACardopolyGameMode::CreateEventBus()
 	_eventBus = new EventBus;
 	
 	return _eventBus;
-}
-
-AHand* ACardopolyGameMode::CreateHand(BuildingService* buildingService, EventBus* eventBus)
-{
-	UWorld* World = GetWorld();
-	APawn* PlayerPawn = World->GetFirstPlayerController()->GetPawnOrSpectator();
-	
-	Hand = World->SpawnActor<AHand>(GameplayAssetData->Hand, FVector::ZeroVector, FRotator::ZeroRotator);
-	Hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
-
-	UCardFactory* CardFactory = NewObject<UCardFactory>();
-	CardFactory->Construct(World, GameplayAssetData, buildingService, _buildingPrototypeService, LocalConfigHolder);
-	
-	Hand->Construct(CardFactory, eventBus);
-	
-	
-	Hand->DrawCard();
-	
-	return Hand;
 }
 
 void ACardopolyGameMode::CreateInput() const

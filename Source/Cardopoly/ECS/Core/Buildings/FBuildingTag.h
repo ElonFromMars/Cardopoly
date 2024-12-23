@@ -1,7 +1,6 @@
 ﻿#pragma once
 
-class FBuildingTag
+struct FBuildingTag
 {
-public:
 	
 };

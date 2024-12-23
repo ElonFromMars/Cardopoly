@@ -6,7 +6,7 @@
 class LoadSequence
 {
 public:
-	LoadSequence(IServiceContainer& serviceContainer)
+	LoadSequence(IServiceContainer* serviceContainer)
 		: _serviceContainer(serviceContainer)
 	{
 		
@@ -38,5 +38,5 @@ public:
 
 public:
 	std::vector<LoadSequenceStep*> Steps;
-	IServiceContainer& _serviceContainer;
+	IServiceContainer* _serviceContainer;
 };

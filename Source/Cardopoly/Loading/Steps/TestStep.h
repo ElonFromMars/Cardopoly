@@ -11,7 +11,7 @@ class IServiceContainer;
 class TestStep : LoadSequenceStep
 {
 public:
-	TestStep(IServiceContainer& serviceContainer)
+	TestStep(IServiceContainer* serviceContainer)
 		: LoadSequenceStep(serviceContainer)
 	{
 		
@@ -19,7 +19,7 @@ public:
 	
 	virtual SD::TExpectedFuture<void> Execute() override
 	{
-		ULocalConfigHolder* config = ServiceContainer.Get<ULocalConfigHolder>();
+		ULocalConfigHolder* config = ServiceContainer->Get<ULocalConfigHolder>();
 
 		TArray<FName> RowNames = config->BuildingCardsConfig->GetRowNames();
 		int32 RandomIndex = UKismetMathLibrary::RandomInteger(RowNames.Num());

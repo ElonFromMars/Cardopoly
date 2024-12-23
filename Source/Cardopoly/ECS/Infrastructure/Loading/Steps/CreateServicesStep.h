@@ -14,7 +14,7 @@ class IServiceContainer;
 class CreateServicesStep : LoadSequenceStep
 {
 public:
-	CreateServicesStep(IServiceContainer& serviceContainer)
+	CreateServicesStep(IServiceContainer* serviceContainer)
 		: LoadSequenceStep(serviceContainer)
 	{
 		
@@ -22,14 +22,14 @@ public:
 	
 	virtual SD::TExpectedFuture<void> Execute() override
 	{
-		UWorld* viewWorld = ServiceContainer.Get<UWorld>();
-		UGameplayAssetData* GameplayAssetData = ServiceContainer.Get<UGameplayAssetData>();
-		ULocalConfigHolder* LocalConfigHolder = ServiceContainer.Get<ULocalConfigHolder>();
-		CityGridService* CityGrid = ServiceContainer.Get<CityGridService>();
-		GridLayout* _gridLayout = ServiceContainer.Get<GridLayout>();
-		flecs::world* _world = ServiceContainer.Get<flecs::world>();
-		GridObjectsDataProvider* _gridObjectsDataProvider = ServiceContainer.Get<GridObjectsDataProvider>();
-		PositionConversionService* _positionConversionService = ServiceContainer.Get<PositionConversionService>();
+		UWorld* viewWorld = ServiceContainer->Get<UWorld>();
+		UGameplayAssetData* GameplayAssetData = ServiceContainer->Get<UGameplayAssetData>();
+		ULocalConfigHolder* LocalConfigHolder = ServiceContainer->Get<ULocalConfigHolder>();
+		CityGridService* CityGrid = ServiceContainer->Get<CityGridService>();
+		GridLayout* _gridLayout = ServiceContainer->Get<GridLayout>();
+		flecs::world* _world = ServiceContainer->Get<flecs::world>();
+		GridObjectsDataProvider* _gridObjectsDataProvider = ServiceContainer->Get<GridObjectsDataProvider>();
+		PositionConversionService* _positionConversionService = ServiceContainer->Get<PositionConversionService>();
 		
 		auto buildingEntityFactory = new BuildingEntityFactory(_world, _gridObjectsDataProvider);
 		
@@ -51,22 +51,18 @@ public:
 			_gridLayout
 		);
 
-		ServiceContainer
-			.Set<BuildingEntityFactory>(buildingEntityFactory)
+		ServiceContainer->Set<BuildingEntityFactory>(buildingEntityFactory)
 			.BindLifetimeToContainer();
 
-		ServiceContainer
-			.Set<BuildingService>(buildingService)
+		ServiceContainer->Set<BuildingService>(buildingService)
 			.BindLifetimeToContainer();
 
-		ServiceContainer
-			.Set<BuildingPrototypeService>(buildingPrototypeService)
+		ServiceContainer->Set<BuildingPrototypeService>(buildingPrototypeService)
 			.BindLifetimeToContainer();
 
 		
 		auto _aStar = new Pathfinding::AStar(CityGrid);
-		ServiceContainer
-			.Set<Pathfinding::AStar>(_aStar)
+		ServiceContainer->Set<Pathfinding::AStar>(_aStar)
 			.BindLifetimeToContainer();
 		
 		return SD::MakeReadyFuture();

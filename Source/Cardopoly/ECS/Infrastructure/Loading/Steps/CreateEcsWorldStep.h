@@ -8,7 +8,7 @@ class IServiceContainer;
 class CreateEcsWorldStep : LoadSequenceStep
 {
 public:
-	CreateEcsWorldStep(IServiceContainer& serviceContainer)
+	CreateEcsWorldStep(IServiceContainer* serviceContainer)
 		: LoadSequenceStep(serviceContainer)
 	{
 		
@@ -18,9 +18,9 @@ public:
 	{
 		flecs::world* world = new flecs::world();
 
-		ServiceContainer
-			.Set<flecs::world>(world)
-			.BindLifetimeToContainer();
+		ServiceContainer->Set<flecs::world>(world)
+		;
+		//.BindLifetimeToContainer();
 		
 		return SD::MakeReadyFuture();
 	}

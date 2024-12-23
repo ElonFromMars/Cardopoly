@@ -12,7 +12,7 @@ public:
 		auto it = _systemByType.find(typeId);
 		if (it != _systemByType.end())
 		{
-			return it->second;
+			return it->second->GetInstance();
 		}
 
 		throw std::runtime_error("Type not found");
@@ -23,7 +23,7 @@ public:
 		auto it = _systemByType.find(typeId);
 		if (it != _systemByType.end())
 		{
-			system = it->second;
+			system = it->second->GetInstance();
 			return true;
 		}
 		return false;
@@ -45,6 +45,7 @@ public:
 	{
 		for (const auto& pair : _systemByType)
 		{
+			pair.second->TryReleaseInstance();
 			delete pair.second;
 		}
 	}

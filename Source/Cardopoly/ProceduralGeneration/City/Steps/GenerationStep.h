@@ -20,5 +20,5 @@ public:
 
 protected:
 	CityGenerationData& _cityGenerationData;
-	bool _isFinished = false;
+	bool _isFinished = true;
 };

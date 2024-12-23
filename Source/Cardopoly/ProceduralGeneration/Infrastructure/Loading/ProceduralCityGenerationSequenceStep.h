@@ -9,7 +9,7 @@ class IServiceContainer;
 class ProceduralCityGenerationSequenceStep : LoadSequenceStep
 {
 public:
-	ProceduralCityGenerationSequenceStep(IServiceContainer& serviceContainer)
+	ProceduralCityGenerationSequenceStep(IServiceContainer* serviceContainer)
 		: LoadSequenceStep(serviceContainer)
 	{
 		
@@ -17,18 +17,17 @@ public:
 	
 	virtual SD::TExpectedFuture<void> Execute() override
 	{
-		flecs::world* world = ServiceContainer.Get<flecs::world>();
-		UCityGeneratorConfig* CityGeneratorConfig = ServiceContainer.Get<UCityGeneratorConfig>();
-		BuildingService* BuildingsController = ServiceContainer.Get<BuildingService>();
+		//flecs::world* world = ServiceContainer.Get<flecs::world>();
+		UCityGeneratorConfig* CityGeneratorConfig = ServiceContainer->Get<UCityGeneratorConfig>();
+		BuildingService* BuildingsController = ServiceContainer->Get<BuildingService>();
 		
 		CityGenerationData* cityGenerationData = new CityGenerationData();
 
-		CityGeneratorService cityGenerator = CityGeneratorService(CityGeneratorConfig, world, BuildingsController);
+		CityGeneratorService cityGenerator = CityGeneratorService(CityGeneratorConfig, BuildingsController);
 
-		cityGenerator.Generate();
+		//cityGenerator.Generate();
 		
-		ServiceContainer
-			.Set<CityGenerationData>(cityGenerationData)
+		ServiceContainer->Set<CityGenerationData>(cityGenerationData)
 			.BindLifetimeToContainer();
 		
 		return SD::MakeReadyFuture();

@@ -18,20 +18,31 @@ void LoadSequencePlayer::ExecuteStep(int stepIndex)
 {
 	auto step = _loadSequence->Steps[stepIndex];
 	SD::TExpectedFuture<void> stepResult = step->Execute();
-	stepResult.Then([this, stepIndex](SD::TExpected<void> result)
+	if (stepResult.IsReady())
 	{
-		if (result.IsError())
-		{
-			//TODO
-		}
 		if (stepIndex + 1 < _loadSequence->Steps.size())
 		{
 			ExecuteStep(stepIndex + 1);
 		}
-		else
+	}
+	else
+	{
+		stepResult.Then([this, stepIndex](SD::TExpected<void> result)
 		{
-			//TODO
-		}
-		return SD::MakeReadyExpected();
-	});
+			if (result.IsError())
+			{
+				//TODO
+			}
+			if (stepIndex + 1 < _loadSequence->Steps.size())
+			{
+				ExecuteStep(stepIndex + 1);
+			}
+			else
+			{
+				//TODO
+			}
+			return SD::MakeReadyExpected();
+		});
+	}
+	
 }

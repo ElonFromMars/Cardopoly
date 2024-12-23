@@ -7,7 +7,7 @@
 class LoadSequenceStep
 {
 public:
-	LoadSequenceStep(IServiceContainer& serviceContainer)
+	LoadSequenceStep(IServiceContainer* serviceContainer)
 		: ServiceContainer(serviceContainer)
 	{ }
 	
@@ -17,5 +17,5 @@ public:
 	LoadSequenceStep() = default;
 
 protected:
-	IServiceContainer& ServiceContainer;
+	IServiceContainer* ServiceContainer;
 };

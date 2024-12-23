@@ -17,12 +17,7 @@ public:
 		return _instance;
 	}
 
-	virtual void ReleaseInstance() override
-	{
-		delete _instance;
-	}
-
-	virtual ~InstanceOwnerWrapper() override
+	virtual void TryReleaseInstance() override
 	{
 		if (IsBindLifetime)
 		{

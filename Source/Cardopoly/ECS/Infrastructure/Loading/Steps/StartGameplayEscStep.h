@@ -12,7 +12,7 @@ class IServiceContainer;
 class StartGameplayEscStep : LoadSequenceStep
 {
 public:
-	StartGameplayEscStep(IServiceContainer& serviceContainer)
+	StartGameplayEscStep(IServiceContainer* serviceContainer)
 		: LoadSequenceStep(serviceContainer)
 	{
 		
@@ -20,17 +20,17 @@ public:
 	
 	virtual SD::TExpectedFuture<void> Execute() override
 	{
-		Ticker* ticker = ServiceContainer.Get<Ticker>();
-		UWorld* viewWorld = ServiceContainer.Get<UWorld>();
-		AHand* Hand = ServiceContainer.Get<AHand>();
-		UGameplayAssetData* GameplayAssetData = ServiceContainer.Get<UGameplayAssetData>();
-		ULocalConfigHolder* LocalConfigHolder = ServiceContainer.Get<ULocalConfigHolder>();
-		UGameplayOverlayWidget* GameplayOverlayWidgetInstance = ServiceContainer.Get<UGameplayOverlayWidget>();
-		UHUDWidget* HUDWidgetInstance = ServiceContainer.Get<UHUDWidget>();
-		CityGridService* CityGrid = ServiceContainer.Get<CityGridService>();
-		GridLayout* _gridLayout = ServiceContainer.Get<GridLayout>();
-		Pathfinding::AStar* _aStar = ServiceContainer.Get<Pathfinding::AStar>();
-		flecs::world* _world = ServiceContainer.Get<flecs::world>();
+		Ticker* ticker = ServiceContainer->Get<Ticker>();
+		UWorld* viewWorld = ServiceContainer->Get<UWorld>();
+		AHand* Hand = ServiceContainer->Get<AHand>();
+		UGameplayAssetData* GameplayAssetData = ServiceContainer->Get<UGameplayAssetData>();
+		ULocalConfigHolder* LocalConfigHolder = ServiceContainer->Get<ULocalConfigHolder>();
+		UGameplayOverlayWidget* GameplayOverlayWidgetInstance = ServiceContainer->Get<UGameplayOverlayWidget>();
+		UHUDWidget* HUDWidgetInstance = ServiceContainer->Get<UHUDWidget>();
+		CityGridService* CityGrid = ServiceContainer->Get<CityGridService>();
+		GridLayout* _gridLayout = ServiceContainer->Get<GridLayout>();
+		Pathfinding::AStar* _aStar = ServiceContainer->Get<Pathfinding::AStar>();
+		flecs::world* _world = ServiceContainer->Get<flecs::world>();
 		
 		auto factory = std::make_unique<CoreGameplaySystemsFactory>(
 			_world,
@@ -54,8 +54,7 @@ public:
 			_world->progress();
 		});
 
-		ServiceContainer
-			.Set<GameplayFeature>(mainGameplayFeature)
+		ServiceContainer->Set<GameplayFeature>(mainGameplayFeature)
 			.BindLifetimeToContainer();
 		
 		return SD::MakeReadyFuture();

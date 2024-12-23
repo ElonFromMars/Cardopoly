@@ -46,8 +46,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	
 	EventBus* CreateEventBus();
-	
-	AHand* CreateHand(BuildingService* buildingService, EventBus* eventBus);
 
 	void CreateInput() const;
 	CityGridService* CreateCityGrid();
@@ -75,9 +73,6 @@ public:
 
 	UPROPERTY()
 	UGameplayOverlayWidget* GameplayOverlayWidgetInstance;
-
-	UPROPERTY()
-	AHand* Hand;
 
 private:
 	EventBus* _eventBus;
