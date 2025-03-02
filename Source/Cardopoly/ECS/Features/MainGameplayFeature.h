@@ -1,9 +1,11 @@
 ﻿#pragma once
 
 #include "Cardopoly/ECS/Core/Citizens/Systems/CitizensInitializeSystem.h"
+#include "Cardopoly/ECS/Core/Common/CleanupSystem.hpp"
 #include "Cardopoly/ECS/Core/Debug/Systems/DrawDebugViewSystem.h"
 #include "Cardopoly/ECS/Core/Movement/Systems/MovementSystem.h"
 #include "Cardopoly/ECS/Core/Pathfinding/Systems/PathfindingSystem.h"
+#include "Cardopoly/ECS/Core/View/FCreateViewRequest.hpp"
 #include "Cardopoly/ECS/Infrastructure/Features/GameplayFeature.h"
 
 class OverlayPositionSystem;
@@ -19,8 +21,8 @@ class HUDViewSystem;
 class MainGameplayFeature : public GameplayFeature
 {
 public:
-	MainGameplayFeature(std::unique_ptr<ISystemFactory> systemFactory)
-		: GameplayFeature(std::move(systemFactory))
+	MainGameplayFeature(std::unique_ptr<ISystemFactory> systemFactory, flecs::world* world)
+		: GameplayFeature(std::move(systemFactory)), _world(world)
 	{
 	}
 	
@@ -42,5 +44,9 @@ public:
 		AddSystem<OverlayPositionSystem>();
 		AddSystem<HUDViewSystem>();
 		AddSystem<HandUISystem>();
+		AddSystem(new CleanupSystem<FCreateViewRequest>(_world));
 	}
+	
+private:
+	flecs::world* _world;
 };

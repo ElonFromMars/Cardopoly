@@ -45,7 +45,7 @@ public:
 			LocalConfigHolder->HandLocalConfig
 		);
 
-		GameplayFeature* mainGameplayFeature = new MainGameplayFeature(std::move(factory));
+		GameplayFeature* mainGameplayFeature = new MainGameplayFeature(std::move(factory), _world);
 
 		mainGameplayFeature->Initialize();
 		

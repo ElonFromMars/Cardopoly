@@ -4,5 +4,5 @@
 
 struct FGridPositionComponent
 {
-	FVector2D Value;
+	FIntVector Value;
 };

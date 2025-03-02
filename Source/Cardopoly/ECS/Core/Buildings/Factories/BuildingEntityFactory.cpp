@@ -3,8 +3,8 @@
 #include "Cardopoly/Configs/Buildings/GridObjectsDataProvider.h"
 #include "Cardopoly/ECS/Core/Buildings/FBuildingTag.h"
 #include "Cardopoly/ECS/Core/Economy/FIncomeComponent.hpp"
+#include "Cardopoly/ECS/Core/Grid/Components/FGridPositionComponent.hpp"
 #include "Cardopoly/ECS/Core/Id/FIdComponent.hpp"
-#include "Cardopoly/ECS/Core/Movement/Components/FGridPositionComponent.h"
 #include "Cardopoly/ECS/Core/View/FCreateViewRequest.hpp"
 #include "Cardopoly/ECS/Core/View/FLocalOffsetComponent.hpp"
 

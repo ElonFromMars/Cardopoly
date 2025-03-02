@@ -48,6 +48,11 @@ protected:
 		auto typeId = unique_id<TSystem>::get_ID();
 		_systems.push_back(_systemFactory->Create(typeId));
 	}
+	
+	void AddSystem(IGameplaySystem* system)
+	{
+		_systems.push_back(system);
+	}
 
 private:
 	std::vector<IGameplaySystem*> _systems;

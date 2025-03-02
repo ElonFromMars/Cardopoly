@@ -11,6 +11,8 @@ void CreateViewSystem::Initialize()
 {
 	_world->system<FIdComponent>("CreateViewSystem")
 		.with<FCreateViewRequest>()
+		.write<FViewComponent>()
+		.immediate()
 		.each([this](flecs::entity entity, FIdComponent& id)
 		{
 			TSubclassOf<AEntityView> viewActorClass = _gameplayAssetData->GetEntityViewClass(
@@ -20,6 +22,6 @@ void CreateViewSystem::Initialize()
 			
 			entity.set<FViewComponent>({view});
 
-			entity.remove<FCreateViewRequest>();
+			UE_LOG(LogTemp, Warning, TEXT("Current frame: %llu"), GFrameCounter);
 		});
 }

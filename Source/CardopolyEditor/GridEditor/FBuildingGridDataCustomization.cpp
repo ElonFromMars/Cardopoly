@@ -45,17 +45,38 @@ void FBuildingGridDataCustomization::CustomizeChildren(TSharedRef<IPropertyHandl
                 GridData->Rows, GridData->Columns, TotalGridSize);
             return;
         }
-        
-        if (GridData->GridCells.Num() != TotalGridSize)
+
+        TArray<bool>& gridCells = GridData->GridCells;
+        if (gridCells.Num() != TotalGridSize)
         {
-            GridData->GridCells.Empty();
-            GridData->GridCells.AddZeroed(TotalGridSize);
+            int32 OldSize = gridCells.Num();
+
+            gridCells.Empty();
+            gridCells.AddZeroed(TotalGridSize);
+            gridCells.SetNum(TotalGridSize);
+        
+            for (int32 i = OldSize; i < TotalGridSize; ++i)
+            {
+                gridCells[i] = true;
+            }
         }
         
         UE_LOG(LogTemp, Warning, TEXT("Resizing GridCells to %lld elements"), TotalGridSize);
 
         TSharedRef<SHorizontalBox> griContainer = SNew(SHorizontalBox);
 
+        auto resizeGrid = [this, GridData]()
+        {
+            int32 OldSize =  GridData->GridCells.Num();
+            int32 NewSize = GridData->Rows * GridData->Columns;
+            GridData->GridCells.SetNum(NewSize);
+        
+            for (int32 i = OldSize; i < NewSize; ++i)
+            {
+                GridData->GridCells[i] = true;
+            }
+        };
+        
         auto rebuildGrid = [this, GridData, griContainer]()
         {
             griContainer->ClearChildren();
@@ -75,10 +96,10 @@ void FBuildingGridDataCustomization::CustomizeChildren(TSharedRef<IPropertyHandl
             [
                 SNew(SNumericEntryBox<int32>)
                 .Value_Lambda([GridData]() { return GridData->Rows; })
-                .OnValueChanged_Lambda([GridData, PropertyHandle, rebuildGrid](int32 NewValue)
+                .OnValueChanged_Lambda([GridData, PropertyHandle, rebuildGrid, resizeGrid](int32 NewValue)
                 {
                     GridData->Rows = FMath::Clamp(NewValue, 1, 100);
-                    GridData->GridCells.SetNum(GridData->Rows * GridData->Columns);
+                    resizeGrid();
                     PropertyHandle->NotifyPostChange(EPropertyChangeType::ValueSet);
                     rebuildGrid();
                 })
@@ -94,10 +115,10 @@ void FBuildingGridDataCustomization::CustomizeChildren(TSharedRef<IPropertyHandl
             [
                 SNew(SNumericEntryBox<int32>)
                 .Value_Lambda([GridData]() { return GridData->Columns; })
-                .OnValueChanged_Lambda([GridData, PropertyHandle, rebuildGrid](int32 NewValue)
+                .OnValueChanged_Lambda([GridData, PropertyHandle, rebuildGrid, resizeGrid](int32 NewValue)
                 {
                     GridData->Columns = FMath::Clamp(NewValue, 1, 100);
-                    GridData->GridCells.SetNum(GridData->Rows * GridData->Columns);
+                    resizeGrid();
                     PropertyHandle->NotifyPostChange(EPropertyChangeType::ValueSet);
                     rebuildGrid();
                 })
