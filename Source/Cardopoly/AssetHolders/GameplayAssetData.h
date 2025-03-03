@@ -8,7 +8,6 @@
 
 class UWidgetHolder;
 class AEntityView;
-class ATurnController;
 class AHand;
 class UCardsHolder;
 class UMaterialsHolder;

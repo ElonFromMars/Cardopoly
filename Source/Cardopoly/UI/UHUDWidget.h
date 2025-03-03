@@ -5,8 +5,6 @@
 #include "Blueprint/UserWidget.h"
 #include "UHUDWidget.generated.h"
 
-class ATurnController;
-
 UCLASS()
 class CARDOPOLY_API UHUDWidget : public UUserWidget
 {

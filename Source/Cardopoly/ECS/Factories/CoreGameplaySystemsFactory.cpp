@@ -2,7 +2,7 @@
 
 #include "Cardopoly/ECS/Core/Economy/EconomicsSystem.h"
 #include "Cardopoly/ECS/Core/GameplayFlow/TurnSystem.h"
-#include "Cardopoly/ECS/Core/Player/Core/PlayerInitializeSystem.h"
+#include "Cardopoly/ECS/Core/Player/Common/PlayerInitializeSystem.h"
 #include "Cardopoly/ECS/Core/UI/Cards/HandUISystem.h"
 #include "Cardopoly/ECS/Core/UI/HUD/HUDViewSystem.h"
 #include "Cardopoly/ECS/Core/UI/Overlay/IncomeOverlaySystem.h"
