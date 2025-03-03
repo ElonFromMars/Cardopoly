@@ -1,3 +1,6 @@
 [submodule "Plugins/FutureExtensions"]
 	path = Plugins/FutureExtensions
 	url = https://github.com/ElonFromMars/future-extensions
+[submodule "Content/Art/Assets"]
+	path = Content/Art/Assets
+	url = https://github.com/ElonFromMars/CardopolyArtAssets
