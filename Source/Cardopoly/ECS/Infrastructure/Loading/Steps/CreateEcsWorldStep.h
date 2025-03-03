@@ -14,7 +14,7 @@ public:
 		
 	}
 	
-	virtual SD::TExpectedFuture<void> Execute() override
+	virtual UE5Coro::TCoroutine<> Execute() override
 	{
 		flecs::world* world = new flecs::world();
 
@@ -22,6 +22,6 @@ public:
 		;
 		//.BindLifetimeToContainer();
 		
-		return SD::MakeReadyFuture();
+		return UE5Coro::TCoroutine<>::CompletedCoroutine;
 	}
 };

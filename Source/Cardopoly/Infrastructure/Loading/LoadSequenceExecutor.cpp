@@ -2,23 +2,25 @@
 
 #include <FutureExtensions.h>
 
-void LoadSequencePlayer::Execute(const std::shared_ptr<LoadSequence>& loadSequence)
+UE5Coro::TCoroutine<> LoadSequencePlayer::Execute(const std::shared_ptr<LoadSequence>& loadSequence)
 {
 	_loadSequence = loadSequence;
 
 	if (_loadSequence->Steps.size() == 0)
 	{
-		return;
+		return UE5Coro::TCoroutine<>::CompletedCoroutine;
 	}
 	
 	ExecuteStep(0);
+
+	return UE5Coro::TCoroutine<>::CompletedCoroutine;
 }
 
 void LoadSequencePlayer::ExecuteStep(int stepIndex)
 {
 	auto step = _loadSequence->Steps[stepIndex];
-	SD::TExpectedFuture<void> stepResult = step->Execute();
-	if (stepResult.IsReady())
+	UE5Coro::TCoroutine<> stepResult = step->Execute();
+	if (stepResult.IsDone())
 	{
 		if (stepIndex + 1 < _loadSequence->Steps.size())
 		{
@@ -27,12 +29,8 @@ void LoadSequencePlayer::ExecuteStep(int stepIndex)
 	}
 	else
 	{
-		stepResult.Then([this, stepIndex](SD::TExpected<void> result)
+		stepResult.ContinueWith([this, stepIndex]()
 		{
-			if (result.IsError())
-			{
-				//TODO
-			}
 			if (stepIndex + 1 < _loadSequence->Steps.size())
 			{
 				ExecuteStep(stepIndex + 1);
@@ -41,8 +39,6 @@ void LoadSequencePlayer::ExecuteStep(int stepIndex)
 			{
 				//TODO
 			}
-			return SD::MakeReadyExpected();
 		});
 	}
-	
 }

@@ -17,7 +17,7 @@ public:
 		
 	}
 	
-	virtual SD::TExpectedFuture<void> Execute() override
+	virtual UE5Coro::TCoroutine<> Execute() override
 	{
 		ULocalConfigHolder* config = ServiceContainer->Get<ULocalConfigHolder>();
 
@@ -31,6 +31,6 @@ public:
 		
 		UE_LOG(LogTemp, Error, TEXT("%s"), *CardData->Name.ToString());
 		
-		return SD::MakeReadyFuture();
+		return UE5Coro::TCoroutine<>::CompletedCoroutine;
 	}
 };

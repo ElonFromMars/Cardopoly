@@ -21,7 +21,7 @@ public:
 		
 	}
 	
-	virtual SD::TExpectedFuture<void> Execute() override
+	virtual UE5Coro::TCoroutine<> Execute() override
 	{
 		UWorld* viewWorld = ServiceContainer->Get<UWorld>();
 		UGameplayAssetData* GameplayAssetData = ServiceContainer->Get<UGameplayAssetData>();
@@ -47,7 +47,7 @@ public:
 		
 		ServiceContainer->Set<AHand>(Hand);
 		
-		return SD::MakeReadyFuture();
+		return UE5Coro::TCoroutine<>::CompletedCoroutine;
 	}
 };
 

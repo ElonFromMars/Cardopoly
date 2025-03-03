@@ -18,7 +18,7 @@ public:
 		
 	}
 	
-	virtual SD::TExpectedFuture<void> Execute() override
+	virtual UE5Coro::TCoroutine<> Execute() override
 	{
 		Ticker* ticker = ServiceContainer->Get<Ticker>();
 		UWorld* viewWorld = ServiceContainer->Get<UWorld>();
@@ -57,6 +57,6 @@ public:
 		ServiceContainer->Set<GameplayFeature>(mainGameplayFeature)
 			.BindLifetimeToContainer();
 		
-		return SD::MakeReadyFuture();
+		return UE5Coro::TCoroutine<>::CompletedCoroutine;
 	}
 };

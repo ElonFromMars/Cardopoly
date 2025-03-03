@@ -33,6 +33,7 @@ public class Cardopoly : ModuleRules
 			"FCTween",
 			"FlecsLibrary",
 			"SDFutureExtensions",
+			"UE5Coro"
 		});
 	}
 }

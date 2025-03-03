@@ -15,7 +15,7 @@ public:
 		
 	}
 	
-	virtual SD::TExpectedFuture<void> Execute() override
+	virtual UE5Coro::TCoroutine<> Execute() override
 	{
 		//flecs::world* world = ServiceContainer.Get<flecs::world>();
 		UCityGeneratorConfig* CityGeneratorConfig = ServiceContainer->Get<UCityGeneratorConfig>();
@@ -30,6 +30,6 @@ public:
 		ServiceContainer->Set<CityGenerationData>(cityGenerationData)
 			.BindLifetimeToContainer();
 		
-		return SD::MakeReadyFuture();
+		return UE5Coro::TCoroutine<>::CompletedCoroutine;
 	}
 };

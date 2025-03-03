@@ -7,7 +7,7 @@
 class LoadSequencePlayer
 {
 public:
-	void Execute(const std::shared_ptr<LoadSequence>& loadSequence);
+	UE5Coro::TCoroutine<> Execute(const std::shared_ptr<LoadSequence>& loadSequence);
 	void ExecuteStep(int stepIndex);
 	
 private:
