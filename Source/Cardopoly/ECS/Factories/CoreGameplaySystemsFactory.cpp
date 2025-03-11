@@ -2,7 +2,9 @@
 
 #include "Cardopoly/ECS/Core/Economy/EconomicsSystem.h"
 #include "Cardopoly/ECS/Core/GameplayFlow/TurnSystem.h"
-#include "Cardopoly/ECS/Core/Player/Common/PlayerInitializeSystem.h"
+#include "Cardopoly/ECS/Core/GameplayFlow/Players/AIOpponentPlayerFlowSystem.h"
+#include "Cardopoly/ECS/Core/GameplayFlow/Players/LocalPlayerFlowSystem.h"
+#include "Cardopoly/ECS/Core/Player/Common/Systems/PlayerInitializeSystem.h"
 #include "Cardopoly/ECS/Core/UI/Cards/HandUISystem.h"
 #include "Cardopoly/ECS/Core/UI/HUD/HUDViewSystem.h"
 #include "Cardopoly/ECS/Core/UI/Overlay/IncomeOverlaySystem.h"
@@ -17,6 +19,10 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 	std::unordered_map<uintptr_t, SystemConstructor> systemConstructors = {
 	{ unique_id<CitizensInitializeSystem>::get_ID(),
 		[this]() { return new CitizensInitializeSystem(_world, _gridLayout); } },
+	{ unique_id<AIOpponentPlayerFlowSystem>::get_ID(),
+		[this]() { return new AIOpponentPlayerFlowSystem(_world); } },
+	{ unique_id<LocalPlayerFlowSystem>::get_ID(),
+		[this]() { return new LocalPlayerFlowSystem(_world); } },
 	{ unique_id<DrawDebugViewSystem>::get_ID(),
 		[this]() { return new DrawDebugViewSystem(_world, _viewWorld); } },
 	{ unique_id<CreateViewSystem>::get_ID(), 
@@ -30,7 +36,7 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 	{ unique_id<HUDViewSystem>::get_ID(), 
 		[this]() { return new HUDViewSystem(_world, _hudWidget); } },
 	{ unique_id<PlayerInitializeSystem>::get_ID(), 
-		[this]() { return new PlayerInitializeSystem(_world); } },
+		[this]() { return new PlayerInitializeSystem(_world, _localPlayerService); } },
 	{ unique_id<EconomySystem>::get_ID(), 
 		[this]() { return new EconomySystem(_world); } },
 	{ unique_id<TurnSystem>::get_ID(), 

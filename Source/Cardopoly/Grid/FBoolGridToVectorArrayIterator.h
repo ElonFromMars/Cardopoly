@@ -16,7 +16,7 @@ public:
 			MoveToValidPosition();
 		}
 
-		const FIntVector& operator*() const
+		FIntVector operator*() const
 		{
 			return FIntVector(_index % _rowLength, _index / _rowLength, 0);
 		}

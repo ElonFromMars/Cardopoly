@@ -32,6 +32,9 @@ public:
 		Pathfinding::AStar* _aStar = ServiceContainer->Get<Pathfinding::AStar>();
 		flecs::world* _world = ServiceContainer->Get<flecs::world>();
 		
+		LocalPlayerService* localPlayerService = new LocalPlayerService();
+		ServiceContainer->Set(localPlayerService).BindLifetimeToContainer();
+		
 		auto factory = std::make_unique<CoreGameplaySystemsFactory>(
 			_world,
 			_gridLayout,
@@ -42,7 +45,8 @@ public:
 			GameplayOverlayWidgetInstance,
 			GameplayAssetData,
 			Hand,
-			LocalConfigHolder->HandLocalConfig
+			LocalConfigHolder->HandLocalConfig,
+			localPlayerService
 		);
 
 		GameplayFeature* mainGameplayFeature = new MainGameplayFeature(std::move(factory), _world);
