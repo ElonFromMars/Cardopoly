@@ -5,6 +5,7 @@
 #include "Cardopoly/ECS/Features/MainGameplayFeature.h"
 #include "Cardopoly/Infrastructure/Core/Ticker.h"
 #include "Cardopoly/Infrastructure/Loading/LoadSequenceStep.h"
+#include "Cardopoly/ECS/Core/Player/Resources/Services/ResourcesService.h"
 
 class UCityGeneratorConfig;
 class IServiceContainer;
@@ -34,7 +35,10 @@ public:
 		
 		LocalPlayerService* localPlayerService = new LocalPlayerService();
 		ServiceContainer->Set(localPlayerService).BindLifetimeToContainer();
-		
+		ResourcesService* resourcesService = new ResourcesService(_world);
+		ServiceContainer->Set<ResourcesService>(resourcesService).BindLifetimeToContainer();
+
+
 		auto factory = std::make_unique<CoreGameplaySystemsFactory>(
 			_world,
 			_gridLayout,
@@ -46,7 +50,8 @@ public:
 			GameplayAssetData,
 			Hand,
 			LocalConfigHolder->HandLocalConfig,
-			localPlayerService
+			localPlayerService,
+			resourcesService
 		);
 
 		GameplayFeature* mainGameplayFeature = new MainGameplayFeature(std::move(factory), _world);

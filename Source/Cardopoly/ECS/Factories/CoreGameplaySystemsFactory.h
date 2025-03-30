@@ -6,6 +6,7 @@
 #include "Cardopoly/ECS/Core/Movement/Systems/MovementSystem.h"
 #include "Cardopoly/ECS/Core/Pathfinding/Systems/PathfindingSystem.h"
 #include "Cardopoly/ECS/Core/Player/Common/Services/LocalPlayerService.h"
+#include "Cardopoly/ECS/Core/Player/Resources/Services/ResourcesService.h"
 #include "Cardopoly/ECS/Infrastructure/Factories/ISystemFactory.h"
 #include "Cardopoly/Grid/GridLayout.h"
 #include "Cardopoly/Pathfinding/AStar.h"
@@ -32,7 +33,8 @@ public:
 		UGameplayAssetData* gameplayAssetData,
 		AHand* playerHand,
 		UHandLocalConfig* handLocalConfig,
-		LocalPlayerService* localPlayerService
+		LocalPlayerService* localPlayerService,
+		ResourcesService* resourcesService
 	) :
 		_gridLayout(gridLayout),
 		_cityGrid(cityGrid),
@@ -44,7 +46,8 @@ public:
 		_gameplayAssetData(gameplayAssetData),
 		_playerHand(playerHand),
 		_handLocalConfig(handLocalConfig),
-		_localPlayerService(localPlayerService)
+		_localPlayerService(localPlayerService),
+		_resourcesService(resourcesService)
 	{
 	}
 
@@ -62,4 +65,5 @@ private:
 	AHand* _playerHand;
 	UHandLocalConfig* _handLocalConfig;
 	LocalPlayerService* _localPlayerService;
+	ResourcesService* _resourcesService;
 };

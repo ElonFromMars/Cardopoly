@@ -2,5 +2,6 @@
 
 struct ActionPointsComponent
 {
-	
+	int CurrentPoints;
+	int MaxPoints;
 };

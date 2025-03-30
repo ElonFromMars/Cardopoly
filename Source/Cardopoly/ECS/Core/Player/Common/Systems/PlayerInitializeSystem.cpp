@@ -3,6 +3,7 @@
 #include "Cardopoly/ECS/Core/Economy/FMoneyComponent.hpp"
 #include "Cardopoly/ECS/Core/Player/Common/Components/PlayerIndexComponent.hpp"
 #include "Cardopoly/ECS/Core/Player/Common/Components/PlayerTag.hpp"
+#include "Cardopoly/ECS/Core/Player/Resources/ActionPoints/Components/ActionPointsComponent.hpp"
 
 
 void PlayerInitializeSystem::Initialize()
@@ -20,6 +21,7 @@ flecs::entity PlayerInitializeSystem::CreateLocalPlayer(int32 playerIndex) const
 	      .set<FMoneyComponent>({})
 	      .set<PlayerTag>({})
 	      .set<PlayerIndexComponent>({playerIndex})
+		  .set<ActionPointsComponent>({});
 	;
 }
 
@@ -29,5 +31,6 @@ flecs::entity PlayerInitializeSystem::CreateAIOpponentPlayer(int32 playerIndex) 
 	      .set<FMoneyComponent>({})
 	      .set<PlayerTag>({})
 	      .set<PlayerIndexComponent>({playerIndex})
+	      .set<ActionPointsComponent>({})
 	;
 }
