@@ -25,11 +25,11 @@ void AHand::BeginPlay()
 	Super::BeginPlay();
 }
 
-void AHand::DrawCard()
+void AHand::DrawCard(FName cardId)
 {
 	CardSlots.Add(FVector());
 
-	ACard* Card = CardFactory->CreateCard();
+	ACard* Card = CardFactory->CreateCard(cardId);
 	Cards.Add(Card);
 	Card->OnCardAppliedDelegate.AddUniqueDynamic(this, &ThisClass::OnCardApplied);
 	

@@ -1,6 +1,9 @@
 ﻿#pragma once
 
+#include "Cardopoly/ECS/Core/Cards/Components/CardAddedEvent.hpp"
+#include "Cardopoly/ECS/Core/Cards/Systems/HandSystem.h"
 #include "Cardopoly/ECS/Core/Citizens/Systems/CitizensInitializeSystem.h"
+#include "Cardopoly/ECS/Core/Common/CleanupEntitySystem.hpp"
 #include "Cardopoly/ECS/Core/Common/CleanupSystem.hpp"
 #include "Cardopoly/ECS/Core/Debug/Systems/DrawDebugViewSystem.h"
 #include "Cardopoly/ECS/Core/GameplayFlow/Players/LocalPlayerFlowSystem.h"
@@ -44,6 +47,7 @@ public:
 		//Logic request handlers
 		AddSystem<PathfindingSystem>();
 		AddSystem<MovementSystem>();
+		AddSystem<HandSystem>();
 		
 		//View
 		AddSystem<CreateViewSystem>();
@@ -59,6 +63,7 @@ public:
 		AddSystem<HUDViewSystem>();
 		AddSystem<HandUISystem>();
 		AddSystem(new CleanupSystem<FCreateViewRequest>(_world));
+		AddSystem(new CleanupEntitySystem<CardAddedEvent>(_world));
 	}
 	
 private:

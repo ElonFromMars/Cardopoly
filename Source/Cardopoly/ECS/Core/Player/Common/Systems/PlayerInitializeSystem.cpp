@@ -1,6 +1,7 @@
 ﻿#include "PlayerInitializeSystem.h"
 
 #include "Cardopoly/ECS/Core/Economy/FMoneyComponent.hpp"
+#include "Cardopoly/ECS/Core/GameplayFlow/Players/AI/AIOpponentStateComponent.hpp"
 #include "Cardopoly/ECS/Core/Player/Common/Components/PlayerIndexComponent.hpp"
 #include "Cardopoly/ECS/Core/Player/Common/Components/PlayerTag.hpp"
 #include "Cardopoly/ECS/Core/Player/Resources/ActionPoints/Components/ActionPointsComponent.hpp"
@@ -34,6 +35,7 @@ flecs::entity PlayerInitializeSystem::CreateAIOpponentPlayer(int32 playerIndex) 
 	    .add<PlayerTag>()
 	    .set<PlayerIndexComponent>({playerIndex})
 	    .set<ActionPointsComponent>({})
+		.set<AIOpponentStateComponent>({AIOpponentState::WaitingForTurn})
 	;
 	
 	return entity;

@@ -25,7 +25,7 @@ public:
 		ULocalConfigHolder* localConfigHolder
 	);
 	
-	virtual ACard* CreateCard();
+	virtual ACard* CreateCard(FName cardId);
 
 private:
 	UPROPERTY()

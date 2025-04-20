@@ -1,5 +1,6 @@
 ﻿#include "CoreGameplaySystemsFactory.h"
 
+#include "Cardopoly/ECS/Core/Cards/Systems/HandSystem.h"
 #include "Cardopoly/ECS/Core/Economy/EconomicsSystem.h"
 #include "Cardopoly/ECS/Core/GameplayFlow/TurnSystem.h"
 #include "Cardopoly/ECS/Core/GameplayFlow/Players/LocalPlayerFlowSystem.h"
@@ -58,13 +59,16 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 		[this]() { return new TurnSystem(_world); } },
 		
 	{ unique_id<HandUISystem>::get_ID(), 
-		[this]() { return new HandUISystem(_world, _playerHand, _handLocalConfig); } },
+		[this]() { return new HandUISystem(_world, _playerHand, _handLocalConfig, _localPlayerService); } },
 		
 	{ unique_id<OverlayPositionSystem>::get_ID(),
 		[this]() { return new OverlayPositionSystem(_world, _entityOverlayWidget); } },
 		
 	{ unique_id<IncomeOverlaySystem>::get_ID(),
-		[this]() { return new IncomeOverlaySystem(_world, _gameplayAssetData, _entityOverlayWidget); } }
+		[this]() { return new IncomeOverlaySystem(_world, _gameplayAssetData, _entityOverlayWidget); } },
+		
+	{ unique_id<HandSystem>::get_ID(),
+		[this]() { return new HandSystem(_world, _localConfigHolder); } },
 	};
 
 	auto it = systemConstructors.find(typeId);

@@ -30,7 +30,7 @@ public:
 	
 	AHand();
 	void Construct(UCardFactory* cardFactory, EventBus* eventBus);
-	void DrawCard();
+	void DrawCard(FName cardId);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<ACard*> GetCards() const;

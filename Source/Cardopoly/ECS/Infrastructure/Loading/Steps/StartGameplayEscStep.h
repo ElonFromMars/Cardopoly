@@ -51,7 +51,8 @@ public:
 			Hand,
 			LocalConfigHolder->HandLocalConfig,
 			localPlayerService,
-			resourcesService
+			resourcesService,
+			LocalConfigHolder
 		);
 
 		GameplayFeature* mainGameplayFeature = new MainGameplayFeature(std::move(factory), _world);

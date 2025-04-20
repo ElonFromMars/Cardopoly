@@ -24,21 +24,14 @@ void UCardFactory::Construct(
 	BuildingCardsConfig = localConfigHolder->BuildingCardsConfig;
 }
 
-ACard* UCardFactory::CreateCard()
+ACard* UCardFactory::CreateCard(FName cardId)
 {
 	check(GameplayAssetData->CardsHolder);
 	
 	const TSubclassOf<ACard> CardAsset = GameplayAssetData->CardsHolder->CardByName[ViewAssetIdConfig::CardId];
-
-
-	//TODO move to appropriate place
-	TArray<FName> RowNames = BuildingCardsConfig->GetRowNames();
-	int32 RandomIndex = UKismetMathLibrary::RandomInteger(RowNames.Num());
-	FName RandomRowName = RowNames[RandomIndex];
-
 	
 	FString ContextString = "houses query";
-	FBuildingCardDataRaw* CardData = BuildingCardsConfig->FindRow<FBuildingCardDataRaw>(RandomRowName, ContextString);
+	FBuildingCardDataRaw* CardData = BuildingCardsConfig->FindRow<FBuildingCardDataRaw>(cardId, ContextString);
 	
 	ACard* Card = World->SpawnActor<ACard>(CardAsset, FVector(), FRotator());
 	Card->Construct(_buildingsService, _buildingPrototypeService, static_cast<uint32>(CardData->BuildingId));//TODO replace with function call

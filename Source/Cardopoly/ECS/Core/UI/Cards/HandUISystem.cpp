@@ -1,20 +1,20 @@
 ﻿#include "HandUISystem.h"
 
 #include "Cardopoly/Cards/Hand/Hand.h"
-#include "Cardopoly/Configs/HandLocalConfig.h"
-#include "Cardopoly/ECS/Core/Cards/FDrawCardRequest.hpp"
+#include "Cardopoly/ECS/Core/Cards/Components/CardAddedEvent.hpp"
+#include "Cardopoly/ECS/Core/Cards/Components/CardComponent.hpp"
 
 void HandUISystem::Initialize()
 {
-	for (int i = 0; i < _handLocalConfig->CardsStartCount; ++i)
-	{
-		_hand->DrawCard();	
-	}
-	
-	_world->system<const FDrawCardRequest>("HandUISystem")
-		.each([this](flecs::entity entity, const FDrawCardRequest& request)
+	_world->system<const CardAddedEvent>("HandUISystem")
+		.each([this](flecs::entity entity, const CardAddedEvent& request)
 		{
-			_hand->DrawCard();
-			entity.destruct();
+			if (!request.CardEntity.has<CardComponent>()
+				|| request.PlayerIndex != _localPlayerService->GetLocalPlayerIndex())
+			{
+				return;
+			}
+			
+			_hand->DrawCard(request.CardEntity.get<CardComponent>()->Id);
 		});
 }

@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "flecs.h"
+#include "Cardopoly/Configs/LocalConfigHolder.h"
 #include "Cardopoly/ECS/Core/Citizens/Systems/CitizensInitializeSystem.h"
 #include "Cardopoly/ECS/Core/Debug/Systems/DrawDebugViewSystem.h"
 #include "Cardopoly/ECS/Core/Movement/Systems/MovementSystem.h"
@@ -34,7 +35,8 @@ public:
 		AHand* playerHand,
 		UHandLocalConfig* handLocalConfig,
 		LocalPlayerService* localPlayerService,
-		ResourcesService* resourcesService
+		ResourcesService* resourcesService,
+		ULocalConfigHolder* localConfigHolder
 	) :
 		_gridLayout(gridLayout),
 		_cityGrid(cityGrid),
@@ -47,7 +49,8 @@ public:
 		_playerHand(playerHand),
 		_handLocalConfig(handLocalConfig),
 		_localPlayerService(localPlayerService),
-		_resourcesService(resourcesService)
+		_resourcesService(resourcesService),
+		_localConfigHolder(localConfigHolder)
 	{
 	}
 
@@ -66,4 +69,5 @@ private:
 	UHandLocalConfig* _handLocalConfig;
 	LocalPlayerService* _localPlayerService;
 	ResourcesService* _resourcesService;
+	ULocalConfigHolder* _localConfigHolder;
 };

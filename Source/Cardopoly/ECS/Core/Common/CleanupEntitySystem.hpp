@@ -1,6 +1,7 @@
 #pragma once
 
 #include "flecs.h"
+#include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 
 template<typename T>
 class CleanupEntitySystem : public IGameplaySystem
@@ -14,7 +15,7 @@ public:
     virtual void Initialize() override
     {
         _world->system<T>()
-            .each([](flecs::entity entity)
+            .each([](flecs::entity entity, const T& component)
             {
                 entity.destruct();
             });

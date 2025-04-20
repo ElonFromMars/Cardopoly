@@ -40,9 +40,6 @@ public:
 		CardFactory->Construct(viewWorld, GameplayAssetData, buildingService, buildingPrototypeService, LocalConfigHolder);
 	
 		Hand->Construct(CardFactory, eventBus);
-	
-	
-		Hand->DrawCard();
 
 		
 		ServiceContainer->Set<AHand>(Hand);
