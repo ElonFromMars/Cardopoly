@@ -17,20 +17,24 @@ void PlayerInitializeSystem::Initialize()
 
 flecs::entity PlayerInitializeSystem::CreateLocalPlayer(int32 playerIndex) const
 {
-	return _world->entity()
-	      .set<FMoneyComponent>({})
-	      .set<PlayerTag>({})
-	      .set<PlayerIndexComponent>({playerIndex})
-		  .set<ActionPointsComponent>({});
+	flecs::entity entity = _world->entity()
+        .add<FMoneyComponent>()
+		.add<PlayerTag>()
+	    .set<PlayerIndexComponent>({playerIndex})
+	    .set<ActionPointsComponent>({})
 	;
+
+	return entity;
 }
 
 flecs::entity PlayerInitializeSystem::CreateAIOpponentPlayer(int32 playerIndex) const
 {
-	return _world->entity()
-	      .set<FMoneyComponent>({})
-	      .set<PlayerTag>({})
-	      .set<PlayerIndexComponent>({playerIndex})
-	      .set<ActionPointsComponent>({})
+	flecs::entity entity = _world->entity()
+		.add<FMoneyComponent>()
+	    .add<PlayerTag>()
+	    .set<PlayerIndexComponent>({playerIndex})
+	    .set<ActionPointsComponent>({})
 	;
+	
+	return entity;
 }

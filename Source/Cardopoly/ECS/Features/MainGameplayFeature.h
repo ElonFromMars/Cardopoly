@@ -33,7 +33,6 @@ public:
 		//Logic initialization
 		AddSystem<CitizensInitializeSystem>();
 		AddSystem<PlayerInitializeSystem>();
-		AddSystem<InitializeGridPositionSystem>();
 
 		//Logic flow
 		AddSystem<TurnSystem>();
@@ -48,7 +47,8 @@ public:
 		
 		//View
 		AddSystem<CreateViewSystem>();
-
+		AddSystem<InitializeGridPositionSystem>();
+		
 		//Debug
 		AddSystem<DrawDebugViewSystem>();
 
