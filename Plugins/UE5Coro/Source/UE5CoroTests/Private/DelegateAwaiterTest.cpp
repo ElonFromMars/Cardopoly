@@ -55,45 +55,15 @@ IMPLEMENT_SIMPLE_AUTOMATION_TEST(FDelegateTestLatent, "UE5Coro.Delegate.Latent",
                                  EAutomationTestFlags::HighPriority |
                                  EAutomationTestFlags::ProductFilter)
 
+// For testing UntilDelegate
+#ifdef __clang__
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#elif defined(_MSC_VER)
+#pragma warning (disable:4996)
+#endif
+
 namespace
 {
-template<bool bDynamic, bool bMulticast>
-struct TDelegateForTest;
-
-template<>
-struct TDelegateForTest<false, false>
-{
-	using FVoid = TDelegate<void()>;
-	using FParams = TDelegate<void(int, int&)>;
-	using FRetVal = TDelegate<FUE5CoroTestConstructionChecker()>;
-	using FAll = TDelegate<FUE5CoroTestConstructionChecker(int, int&)>;
-};
-
-template<>
-struct TDelegateForTest<false, true>
-{
-	using FVoid = TMulticastDelegate<void()>;
-	using FParams = TMulticastDelegate<void(int, int&)>;
-	using FRetVal = TMulticastDelegate<FUE5CoroTestConstructionChecker()>;
-	using FAll = TMulticastDelegate<FUE5CoroTestConstructionChecker(int, int&)>;
-};
-
-template<>
-struct TDelegateForTest<true, false>
-{
-	using FVoid = FUE5CoroTestDynamicVoidDelegate;
-	using FParams = FUE5CoroTestDynamicParamsDelegate;
-	using FRetVal = FUE5CoroTestDynamicRetvalDelegate;
-	using FAll = FUE5CoroTestDynamicAllDelegate;
-};
-
-template<>
-struct TDelegateForTest<true, true>
-{
-	using FVoid = FUE5CoroTestDynamicMulticastVoidDelegate;
-	using FParams = FUE5CoroTestDynamicMulticastParamsDelegate;
-};
-
 struct alignas(4096) FHighlyAlignedByte
 {
 	uint8 Value;

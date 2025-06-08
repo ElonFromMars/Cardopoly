@@ -167,11 +167,11 @@ public:
 };
 
 class [[nodiscard]] UE5CORO_API FAsyncTimeAwaiter
-	: public TAwaiter<FAsyncTimeAwaiter>
+	: public TCancelableAwaiter<FAsyncTimeAwaiter>
 {
 	friend class FTimerThread;
 
-	const double TargetTime;
+	double TargetTime;
 	union
 	{
 		bool bAnyThread; // Before suspension
@@ -181,7 +181,8 @@ class [[nodiscard]] UE5CORO_API FAsyncTimeAwaiter
 
 public:
 	explicit FAsyncTimeAwaiter(double TargetTime, bool bAnyThread) noexcept
-		: TargetTime(TargetTime), bAnyThread(bAnyThread) { }
+		: TCancelableAwaiter(&Cancel), TargetTime(TargetTime),
+		  bAnyThread(bAnyThread) { }
 	FAsyncTimeAwaiter(const FAsyncTimeAwaiter&);
 	~FAsyncTimeAwaiter();
 
@@ -189,6 +190,7 @@ public:
 	void Suspend(FPromise&);
 
 private:
+	static void Cancel(void*, FPromise&);
 	void Resume();
 
 	[[nodiscard]] auto operator<=>(const FAsyncTimeAwaiter& Other) const noexcept
@@ -201,7 +203,7 @@ class [[nodiscard]] UE5CORO_API FAsyncYieldAwaiter
 	: public TAwaiter<FAsyncYieldAwaiter>
 {
 public:
-	void Suspend(FPromise&);
+	static void Suspend(FPromise&);
 };
 
 template<typename T>
@@ -235,21 +237,27 @@ public:
 
 			if constexpr (std::is_lvalue_reference_v<T>)
 			{
-				// The type of Get() is T* in 5.3 and T*& in 5.4
-				static_assert(std::is_pointer_v<
-				              std::remove_reference_t<decltype(InFuture.Get())>>);
-				Result = InFuture.Get();
+				// The return type of TFuture<T&>::Get() is T*, T*&, or T&,
+				// depending on the version of Unreal...
+				if constexpr (std::is_pointer_v<
+				              std::remove_reference_t<decltype(InFuture.Get())>>)
+					Result = InFuture.Get();
+				else
+					Result = &InFuture.Get();
 				Promise.Resume();
 			}
-			else
+			else if constexpr (!std::is_void_v<T>)
 			{
-				// If T is void, Get() returns an int (5.3) or int& (5.4), which
-				// is harmless to process; await_resume will ignore it.
-
 				// It's normally dangerous to expose a pointer to a local, but
 				auto Value = InFuture.Get(); // This will be alive while...
 				Result = &Value;
 				Promise.Resume(); // ...await_resume moves from it here
+			}
+			else
+			{
+				// await_resume expects a non-null pointer from Then
+				Result = reinterpret_cast<decltype(Result)>(-1);
+				Promise.Resume();
 			}
 		});
 	}
@@ -376,16 +384,23 @@ public:
 };
 
 class [[nodiscard]] UE5CORO_API FDelegateAwaiter
-	: public TAwaiter<FDelegateAwaiter>
+	: public TCancelableAwaiter<FDelegateAwaiter>
 {
+	static void Cancel(void*, FPromise&);
+
 protected:
-	FPromise* Promise = nullptr;
+	std::atomic<FPromise*> Promise = nullptr;
 	std::function<void()> Cleanup;
-	void TryResumeOnce();
+
+	FDelegateAwaiter();
+	void Resume();
 	UObject* SetupCallbackTarget(std::function<void(void*)>);
 
 public:
+	UE_NONCOPYABLE(FDelegateAwaiter);
+#if UE5CORO_DEBUG
 	~FDelegateAwaiter();
+#endif
 	void Suspend(FPromise& InPromise);
 };
 
@@ -420,7 +435,7 @@ public:
 	{
 		TTuple<T...> Values(std::forward<T>(Args)...);
 		Result = &Values; // This exposes a pointer to a local, but...
-		TryResumeOnce(); // ...it's only read by await_resume, right here
+		Resume(); // ...it's only read by await_resume, right here
 		// The coroutine might have completed, destroying this object
 		return R();
 	}
@@ -452,7 +467,7 @@ public:
 		{
 			// This matches the hack in TBaseUFunctionDelegateInstance::Execute
 			Result = static_cast<TDecayedPayload<A...>*>(Params);
-			TryResumeOnce();
+			Resume();
 			// The coroutine might have completed, deleting the awaiter
 			if constexpr (!std::is_void_v<R>)
 				static_cast<FPayload*>(Params)->template get<sizeof...(A)>() = R();

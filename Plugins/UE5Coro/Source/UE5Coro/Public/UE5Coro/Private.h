@@ -34,8 +34,7 @@
 #include "CoreMinimal.h"
 #include "UE5Coro/Definition.h"
 #include <concepts>
-#include <mutex>
-#include <shared_mutex>
+#include <memory>
 #include <type_traits>
 #include <utility>
 #include "Delegates/DelegateBase.h"
@@ -100,6 +99,7 @@ template<typename> struct TAnimAwaiter;
 template<typename, int> struct TAsyncLoadAwaiter;
 template<typename> struct TAsyncQueryAwaiter;
 template<typename> struct TAsyncQueryAwaiterRV;
+template<typename> class TCancelableAwaiter;
 template<typename, typename> class TCoroutinePromise;
 template<typename, typename...> class TDelegateAwaiter;
 template<typename, typename...> class TDynamicDelegateAwaiter;
@@ -109,15 +109,6 @@ template<typename> class TTaskAwaiter;
 
 template<typename>
 constexpr bool bFalse = false;
-
-// On Windows, both std::mutex and std::shared_mutex are SRWLOCKs, but mutex
-// has extra padding for ABI compatibility. Prefer shared_mutex for now.
-#ifdef _MSVC_STL_VERSION
-using FMutex = std::conditional_t<sizeof(std::shared_mutex) < sizeof(std::mutex),
-                                  std::shared_mutex, std::mutex>;
-#else
-using FMutex = std::mutex;
-#endif
 
 template<typename T>
 concept TIsSparseDelegate = std::derived_from<T, FSparseDelegate>;

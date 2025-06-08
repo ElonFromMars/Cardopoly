@@ -15,8 +15,7 @@ Awaiting one from an async or latent coroutine results in different behavior:
 
 * Async coroutines will immediately resume when the coroutine completes, on the
   same thread that it completed on.
-* Latent coroutines can only await other coroutines on the game thread, but they
-  will react to cancellations within one tick, as usual.
+* Latent coroutines can only await other coroutines on the game thread.
 
 In either case, awaiting a coroutine that has already completed is instant, and
 synchronously continues on the caller thread.
@@ -66,6 +65,9 @@ TCoroutine<> Example(TTask<int> Task)
 ```
 
 ### TFuture\<T\>
+
+> [!WARNING]
+> TFuture's API is unstable in the engine itself; it is not recommended for use.
 
 Awaiting a TFuture consumes it, and resumes the coroutine once it has completed
 on the same thread that would be used by TFuture::Then or Next.
@@ -120,20 +122,23 @@ Return types must be _DefaultConstructible_ or void.
 More than nine parameters are supported, and interacting with DYNAMIC delegates
 this way does not require a UFUNCTION or even a UCLASS at all.
 
-Thread safety and synchronization is the coroutine's responsibility: there are
-no checks or other measures taken against data races when the await expression
-starts (Bind/Add) or finishes (Unbind/Remove).
+> [!CAUTION]
+> Thread safety and synchronization is your responsibility: there are no checks
+> or other measures taken against data races when the await expression starts
+> (Bind/Add) or finishes (Unbind/Remove).
+>
+> Similarly, coroutine cancellation itself is thread safe, but most Unreal
+> delegates are not.
+> A coroutine awaiting a delegate will unbind on the thread that triggered the
+> delegate, or the thread that cancels the coroutine, whichever occurs first.
 
 The delegate will directly and synchronously call into the coroutine.
 If the delegate is destroyed or isn't ever invoked, the coroutine will not be
 resumed, which could result in a memory leak.
+A delegate getting destroyed while it's being awaited is undefined behavior.
 
-To explicitly handle delegates that might not ever be invoked, there are safer,
-more limited wrappers available, such as UE5Coro::Latent::UntilDelegate, or
-UUE5CoroGameplayAbility::Task.
-UE5Coro::FAwaitableEvent can also be used to manually resume coroutines from a
-delegate handler as well as at the time of the delegate's destruction, to make
-sure that the coroutine can finish.
+Awaiting delegates supports expedited cancellation.
+Canceling the TCoroutine will prevent the memory leak.
 
 The await expression results in an unspecified type that may be used with
 structured bindings to optionally receive the delegate's parameters.

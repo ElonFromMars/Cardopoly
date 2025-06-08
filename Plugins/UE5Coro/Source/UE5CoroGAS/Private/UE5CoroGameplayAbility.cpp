@@ -148,7 +148,7 @@ FLatentAwaiter UUE5CoroGameplayAbility::Task(UObject* Object, bool bAutoActivate
 	static_assert(sizeof(FCallbackTargetPtr) <= sizeof(void*));
 	void* Data;
 	new (&Data) FCallbackTargetPtr(Target);
-	return FLatentAwaiter(Data, &ShouldResumeTask);
+	return FLatentAwaiter(Data, &ShouldResumeTask, std::true_type());
 }
 
 void UUE5CoroGameplayAbility::ActivateAbility(
@@ -215,9 +215,10 @@ void UUE5CoroGameplayAbility::EndAbility(
 	// Cancel the coroutine. Depending on instancing policy, there will be a
 	// second, forced cancellation coming when the latent action manager
 	// processes the action's removal.
+	UE::TUniqueLock Lock(Promise->GetLock());
 	checkf(!Promise->get_return_object().IsDone(),
 	       TEXT("Internal error: unexpected coroutine state"));
-	Promise->Cancel();
+	Promise->Cancel(false);
 }
 
 void UUE5CoroGameplayAbility::CoroutineStarting(TAbilityPromise<ThisClass>* Promise)

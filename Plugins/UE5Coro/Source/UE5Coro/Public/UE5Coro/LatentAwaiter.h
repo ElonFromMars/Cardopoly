@@ -60,20 +60,14 @@ UE5CORO_API auto Until(std::function<bool()> Function)
 
 /** Resumes the coroutine after the provided other coroutine completes, but the
  *  wait itself is forced to latent mode regardless of the awaiting coroutine's
- *  execution mode. For advanced usage.
- *  TCoroutines are directly co_awaitable without using this wrapper.
- *
- *  Forcing latent mode can improve responsiveness to cancellations in async
- *  coroutines.
- *  Using this wrapper is pointless if the awaiting coroutine is latent. */
+ *  execution mode. */
+[[deprecated("This wrapper is no longer needed.")]]
 UE5CORO_API auto UntilCoroutine(TCoroutine<> Coroutine)
 	-> Private::TLatentCoroutineAwaiter<void, false>;
 
 /** Resumes the coroutine after the delegate executes.
- *  Delegate parameters are ignored, a return value is not provided.
- *
- *  Delegates are also co_awaitable without this wrapper.
- *  See the documentation for details on the differences in behavior. */
+ *  Delegate parameters are ignored, a return value is not provided. */
+[[deprecated("This wrapper is no longer needed.")]]
 auto UntilDelegate(Private::TIsDelegate auto& Delegate)
 	-> Private::FLatentAwaiter;
 
@@ -332,12 +326,20 @@ class [[nodiscard]] UE5CORO_API FLatentAwaiter // not TAwaiter
 	[[nodiscard]] bool IsValid() const noexcept { return Resume != nullptr; }
 	[[nodiscard]] bool ShouldResume();
 
+	// Copying is for internal use only
+	FLatentAwaiter(const FLatentAwaiter&) = default;
+	FLatentAwaiter& operator=(const FLatentAwaiter&) = default;
+
 protected:
 	void* State;
 	bool (*Resume)(void* State, bool bCleanup);
+#if UE5CORO_DEBUG
+	UWorld* OriginalWorld;
+#endif
 
 public:
-	explicit FLatentAwaiter(void* State, bool (*Resume)(void*, bool)) noexcept;
+	explicit FLatentAwaiter(void* State, bool (*Resume)(void*, bool),
+	                        auto WorldSensitive) noexcept(!UE5CORO_DEBUG);
 	FLatentAwaiter(FLatentAwaiter&&) noexcept;
 	~FLatentAwaiter();
 
@@ -351,6 +353,8 @@ public:
 
 	void await_resume() noexcept { }
 };
+
+static_assert(std::is_standard_layout_v<FLatentAwaiter>);
 
 namespace AsyncLoad
 {

@@ -190,8 +190,7 @@ There is a fast path for awaiters that match the UE5Coro::TLatentAwaiter
 concept that avoids creating a latent action for each awaiter (unlike the
 built-in latent BP nodes, which usually create a new one for each call).
 TLatentAwaiters will also react within one tick to
-[cancellations](Cancellation.md), instead of some time later before the
-coroutine would resume.
+[cancellations](Cancellation.md), instead of a variable amount of time later.
 
 Awaiting anything else puts the coroutine into a special mode, where its
 lifetime is temporarily extended beyond its backing latent action's.
@@ -521,12 +520,26 @@ types implicitly convert to each other.
 Its main purpose is to enable UFUNCTION coroutines to be written, and it is
 hidden from BP when used as the return value of such a function.
 
-Due to Unreal limitations, this type is default constructible.
+Due to Unreal limitations, this type is default constructible, and does not
+support co_return values.
+
 Default-constructed FVoidCoroutines, or TCoroutines converted from one are
 invalid; attempting to use functionality that accesses the null underlying
 coroutine is undefined behavior.
 These objects should only ever be created as the return value of a coroutine or
 as a copy of one.
+
+To return a value from a latent UFUNCTION, use a reference parameter:
+```cpp
+UFUNCTION(BlueprintCallable, meta = (Latent, LatentInfo = LatentInfo))
+FVoidCoroutine ExampleWithValue(int& Value, FLatentActionInfo LatentInfo)
+{
+    co_await Latent::NextTick();
+    Value = 1;
+}
+```
+
+![Latent Blueprint node for the ExampleWithValue function above](latent_node_with_value.png)
 
 ## bool FVoidCoroutine::IsValid() const
 
