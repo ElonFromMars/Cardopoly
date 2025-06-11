@@ -11,12 +11,14 @@
 flecs::entity BuildingEntityFactory::Create(const FIntVector cellPosition, const uint32 id) const
 {
 	FVector localPosition = _gridObjectsDataProvider->GetCenterOffset(id);
+
+	flecs::entity entity = world->entity()
+	                            .add<FBuildingTag>()
+	                            .add<FCreateViewRequest>()
+	                            .set<FIdComponent>({id})
+	                            .set<FLocalOffsetComponent>({localPosition})
+	                            .set<FGridPositionComponent>({cellPosition})
+	                            .set<FIncomeComponent>({10});
 	
-	return world->entity()
-		.add<FBuildingTag>()
-		.add<FCreateViewRequest>()
-		.set<FIdComponent>({id})
-		.set<FLocalOffsetComponent>({localPosition})
-		.set<FGridPositionComponent>({cellPosition})
-		.set<FIncomeComponent>({10});
+	return entity;
 }

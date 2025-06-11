@@ -6,6 +6,8 @@
 #include "Cardopoly/Configs/UI/EWidgetIdConfig.h"
 #include "Cardopoly/ECS/Core/Economy/FIncomeEvent.hpp"
 #include "Cardopoly/ECS/Core/Movement/Components/FPositionComponent.h"
+#include "Cardopoly/ECS/Core/Player/Common/Components/PlayerIndexComponent.hpp"
+#include "Cardopoly/ECS/Core/Player/Common/Services/LocalPlayerService.h"
 #include "Cardopoly/UI/IncomeOverlayEffectWidget.h"
 #include "Cardopoly/UI/UGameplayOverlayWidget.h"
 
@@ -17,10 +19,17 @@ void IncomeOverlaySystem::Initialize()
 			.event(flecs::OnSet)
 			.each([this](flecs::entity e, const FIncomeEvent& incomeEvent)
 			{
-				if (!e.has<FPositionComponent>())
+				if (!e.has<FPositionComponent>() || !e.has<PlayerIndexComponent>())
 				{
 					return;
 				}
+				int playerIndex = e.get<PlayerIndexComponent>()->Value;
+
+				if (_localPlayerService->GetLocalPlayerIndex() != playerIndex)
+				{
+					return;
+				}
+				
 				TSubclassOf<UUserWidget> incomeWidgetClass = _gameplayAssetData->WidgetHolder->BuildingsById[EWidgetIdConfig::IncomeEffect];
 
 				UIncomeOverlayEffectWidget* incomeOverlay = CreateWidget<UIncomeOverlayEffectWidget>(_entityOverlayWidget->GetWorld(), incomeWidgetClass);

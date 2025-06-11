@@ -2,6 +2,7 @@
 
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
 
+class LocalPlayerService;
 class UGameplayAssetData;
 class UGameplayOverlayWidget;
 
@@ -11,10 +12,12 @@ public:
 	IncomeOverlaySystem(
 		flecs::world* flecsWorld,
 		UGameplayAssetData* gameplayAssetData,
-		UGameplayOverlayWidget* entityOverlayWidget
+		UGameplayOverlayWidget* entityOverlayWidget,
+		LocalPlayerService* localPlayerService
 		) : IGameplaySystem(flecsWorld),
 		_entityOverlayWidget(entityOverlayWidget),
-		_gameplayAssetData(gameplayAssetData)
+		_gameplayAssetData(gameplayAssetData),
+		_localPlayerService(localPlayerService)
 	{ }
 	
 	virtual void Initialize() override;
@@ -22,5 +25,6 @@ public:
 private:
 	UGameplayOverlayWidget* _entityOverlayWidget;
 	UGameplayAssetData* _gameplayAssetData;
+	LocalPlayerService* _localPlayerService;
 };
 

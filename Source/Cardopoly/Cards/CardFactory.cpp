@@ -7,25 +7,29 @@
 #include "Cardopoly/Configs/LocalConfigHolder.h"
 #include "Cardopoly/Configs/ViewAssetIdConfig.h"
 #include "Cardopoly/Configs/Cards/BuildingCardDataRaw.h"
+#include "Cardopoly/ECS/Core/Cards/Components/CardComponent.hpp"
 #include "Kismet/KismetMathLibrary.h"
 
 void UCardFactory::Construct(
 	UWorld* world,
 	UGameplayAssetData* gameplayAssetData,
-	BuildingService* buildingsService,
+	PositionConversionService* positionConversionService,
 	BuildingPrototypeService* buildingPrototypeService,
+	BuildingService* buildingService,
 	ULocalConfigHolder* localConfigHolder
 	)
 {
 	World = world;
 	GameplayAssetData = gameplayAssetData;
-	_buildingsService = buildingsService;
+	_positionConversionService = positionConversionService;
 	_buildingPrototypeService = buildingPrototypeService;
+	_buildingService = buildingService;
 	BuildingCardsConfig = localConfigHolder->BuildingCardsConfig;
 }
 
-ACard* UCardFactory::CreateCard(FName cardId)
+ACard* UCardFactory::CreateCard(flecs::entity entity)
 {
+	FName cardId = entity.get<CardComponent>()->Id;
 	check(GameplayAssetData->CardsHolder);
 	
 	const TSubclassOf<ACard> CardAsset = GameplayAssetData->CardsHolder->CardByName[ViewAssetIdConfig::CardId];
@@ -34,7 +38,8 @@ ACard* UCardFactory::CreateCard(FName cardId)
 	FBuildingCardDataRaw* CardData = BuildingCardsConfig->FindRow<FBuildingCardDataRaw>(cardId, ContextString);
 	
 	ACard* Card = World->SpawnActor<ACard>(CardAsset, FVector(), FRotator());
-	Card->Construct(_buildingsService, _buildingPrototypeService, static_cast<uint32>(CardData->BuildingId));//TODO replace with function call
+	
+	Card->Construct(_buildingService, _positionConversionService, _buildingPrototypeService, entity);
 
 	if(auto CardWidget = Card->GetCardWidget())
 	{

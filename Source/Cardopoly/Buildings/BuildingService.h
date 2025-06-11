@@ -32,6 +32,7 @@ public:
 	}
 
 	bool CreateBuildingUnderScreenPosition(const FVector2D screenPosition, const uint32 id, flecs::entity& building) const;
+	bool TryCreateBuilding(const FIntVector& cellPosition, uint32 id, flecs::entity& building) const;
 
 	flecs::entity CreateBuilding(const FIntVector cellPosition, const uint32 id) const;
 

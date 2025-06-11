@@ -29,6 +29,7 @@ public:
 		BuildingService* buildingService = ServiceContainer->Get<BuildingService>();
 		BuildingPrototypeService* buildingPrototypeService = ServiceContainer->Get<BuildingPrototypeService>();
 		EventBus* eventBus = ServiceContainer->Get<EventBus>();
+		PositionConversionService* positionConversionService = ServiceContainer->Get<PositionConversionService>();
 		
 
 		APawn* PlayerPawn = viewWorld->GetFirstPlayerController()->GetPawnOrSpectator();
@@ -37,7 +38,7 @@ public:
 		Hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 		UCardFactory* CardFactory = NewObject<UCardFactory>();
-		CardFactory->Construct(viewWorld, GameplayAssetData, buildingService, buildingPrototypeService, LocalConfigHolder);
+		CardFactory->Construct(viewWorld, GameplayAssetData, positionConversionService, buildingPrototypeService, buildingService, LocalConfigHolder);
 	
 		Hand->Construct(CardFactory, eventBus);
 

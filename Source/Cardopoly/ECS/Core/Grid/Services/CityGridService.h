@@ -12,6 +12,8 @@ public:
 	bool ContainsBuildingAtPosition(const FIntVector Position) const;
 
 	void PutEntityAtPosition(const FIntVector Position, const flecs::entity entity);
+	
+	void PutEntityAtPosition(FIntVector Position, flecs::entity entity, uint32 id);
 
 	bool GetBuildingAtPosition(const FIntVector Position, flecs::entity& entity);
 

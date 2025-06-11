@@ -1,6 +1,7 @@
 ﻿#pragma once
 
 #include "Cardopoly/Configs/LocalConfigHolder.h"
+#include "Cardopoly/ECS/Core/Cards/Components/CardInHandRelation.hpp"
 #include "Cardopoly/ECS/Factories/CoreGameplaySystemsFactory.h"
 #include "Cardopoly/ECS/Features/MainGameplayFeature.h"
 #include "Cardopoly/Infrastructure/Core/Ticker.h"
@@ -32,13 +33,15 @@ public:
 		GridLayout* _gridLayout = ServiceContainer->Get<GridLayout>();
 		Pathfinding::AStar* _aStar = ServiceContainer->Get<Pathfinding::AStar>();
 		flecs::world* _world = ServiceContainer->Get<flecs::world>();
+		BuildingService* buildingService = ServiceContainer->Get<BuildingService>();
 		
 		LocalPlayerService* localPlayerService = new LocalPlayerService();
 		ServiceContainer->Set(localPlayerService).BindLifetimeToContainer();
 		ResourcesService* resourcesService = new ResourcesService(_world);
 		ServiceContainer->Set<ResourcesService>(resourcesService).BindLifetimeToContainer();
 
-
+		_world->component<CardInHandRelation>();
+		
 		auto factory = std::make_unique<CoreGameplaySystemsFactory>(
 			_world,
 			_gridLayout,
@@ -52,7 +55,8 @@ public:
 			LocalConfigHolder->HandLocalConfig,
 			localPlayerService,
 			resourcesService,
-			LocalConfigHolder
+			LocalConfigHolder,
+			buildingService
 		);
 
 		GameplayFeature* mainGameplayFeature = new MainGameplayFeature(std::move(factory), _world);

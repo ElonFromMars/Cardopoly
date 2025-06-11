@@ -4,10 +4,12 @@
 
 #include "CoreMinimal.h"
 #include "FCEasing.h"
+#include "flecs.h"
 #include "UCardWidget.h"
 #include "GameFramework/Actor.h"
 #include "Card.generated.h"
 
+class PositionConversionService;
 class ACard;
 class BuildingService;
 class FCTweenInstance;
@@ -23,7 +25,12 @@ class CARDOPOLY_API ACard : public AActor
 public:
 	ACard();
 
-	void Construct(BuildingService* buildingsService, BuildingPrototypeService* buildingPrototypeService, uint32 id);
+	void Construct(
+		BuildingService* buildingService,
+		PositionConversionService* positionConversionService,
+		BuildingPrototypeService* buildingPrototypeService,
+		flecs::entity entity
+	);
 
 protected:
 	virtual void BeginPlay() override;
@@ -63,7 +70,7 @@ public:
 	}
 
 private:
-	uint32 _id;
+	flecs::entity _entity;
 	
 	FCTweenInstance* Tween = nullptr;
 
@@ -75,6 +82,7 @@ public:
 	FOnCardAppliedSignature OnCardAppliedDelegate;
 	
 private:
-	BuildingService* _buildingsService;
 	BuildingPrototypeService* _buildingPrototypeService;
+	BuildingService* _buildingsService;
+	PositionConversionService* _positionConversionService;
 };

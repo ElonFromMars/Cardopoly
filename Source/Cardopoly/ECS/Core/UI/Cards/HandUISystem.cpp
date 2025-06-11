@@ -15,6 +15,6 @@ void HandUISystem::Initialize()
 				return;
 			}
 			
-			_hand->DrawCard(request.CardEntity.get<CardComponent>()->Id);
+			_hand->DrawCard(request.CardEntity);
 		});
 }

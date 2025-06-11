@@ -1,5 +1,6 @@
 ﻿#include "CoreGameplaySystemsFactory.h"
 
+#include "Cardopoly/ECS/Core/Cards/Systems/ApplyBuildingCardSystem.h"
 #include "Cardopoly/ECS/Core/Cards/Systems/HandSystem.h"
 #include "Cardopoly/ECS/Core/Economy/EconomicsSystem.h"
 #include "Cardopoly/ECS/Core/GameplayFlow/TurnSystem.h"
@@ -47,7 +48,7 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 		[this]() { return new MovementSystem(_world, _gridLayout); } },
 		
 	{ unique_id<HUDViewSystem>::get_ID(), 
-		[this]() { return new HUDViewSystem(_world, _hudWidget); } },
+		[this]() { return new HUDViewSystem(_world, _hudWidget, _localPlayerService); } },
 		
 	{ unique_id<PlayerInitializeSystem>::get_ID(), 
 		[this]() { return new PlayerInitializeSystem(_world, _localPlayerService); } },
@@ -65,10 +66,13 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 		[this]() { return new OverlayPositionSystem(_world, _entityOverlayWidget); } },
 		
 	{ unique_id<IncomeOverlaySystem>::get_ID(),
-		[this]() { return new IncomeOverlaySystem(_world, _gameplayAssetData, _entityOverlayWidget); } },
+		[this]() { return new IncomeOverlaySystem(_world, _gameplayAssetData, _entityOverlayWidget, _localPlayerService); } },
 		
 	{ unique_id<HandSystem>::get_ID(),
 		[this]() { return new HandSystem(_world, _localConfigHolder); } },
+
+		{ unique_id<ApplyBuildingCardSystem>::get_ID(),
+			[this]() { return new ApplyBuildingCardSystem(_world, _buildingService); } },
 	};
 
 	auto it = systemConstructors.find(typeId);

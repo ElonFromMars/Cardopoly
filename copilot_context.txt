@@ -1,0 +1,18 @@
+Project: Cardopoly
+Engine: Unreal Engine
+Language: C++
+Dependencies:
+- Flecs (Entity Component System)
+
+Description:
+Cardopoly is a game project built using Unreal Engine and C++. It utilizes the Flecs library for its entity component system. The project structure follows standard Unreal Engine conventions, with source files located in the `Source` directory and assets in the `Content` directory.
+
+Key Components:
+- GameMode: Defines the rules and flow of the game.
+- PlayerController: Manages player input and interactions.
+- Entities: Managed using Flecs, representing various game objects and their behaviors.
+
+Important Files:
+- Source/Cardopoly/CardopolyGameMode.cpp: Contains the game mode logic.
+- Source/Cardopoly/CardopolyPlayerController.cpp: Handles player input.
+- Source/Cardopoly/ECS: Directory containing core game logic.

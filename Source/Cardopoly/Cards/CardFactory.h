@@ -20,12 +20,13 @@ public:
 	void Construct(
 		UWorld* world,
 		UGameplayAssetData* gameplayAssetData,
-		BuildingService* buildingsService,
+		PositionConversionService* positionConversionService,
 		BuildingPrototypeService* buildingPrototypeService,
+		BuildingService* buildingsService,
 		ULocalConfigHolder* localConfigHolder
 	);
 	
-	virtual ACard* CreateCard(FName cardId);
+	virtual ACard* CreateCard(flecs::entity entity);
 
 private:
 	UPROPERTY()
@@ -35,6 +36,7 @@ private:
 	UPROPERTY()
 	UWorld* World;
 
-	BuildingService* _buildingsService;
+	BuildingService* _buildingService;
 	BuildingPrototypeService* _buildingPrototypeService;
+	PositionConversionService* _positionConversionService;
 };

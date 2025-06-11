@@ -15,6 +15,7 @@ public:
 	}
 
 	virtual void Initialize() override;
+	void ApplyTurnCards(flecs::entity entity);
 
-	void ChangeState(AIOpponentStateComponent& stateComponent, AIOpponentState newState);
+	void ChangeState(flecs::entity entity, AIOpponentState newState);
 };

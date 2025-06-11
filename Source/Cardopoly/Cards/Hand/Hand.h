@@ -30,7 +30,7 @@ public:
 	
 	AHand();
 	void Construct(UCardFactory* cardFactory, EventBus* eventBus);
-	void DrawCard(FName cardId);
+	void DrawCard(flecs::entity entity);
 
 	UFUNCTION(BlueprintCallable)
 	TArray<ACard*> GetCards() const;

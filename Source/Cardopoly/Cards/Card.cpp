@@ -4,6 +4,9 @@
 #include "FCTweenInstance.h"
 #include "Cardopoly/Buildings/BuildingPrototypeService.h"
 #include "Cardopoly/Buildings/BuildingService.h"
+#include "Cardopoly/ECS/Core/Cards/Components/ApplyCardRequest.hpp"
+#include "Cardopoly/ECS/Core/Cards/Components/BuildingCardComponent.hpp"
+#include "Cardopoly/Grid/PositionConversionService.h"
 #include "Components/WidgetComponent.h"
 
 
@@ -12,10 +15,16 @@ ACard::ACard()
 	PrimaryActorTick.bCanEverTick = true;
 }
 
-void ACard::Construct(BuildingService* buildingsController, BuildingPrototypeService* buildingPrototypeService, uint32 id)
+void ACard::Construct(
+	BuildingService* buildingsService,
+	PositionConversionService* positionConversionService,
+	BuildingPrototypeService* buildingPrototypeService,
+	flecs::entity entity
+	)
 {
-	_id = id;
-	_buildingsService = buildingsController;
+	_buildingsService = buildingsService;
+	_entity = entity;
+	_positionConversionService = positionConversionService;
 	_buildingPrototypeService = buildingPrototypeService;
 	const auto WidgetComponent = this->GetComponentByClass<UWidgetComponent>();
 	CardWidget = StaticCast<UCardWidget*>(WidgetComponent->GetUserWidgetObject());
@@ -45,20 +54,26 @@ void ACard::Tick(float DeltaTime)
 
 bool ACard::CanApply(FVector2D screenPosition)
 {
-	return _buildingsService->CanCreateBuildingUnderScreenPosition(screenPosition, _id);
+	//TODO rewrite
+	uint32 id = static_cast<uint32>(_entity.get<BuildingCardComponent>()->BuildingId);
+	return _buildingsService->CanCreateBuildingUnderScreenPosition(screenPosition, id);
 }
 
 void ACard::Apply(FVector2D screenPosition)
 {
-	flecs::entity buildingEntity;
-	_buildingsService->CreateBuildingUnderScreenPosition(screenPosition, _id, buildingEntity);
-	
-	OnCardAppliedDelegate.Broadcast(this);
+	FIntVector cellPosition;
+	if(_positionConversionService->ScreenPointToGroundPosition(screenPosition, cellPosition))
+	{
+		_entity.set<ApplyCardRequest>({ cellPosition });
+		OnCardAppliedDelegate.Broadcast(this);
+	}
 }
 
 void ACard::ShowPrototype(FVector2D screenPosition)
 {
-	_buildingPrototypeService->ShowBuildingPrototype(_id, screenPosition);
+	//TODO rewrite
+	uint32 id = static_cast<uint32>(_entity.get<BuildingCardComponent>()->BuildingId);
+	_buildingPrototypeService->ShowBuildingPrototype(id, screenPosition);
 }
 
 void ACard::UpdatePrototype(FVector2D ScreenPosition)
