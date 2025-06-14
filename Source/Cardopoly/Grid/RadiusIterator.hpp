@@ -1,6 +1,8 @@
 ﻿#pragma once
 
 #include <iterator>
+#include "Math/IntVector.h"
+#include "Math/Vector.h"
 
 class RadiusIterator
 {
@@ -12,15 +14,17 @@ public:
 	using reference = FIntVector&;
 
 	RadiusIterator(const FIntVector& center, int32 radius, bool isEnd = false)
-		: _center(center), _radius(radius), _currentX(center.X - radius), _currentY(center.Y - radius)
+		: _center(center), _radius(radius), _radiusSquared(radius * radius)
 	{
 		if (isEnd)
 		{
-			_currentX = center.X + radius + 1;
-			_currentY = center.Y + radius;
+			_currentX = _center.X + _radius + 1; // sentinel value
+			_currentY = _center.Y - _radius;
 		}
 		else
 		{
+			_currentX = _center.X - _radius;
+			_currentY = _center.Y - _radius;
 			FindNextValidCell();
 		}
 	}
@@ -57,16 +61,17 @@ public:
 private:
 	FIntVector _center;
 	int32 _radius;
+	int32 _radiusSquared;
 	int32 _currentX;
 	int32 _currentY;
 
 	void MoveToNext()
 	{
-		_currentY++;
+		++_currentY;
 		if (_currentY > _center.Y + _radius)
 		{
 			_currentY = _center.Y - _radius;
-			_currentX++;
+			++_currentX;
 		}
 	}
 
@@ -78,13 +83,17 @@ private:
 				return;
 			MoveToNext();
 		}
+
+		// Mark as end
+		_currentX = _center.X + _radius + 1;
+		_currentY = _center.Y - _radius;
 	}
 
 	bool IsCurrentCellValid() const
 	{
-		FIntVector currentCell(_currentX, _currentY, _center.Z);
-		float distance = FVector::Dist(FVector(_center), FVector(currentCell));
-		return distance <= _radius;
+		int32 dx = _currentX - _center.X;
+		int32 dy = _currentY - _center.Y;
+		return dx * dx + dy * dy <= _radiusSquared;
 	}
 };
 
@@ -92,9 +101,7 @@ class RadiusRange
 {
 public:
 	RadiusRange(const FIntVector& center, int32 radius)
-		: _center(center), _radius(radius)
-	{
-	}
+		: _center(center), _radius(radius) {}
 
 	RadiusIterator begin() const
 	{

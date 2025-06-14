@@ -14,7 +14,7 @@ void ApplyExplodingCardSystem::Initialize()
 		{
 			FIntVector position = request.CellPosition;
 
-			for (const FIntVector& cell : GetCellsInRadius(position, 1))
+			for (const FIntVector& cell : GetCellsInRadius(position, explodingCard.Radius))
 			{
 				auto entities = _citizenGridService->GetEntitiesAtPosition(cell);
 				if (entities == nullptr || entities->empty())
