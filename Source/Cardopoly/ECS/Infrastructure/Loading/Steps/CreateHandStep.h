@@ -6,6 +6,7 @@
 #include "Cardopoly/Cards/CardFactory.h"
 #include "Cardopoly/Cards/Hand/Hand.h"
 #include "Cardopoly/Configs/LocalConfigHolder.h"
+#include "Cardopoly/Configs/Cards/CardConfigService.h"
 #include "Cardopoly/ECS/Factories/CoreGameplaySystemsFactory.h"
 #include "Cardopoly/Infrastructure/Loading/LoadSequenceStep.h"
 
@@ -30,7 +31,7 @@ public:
 		BuildingPrototypeService* buildingPrototypeService = ServiceContainer->Get<BuildingPrototypeService>();
 		EventBus* eventBus = ServiceContainer->Get<EventBus>();
 		PositionConversionService* positionConversionService = ServiceContainer->Get<PositionConversionService>();
-		
+		CardConfigService* cardConfigService = ServiceContainer->Get<CardConfigService>();
 
 		APawn* PlayerPawn = viewWorld->GetFirstPlayerController()->GetPawnOrSpectator();
 	
@@ -38,7 +39,7 @@ public:
 		Hand->AttachToComponent(PlayerPawn->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);
 
 		UCardFactory* CardFactory = NewObject<UCardFactory>();
-		CardFactory->Construct(viewWorld, GameplayAssetData, positionConversionService, buildingPrototypeService, buildingService, LocalConfigHolder);
+		CardFactory->Construct(viewWorld, GameplayAssetData, positionConversionService, buildingPrototypeService, buildingService, cardConfigService);
 	
 		Hand->Construct(CardFactory, eventBus);
 

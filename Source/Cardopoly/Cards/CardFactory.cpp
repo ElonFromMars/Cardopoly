@@ -1,14 +1,10 @@
 ﻿#include "CardFactory.h"
 #include "Card.h"
-#include "CardViewComponent.h"
 #include "Cardopoly/AssetHolders/GameplayAssetData.h"
 #include "Cardopoly/AssetHolders/CardsHolder.h"
-#include "Cardopoly/Buildings/BuildingPrototypeService.h"
-#include "Cardopoly/Configs/LocalConfigHolder.h"
 #include "Cardopoly/Configs/ViewAssetIdConfig.h"
-#include "Cardopoly/Configs/Cards/BuildingCardDataRaw.h"
+#include "Cardopoly/Configs/Cards/CardConfigService.h"
 #include "Cardopoly/ECS/Core/Cards/Components/CardComponent.hpp"
-#include "Kismet/KismetMathLibrary.h"
 
 void UCardFactory::Construct(
 	UWorld* world,
@@ -16,7 +12,7 @@ void UCardFactory::Construct(
 	PositionConversionService* positionConversionService,
 	BuildingPrototypeService* buildingPrototypeService,
 	BuildingService* buildingService,
-	ULocalConfigHolder* localConfigHolder
+	CardConfigService* cardConfigService
 	)
 {
 	World = world;
@@ -24,7 +20,7 @@ void UCardFactory::Construct(
 	_positionConversionService = positionConversionService;
 	_buildingPrototypeService = buildingPrototypeService;
 	_buildingService = buildingService;
-	BuildingCardsConfig = localConfigHolder->BuildingCardsConfig;
+	_cardConfigService = cardConfigService;
 }
 
 ACard* UCardFactory::CreateCard(flecs::entity entity)
@@ -33,9 +29,8 @@ ACard* UCardFactory::CreateCard(flecs::entity entity)
 	check(GameplayAssetData->CardsHolder);
 	
 	const TSubclassOf<ACard> CardAsset = GameplayAssetData->CardsHolder->CardByName[ViewAssetIdConfig::CardId];
-	
-	FString ContextString = "houses query";
-	FBuildingCardDataRaw* CardData = BuildingCardsConfig->FindRow<FBuildingCardDataRaw>(cardId, ContextString);
+
+	auto cardData = _cardConfigService->GetBaseCardData(cardId);
 	
 	ACard* Card = World->SpawnActor<ACard>(CardAsset, FVector(), FRotator());
 	
@@ -43,9 +38,9 @@ ACard* UCardFactory::CreateCard(flecs::entity entity)
 
 	if(auto CardWidget = Card->GetCardWidget())
 	{
-		CardWidget->SetDescription(CardData->Description);
-        CardWidget->SetName(CardData->Name);
-        CardWidget->SetCost(FText::AsNumber(CardData->Cost));
+		CardWidget->SetDescription(cardData.Description);
+        CardWidget->SetName(cardData.Name);
+        CardWidget->SetCost(FText::AsNumber(cardData.Cost));
 	}
 	
 	return Card;

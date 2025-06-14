@@ -25,4 +25,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	UDataTable* BuildingCardsConfig;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UDataTable* AbilityCardsConfig;
 };

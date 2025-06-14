@@ -2,6 +2,8 @@
 
 #include "Cardopoly/Configs/LocalConfigHolder.h"
 #include "Cardopoly/ECS/Core/Cards/Components/CardInHandRelation.hpp"
+#include "Cardopoly/ECS/Core/Cards/Components/ExplodingCardComponent.hpp"
+#include "Cardopoly/ECS/Core/Grid/Services/CitizenGridService.h"
 #include "Cardopoly/ECS/Factories/CoreGameplaySystemsFactory.h"
 #include "Cardopoly/ECS/Features/MainGameplayFeature.h"
 #include "Cardopoly/Infrastructure/Core/Ticker.h"
@@ -34,14 +36,16 @@ public:
 		Pathfinding::AStar* _aStar = ServiceContainer->Get<Pathfinding::AStar>();
 		flecs::world* _world = ServiceContainer->Get<flecs::world>();
 		BuildingService* buildingService = ServiceContainer->Get<BuildingService>();
+		CardEntityFactory* cardEntityFactory = ServiceContainer->Get<CardEntityFactory>();
+		CardConfigService* cardConfigService = ServiceContainer->Get<CardConfigService>();
 		
 		LocalPlayerService* localPlayerService = new LocalPlayerService();
 		ServiceContainer->Set(localPlayerService).BindLifetimeToContainer();
 		ResourcesService* resourcesService = new ResourcesService(_world);
 		ServiceContainer->Set<ResourcesService>(resourcesService).BindLifetimeToContainer();
+		CitizenGridService* citizenGridService = new CitizenGridService();
+		ServiceContainer->Set<CitizenGridService>(citizenGridService).BindLifetimeToContainer();
 
-		_world->component<CardInHandRelation>();
-		
 		auto factory = std::make_unique<CoreGameplaySystemsFactory>(
 			_world,
 			_gridLayout,
@@ -56,7 +60,10 @@ public:
 			localPlayerService,
 			resourcesService,
 			LocalConfigHolder,
-			buildingService
+			buildingService,
+			citizenGridService,
+			cardEntityFactory,
+			cardConfigService
 		);
 
 		GameplayFeature* mainGameplayFeature = new MainGameplayFeature(std::move(factory), _world);

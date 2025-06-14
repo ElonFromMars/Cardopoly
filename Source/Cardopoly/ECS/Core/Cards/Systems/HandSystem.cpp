@@ -61,21 +61,13 @@ void HandSystem::DrawCard(flecs::entity playerEntity)
 {
 	const PlayerIndexComponent* playerIndexComponent = playerEntity.get<PlayerIndexComponent>();
 	
-	UDataTable* buildingCardsConfig = _localConfigHolder->BuildingCardsConfig;
-			
-	TArray<FName> RowNames = buildingCardsConfig->GetRowNames();
+	TArray<FName> RowNames = _cardConfigService->GetAllNames();
 	int32 RandomIndex = UKismetMathLibrary::RandomInteger(RowNames.Num());
 	FName cardId = RowNames[RandomIndex];
-			
-	FString ContextString = "houses query";
-	FBuildingCardDataRaw* CardData = buildingCardsConfig->FindRow<FBuildingCardDataRaw>(cardId, ContextString);
 	
-	flecs::entity cardEntity = _world->entity()
-		.set<CardComponent>({cardId})
-		.set<BuildingCardComponent>({CardData->BuildingId})
-		.set<PlayerIndexComponent>({playerIndexComponent->Value})
-	;
+	flecs::entity cardEntity = _cardEntityFactory->Create(cardId);
 
+	cardEntity.set<PlayerIndexComponent>({playerIndexComponent->Value});
 	cardEntity.child_of(playerEntity);
 	cardEntity.add<CardInHandRelation>(playerEntity);
 

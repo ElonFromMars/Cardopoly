@@ -1,6 +1,7 @@
 ﻿#include "CoreGameplaySystemsFactory.h"
 
 #include "Cardopoly/ECS/Core/Cards/Systems/ApplyBuildingCardSystem.h"
+#include "Cardopoly/ECS/Core/Cards/Systems/ApplyExplodingCardSystem.h"
 #include "Cardopoly/ECS/Core/Cards/Systems/HandSystem.h"
 #include "Cardopoly/ECS/Core/Economy/EconomicsSystem.h"
 #include "Cardopoly/ECS/Core/GameplayFlow/TurnSystem.h"
@@ -21,7 +22,7 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 
 	std::unordered_map<uintptr_t, SystemConstructor> systemConstructors = {
 	{ unique_id<CitizensInitializeSystem>::get_ID(),
-		[this]() { return new CitizensInitializeSystem(_world, _gridLayout); } },
+		[this]() { return new CitizensInitializeSystem(_world, _gridLayout, _citizenGridService); } },
 		
 	{ unique_id<ActionPointsSystem>::get_ID(),
 		[this]() { return new ActionPointsSystem(_world); } },
@@ -45,7 +46,7 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 		[this]() { return new PathfindingSystem(_world, _gridLayout, _cityGrid, _aStar); } },
 		
 	{ unique_id<MovementSystem>::get_ID(), 
-		[this]() { return new MovementSystem(_world, _gridLayout); } },
+		[this]() { return new MovementSystem(_world, _gridLayout, _citizenGridService); } },
 		
 	{ unique_id<HUDViewSystem>::get_ID(), 
 		[this]() { return new HUDViewSystem(_world, _hudWidget, _localPlayerService); } },
@@ -69,10 +70,13 @@ IGameplaySystem* CoreGameplaySystemsFactory::Create(uintptr_t typeId)
 		[this]() { return new IncomeOverlaySystem(_world, _gameplayAssetData, _entityOverlayWidget, _localPlayerService); } },
 		
 	{ unique_id<HandSystem>::get_ID(),
-		[this]() { return new HandSystem(_world, _localConfigHolder); } },
+		[this]() { return new HandSystem(_world, _localConfigHolder, _cardConfigService, _cardEntityFactory); } },
 
-		{ unique_id<ApplyBuildingCardSystem>::get_ID(),
-			[this]() { return new ApplyBuildingCardSystem(_world, _buildingService); } },
+	{ unique_id<ApplyBuildingCardSystem>::get_ID(),
+		[this]() { return new ApplyBuildingCardSystem(_world, _buildingService); } },
+
+	{ unique_id<ApplyExplodingCardSystem>::get_ID(),
+		[this]() { return new ApplyExplodingCardSystem(_world, _citizenGridService); } },
 	};
 
 	auto it = systemConstructors.find(typeId);

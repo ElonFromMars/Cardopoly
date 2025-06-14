@@ -15,6 +15,7 @@
 #include "Cardopoly/ECS/Core/View/FCreateViewRequest.hpp"
 #include "Cardopoly/ECS/Infrastructure/Features/GameplayFeature.h"
 
+class ApplyExplodingCardSystem;
 class OverlayPositionSystem;
 class IncomeOverlaySystem;
 class TurnSystem;
@@ -51,6 +52,7 @@ public:
 		AddSystem<MovementSystem>();
 		AddSystem<HandSystem>();
 		AddSystem<ApplyBuildingCardSystem>();
+		AddSystem<ApplyExplodingCardSystem>();
 		
 		//View
 		AddSystem<CreateViewSystem>();

@@ -6,6 +6,7 @@
 #include "UObject/Object.h"
 #include "CardFactory.generated.h"
 
+class CardConfigService;
 class ULocalConfigHolder;
 class UGameplayAssetData;
 class ACard;
@@ -23,7 +24,7 @@ public:
 		PositionConversionService* positionConversionService,
 		BuildingPrototypeService* buildingPrototypeService,
 		BuildingService* buildingsService,
-		ULocalConfigHolder* localConfigHolder
+		CardConfigService* cardConfigService
 	);
 	
 	virtual ACard* CreateCard(flecs::entity entity);
@@ -32,11 +33,10 @@ private:
 	UPROPERTY()
 	UGameplayAssetData* GameplayAssetData;
 	UPROPERTY()
-	UDataTable* BuildingCardsConfig;
-	UPROPERTY()
 	UWorld* World;
 
 	BuildingService* _buildingService;
 	BuildingPrototypeService* _buildingPrototypeService;
 	PositionConversionService* _positionConversionService;
+	CardConfigService* _cardConfigService;
 };

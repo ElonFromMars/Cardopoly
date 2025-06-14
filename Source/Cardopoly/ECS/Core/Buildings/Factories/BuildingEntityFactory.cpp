@@ -12,7 +12,7 @@ flecs::entity BuildingEntityFactory::Create(const FIntVector cellPosition, const
 {
 	FVector localPosition = _gridObjectsDataProvider->GetCenterOffset(id);
 
-	flecs::entity entity = world->entity()
+	flecs::entity entity = _world->entity()
 	                            .add<FBuildingTag>()
 	                            .add<FCreateViewRequest>()
 	                            .set<FIdComponent>({id})

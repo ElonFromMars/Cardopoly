@@ -5,6 +5,7 @@
 #include "Cardopoly/Configs/LocalConfigHolder.h"
 #include "Cardopoly/ECS/Core/Citizens/Systems/CitizensInitializeSystem.h"
 #include "Cardopoly/ECS/Core/Debug/Systems/DrawDebugViewSystem.h"
+#include "Cardopoly/ECS/Core/Grid/Services/CitizenGridService.h"
 #include "Cardopoly/ECS/Core/Movement/Systems/MovementSystem.h"
 #include "Cardopoly/ECS/Core/Pathfinding/Systems/PathfindingSystem.h"
 #include "Cardopoly/ECS/Core/Player/Common/Services/LocalPlayerService.h"
@@ -15,6 +16,8 @@
 #include "Cardopoly/UI/UHUDWidget.h"
 #include "Cardopoly/Utils/TypeIdUtils.h"
 
+class CardConfigService;
+class CardEntityFactory;
 class UGameplayOverlayWidget;
 class UHandLocalConfig;
 class AHand;
@@ -38,7 +41,10 @@ public:
 		LocalPlayerService* localPlayerService,
 		ResourcesService* resourcesService,
 		ULocalConfigHolder* localConfigHolder,
-		BuildingService* buildingService
+		BuildingService* buildingService,
+		CitizenGridService* citizenGridService,
+		CardEntityFactory* cardEntityFactory,
+		CardConfigService* cardConfigService
 	) :
 		_gridLayout(gridLayout),
 		_cityGrid(cityGrid),
@@ -53,7 +59,10 @@ public:
 		_localPlayerService(localPlayerService),
 		_resourcesService(resourcesService),
 		_localConfigHolder(localConfigHolder),
-		_buildingService(buildingService)
+		_buildingService(buildingService),
+		_citizenGridService(citizenGridService),
+		_cardEntityFactory(cardEntityFactory),
+		_cardConfigService(cardConfigService)
 	{
 	}
 
@@ -74,4 +83,7 @@ private:
 	ResourcesService* _resourcesService;
 	ULocalConfigHolder* _localConfigHolder;
 	BuildingService* _buildingService;
+	CitizenGridService* _citizenGridService;
+	CardEntityFactory* _cardEntityFactory;
+	CardConfigService* _cardConfigService;
 };

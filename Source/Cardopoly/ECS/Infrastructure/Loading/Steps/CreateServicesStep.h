@@ -3,9 +3,10 @@
 #include "Cardopoly/Buildings/BuildingPrototypeService.h"
 #include "Cardopoly/Buildings/BuildingService.h"
 #include "Cardopoly/Configs/LocalConfigHolder.h"
+#include "Cardopoly/Configs/Cards/CardConfigService.h"
 #include "Cardopoly/ECS/Core/Buildings/Factories/BuildingEntityFactory.h"
+#include "Cardopoly/ECS/Core/Cards/Factories/CardEntityFactory.h"
 #include "Cardopoly/ECS/Factories/CoreGameplaySystemsFactory.h"
-#include "Cardopoly/Infrastructure/Core/Ticker.h"
 #include "Cardopoly/Infrastructure/Loading/LoadSequenceStep.h"
 
 class UCityGeneratorConfig;
@@ -30,8 +31,15 @@ public:
 		flecs::world* _world = ServiceContainer->Get<flecs::world>();
 		GridObjectsDataProvider* _gridObjectsDataProvider = ServiceContainer->Get<GridObjectsDataProvider>();
 		PositionConversionService* _positionConversionService = ServiceContainer->Get<PositionConversionService>();
+
+		auto cardConfigService = new CardConfigService(LocalConfigHolder);
+		ServiceContainer->Set<CardConfigService>(cardConfigService).BindLifetimeToContainer();
 		
 		auto buildingEntityFactory = new BuildingEntityFactory(_world, _gridObjectsDataProvider);
+		ServiceContainer->Set<BuildingEntityFactory>(buildingEntityFactory).BindLifetimeToContainer();
+		
+		auto cardEntityFactory = new CardEntityFactory(_world, cardConfigService);
+		ServiceContainer->Set<CardEntityFactory>(cardEntityFactory).BindLifetimeToContainer();
 		
 		auto buildingService = new BuildingService(
 			CityGrid,
@@ -41,6 +49,7 @@ public:
 			_gridObjectsDataProvider,
 			_positionConversionService
 		);
+		ServiceContainer->Set<BuildingService>(buildingService).BindLifetimeToContainer();
 
 		auto buildingPrototypeService = new BuildingPrototypeService(
 			viewWorld,
@@ -50,16 +59,7 @@ public:
 			buildingService,
 			_gridLayout
 		);
-
-		ServiceContainer->Set<BuildingEntityFactory>(buildingEntityFactory)
-			.BindLifetimeToContainer();
-
-		ServiceContainer->Set<BuildingService>(buildingService)
-			.BindLifetimeToContainer();
-
-		ServiceContainer->Set<BuildingPrototypeService>(buildingPrototypeService)
-			.BindLifetimeToContainer();
-
+		ServiceContainer->Set<BuildingPrototypeService>(buildingPrototypeService).BindLifetimeToContainer();
 		
 		auto _aStar = new Pathfinding::AStar(CityGrid);
 		ServiceContainer->Set<Pathfinding::AStar>(_aStar)

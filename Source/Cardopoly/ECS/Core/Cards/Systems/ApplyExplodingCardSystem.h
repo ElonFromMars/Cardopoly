@@ -1,20 +1,18 @@
 ﻿#pragma once
 
+#include "flecs.h"
 #include "Cardopoly/ECS/Infrastructure/Systems/IGameplaySystem.h"
-#include "Cardopoly/Grid/GridLayout.h"
 
 class CitizenGridService;
 
-class CitizensInitializeSystem : public IGameplaySystem
+class ApplyExplodingCardSystem : public IGameplaySystem
 {
 public:
-	CitizensInitializeSystem(
+	ApplyExplodingCardSystem(
 		flecs::world* flecsWorld,
-		GridLayout* gridLayout,
 		CitizenGridService* citizenGridService
-		)
+	)
 		: IGameplaySystem(flecsWorld),
-		_gridLayout(gridLayout),
 		_citizenGridService(citizenGridService)
 	{
 	}
@@ -22,6 +20,5 @@ public:
 	virtual void Initialize() override;
 
 private:
-	GridLayout* _gridLayout;
 	CitizenGridService* _citizenGridService;
 };

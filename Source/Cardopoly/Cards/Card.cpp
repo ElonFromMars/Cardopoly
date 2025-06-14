@@ -55,6 +55,8 @@ void ACard::Tick(float DeltaTime)
 bool ACard::CanApply(FVector2D screenPosition)
 {
 	//TODO rewrite
+	if (!_entity.has<BuildingCardComponent>()) return true;
+	
 	uint32 id = static_cast<uint32>(_entity.get<BuildingCardComponent>()->BuildingId);
 	return _buildingsService->CanCreateBuildingUnderScreenPosition(screenPosition, id);
 }
@@ -72,17 +74,25 @@ void ACard::Apply(FVector2D screenPosition)
 void ACard::ShowPrototype(FVector2D screenPosition)
 {
 	//TODO rewrite
+	if (!_entity.has<BuildingCardComponent>()) return;
+	
 	uint32 id = static_cast<uint32>(_entity.get<BuildingCardComponent>()->BuildingId);
 	_buildingPrototypeService->ShowBuildingPrototype(id, screenPosition);
 }
 
 void ACard::UpdatePrototype(FVector2D ScreenPosition)
 {
+	//TODO rewrite
+	if (!_entity.has<BuildingCardComponent>()) return;
+	
 	_buildingPrototypeService->UpdateBuildingPrototypePosition(ScreenPosition);
 }
 
 void ACard::HidePrototype()
 {
+	//TODO rewrite
+	if (!_entity.has<BuildingCardComponent>()) return;
+	
 	_buildingPrototypeService->HideBuildingPrototype();
 }
 
